@@ -1,0 +1,11 @@
+1、图像类型
+IBitmap，抽象图
+	GLBmp：可读取png文件创建，并可输出为png文件的标准图像
+	GLFloatBmp：纹理图像，光栅着色得到的片断图像，由ARGB浮点像素构成，此图像为片断着色器计算所用
+2、光栅相关
+IVarying，抽象Varying数据
+	GLPosition：决定片断位置，必备属性
+	GLVarying：片断位置的属性值
+IRasterizatedVarying，经过光栅化之后的Varying数据
+	GLRasterizatedPosition：对应一系列的宽高值
+	GLRasterizatedVarying
