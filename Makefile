@@ -70,20 +70,20 @@ build/main.o : ./main.cpp ${ALL_INCLUEStest.out}
 
 ALL_INCLUESdisplay.out= include/display/texture.h include/display/vboBuffer.h include/display/scene.h include/display/object.h include/display/debug.h include/display/program.h include/display/head.h
 
-display.out:  build/display_program.o build/display_vboBuffer_gles2.o build/display_texture_gles2.o build/display_program_gles2.o build/display_texture.o build/display.o libglsl.so
-	g++  -O3 -o display.out  build/display_program.o build/display_vboBuffer_gles2.o build/display_texture_gles2.o build/display_program_gles2.o build/display_texture.o build/display.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
+display.out:  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_vboBuffer.o build/display_gles2_texture.o build/display_texture.o libglsl.so
+	g++  -O3 -o display.out  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_vboBuffer.o build/display_gles2_texture.o build/display_texture.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
+build/display_main.o : src/display/main.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_main.o -c src/display/main.cpp -Iinclude 
 build/display_program.o : src/display/program.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_program.o -c src/display/program.cpp -Iinclude 
-build/display_vboBuffer_gles2.o : src/display/vboBuffer_gles2.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_vboBuffer_gles2.o -c src/display/vboBuffer_gles2.cpp -Iinclude 
-build/display_texture_gles2.o : src/display/texture_gles2.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_texture_gles2.o -c src/display/texture_gles2.cpp -Iinclude 
-build/display_program_gles2.o : src/display/program_gles2.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_program_gles2.o -c src/display/program_gles2.cpp -Iinclude 
+build/display_gles2_program.o : src/display/gles2/program.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_program.o -c src/display/gles2/program.cpp -Iinclude 
+build/display_gles2_vboBuffer.o : src/display/gles2/vboBuffer.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_vboBuffer.o -c src/display/gles2/vboBuffer.cpp -Iinclude 
+build/display_gles2_texture.o : src/display/gles2/texture.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_texture.o -c src/display/gles2/texture.cpp -Iinclude 
 build/display_texture.o : src/display/texture.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_texture.o -c src/display/texture.cpp -Iinclude 
-build/display.o : ./display.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display.o -c ./display.cpp -Iinclude 
 
 clean:
 	rm build/*.o

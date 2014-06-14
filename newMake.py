@@ -12,7 +12,7 @@ MIDPATH='build/'
 MAIN_PROGRAM=['libglsl.so', 'test.out', 'display.out']
 gDepends = ['', 'libglsl.so', 'libglsl.so']
 gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex'], ['test'], ['display']]
-gSrcFiles = [[], ['./main.cpp'], ['./display.cpp']]
+gSrcFiles = [[], ['./main.cpp'], []]
 gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so ', ' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
 
 def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):

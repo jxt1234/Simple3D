@@ -26,7 +26,6 @@ float gPos[] = {-0.9,1.0,0.4,0.5,-1.0,-0.5};
 program gProgram;
 texture gTexture;
 vboBuffer* gBuffer = NULL;
-GL_position p;
 
 static void init()
 {
@@ -51,10 +50,12 @@ static void init()
     GL_Normal normal;
     //Texcorder
     GL_texcord tex;
+    GL_position p;
     GLCSVertexGenerate(&p, &normal, &tex, &sphere, &area, 0);
     p.reshape();
     p.transform(projection);
     p.normalize();
+    gBuffer = new vboBuffer(&p);
 }
 
 static void display(void)
@@ -63,8 +64,6 @@ static void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gProgram.use();
     int pid = gProgram.attr("pos");
-    //if (!gBuffer) gBuffer = new vboBuffer(gPos, 2, 3);
-    if (!gBuffer) gBuffer = new vboBuffer(&p);
     gBuffer->use(pid);
     gTexture.use();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, gBuffer->size());
@@ -76,11 +75,11 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);                            // Initialize GLUT 
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);        // Set display mode 
     glutInitWindowPosition(50,100);                    // Set top-left display window position 
-    glutInitWindowSize(400, 300);                    // set display window width and height 
+    glutInitWindowSize(500, 500);                    // set display window width and height 
     glutCreateWindow("An Example OpenGL Program");    // Create display window 
 
-    init();
     glewInit();
+    init();
     glutDisplayFunc(display);                        // Send graphics to display window 
 
     glutMainLoop();                                    // Display everything and wait 

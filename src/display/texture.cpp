@@ -7,5 +7,4 @@ texture::texture()
 
 texture::~texture()
 {
-    OPENGL_ASSERT(mId == 0);
 }

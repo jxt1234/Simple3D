@@ -11,6 +11,7 @@ class program
         program();
         program(const std::string& vertex, const std::string& frag);
         void load(const std::string& vertex, const std::string& frag);
+        void loadFiles(const char* vertex, const char* frag);
         virtual ~program();
 
         inline unsigned int id(){return mId;}
