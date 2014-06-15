@@ -56,18 +56,18 @@ CONTEXT_API vboBuffer::~vboBuffer()
 
 CONTEXT_API void vboBuffer::use(int id)
 {
-    assert(mId>0);
-    glBindBuffer(GL_ARRAY_BUFFER, mId);
-    OPENGL_CHECK_ERROR;
+    assert(0!=mId);
     glEnableVertexAttribArray(id);
     OPENGL_CHECK_ERROR;
-    glVertexAttribPointer(0, mUnit, GL_FLOAT, GL_FALSE, 0, NULL);
+    glBindBuffer(GL_ARRAY_BUFFER, mId);
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer(id, mUnit, GL_FLOAT, GL_FALSE, 0, NULL);
     OPENGL_CHECK_ERROR;
 }
 
 CONTEXT_API void vboBuffer::update(float* subBuffer, int off, int len)
 {
-    assert(mId>0);
+    assert(0!=mId);
     glBindBuffer(GL_ARRAY_BUFFER, mId);
     OPENGL_CHECK_ERROR;
     glBufferSubData(GL_ARRAY_BUFFER, off*mUnit*sizeof(float), len*mUnit*sizeof(float), subBuffer);

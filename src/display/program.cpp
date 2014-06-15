@@ -33,6 +33,7 @@ static void loadAllContent(const char* file, char* &c)
     is.seekg(0, ios::beg);
     c = new char[length+1];
     is.read(c, length);
+    c[length] = '\0';
     is.close();
 }
 

@@ -1,4 +1,3 @@
-
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdlib.h>
@@ -18,18 +17,16 @@
 
 using namespace std;
 
-string gVertex("attribute vec4 pos;\n varying vec4 vPos; \n void main(void) \n { \n  gl_Position = pos;vPos = pos;\n}");
-string gFrag("uniform sampler2D texture; varying vec4 vPos; \n void main(void) \n { \n  vec2 vTexPos; vTexPos.x = (vPos.x+1.0)/2.0; vTexPos.y = (vPos.y + 1.0)/2.0; gl_FragColor = texture2D(texture, vTexPos);\n}");
-
 float gPos[] = {-0.9,1.0,0.4,0.5,-1.0,-0.5};
 
 program gProgram;
 texture gTexture;
 vboBuffer* gBuffer = NULL;
+vboBuffer* gTexBuffer = NULL;
 
 static void init()
 {
-    gProgram.load(gVertex, gFrag);
+    gProgram.loadFiles("glsl/basic.vertex", "glsl/basic.frag");
     gTexture.init();
     const int w = 50; const int h = 50;
     unsigned int* a  = new unsigned int[w*h];
@@ -52,10 +49,12 @@ static void init()
     GL_texcord tex;
     GL_position p;
     GLCSVertexGenerate(&p, &normal, &tex, &sphere, &area, 0);
+    assert(p.size() == tex.size());
     p.reshape();
     p.transform(projection);
     p.normalize();
     gBuffer = new vboBuffer(&p);
+    gTexBuffer = new vboBuffer(&tex);
 }
 
 static void display(void)
@@ -64,7 +63,10 @@ static void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gProgram.use();
     int pid = gProgram.attr("pos");
+    int tid = gProgram.attr("tex");
+    gTexBuffer->use(tid);
     gBuffer->use(pid);
+    assert(gBuffer->size() == gTexBuffer->size());
     gTexture.use();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, gBuffer->size());
     glutSwapBuffers(); 

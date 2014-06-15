@@ -3,6 +3,7 @@
 
 #include "head.h"
 #include "interface/IVarying.h"
+#include <vector>
 /*Only Support float arrays*/
 
 class vboBuffer
