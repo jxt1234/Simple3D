@@ -13,6 +13,7 @@
 #include "math/GLSphere.h"
 #include "core/GLRasterization.h"
 #include "utils/debug.h"
+#include "core/GLBmp.h"
 
 
 using namespace std;
@@ -28,18 +29,10 @@ static void init()
 {
     gProgram.loadFiles("glsl/basic.vertex", "glsl/basic.frag");
     gTexture.init();
-    const int w = 50; const int h = 50;
-    unsigned int* a  = new unsigned int[w*h];
-    for (int i=0; i<w; ++i)
-    {
-        for (int j=0; j<h; ++j)
-        {
-            a[i*h+j] = i+j*j;
-        }
-    }
-    gTexture.upload(a, w, h);
-    delete [] a;
-    GLMatrix4 projection = GLMatrix4::projection(-300, 300, -300, 300, 100, 400, w/1.0/h);
+    GLBmp b;
+    b.loadPicture("ori.png");
+    gTexture.upload(b.pixels(), b.getWidth(), b.getHeight());
+    GLMatrix4 projection = GLMatrix4::projection(-300, 300, -300, 300, 100, 400, 1);
     GLSphere sphere(150, 0, 0, -350);
     GLRectArea area;
     area.set(0,0,1,1,0.01,0.01);

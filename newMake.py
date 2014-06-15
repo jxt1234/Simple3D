@@ -3,8 +3,8 @@
 
 import os
 import sys
-#CFLAGS="-O3"
-CFLAGS="-rdynamic "
+CFLAGS="-O3"
+#CFLAGS="-rdynamic "
 CPP="g++ "
 C="gcc "
 MIDPATH='build/'

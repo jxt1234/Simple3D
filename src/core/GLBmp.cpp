@@ -35,6 +35,11 @@ GLColor GLBmp::getColor(int x, int y)
     return c;
 }
 
+void* GLBmp::pixels() const
+{
+    return (void*)FreeImage_GetScanLine(mBitmap, 0);
+}
+
 void GLBmp::setColor(const GLColor& c, int x, int y)
 {
     BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + mBpp * x;

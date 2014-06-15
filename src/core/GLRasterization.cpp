@@ -175,6 +175,11 @@ void GLRasterization(std::vector<IVarying*> inputs, std::vector<IRasterizatedVar
 
 void GLCSVertexGenerate(IVarying* pos, IVarying* normal, IVarying* tex, GLCurveSurface* cs, GLRectArea* area, int type)
 {
+    assert(NULL!=pos);
+    assert(NULL!=normal);
+    assert(NULL!=tex);
+    assert(NULL!=cs);
+    assert(NULL!=area);
     float u1 = area->x1;
     float u2 = area->x2;
     float v1 = area->y1;

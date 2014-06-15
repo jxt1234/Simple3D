@@ -15,6 +15,7 @@ class GLBmp:public IBitmap
         GLBmp(const char* pic){loadPicture(pic);}
         void loadPicture(const char* pic);
         void save(const char* path);
+        void* pixels() const;
         //
         virtual ~GLBmp();
         virtual GLColor getColor(int x, int y);
