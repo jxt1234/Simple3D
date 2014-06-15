@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "display/program.h"
-#include "display/vboBuffer.h"
-#include "display/texture.h"
+#include "display/GLProgram.h"
+#include "display/GLvboBuffer.h"
+#include "display/GLTexture.h"
 #include "vertex/GL_position.h"
 #include "vertex/GL_texcord.h"
 #include "vertex/GL_Normal.h"
@@ -20,10 +20,10 @@ using namespace std;
 
 float gPos[] = {-0.9,1.0,0.4,0.5,-1.0,-0.5};
 
-program gProgram;
-texture gTexture;
-vboBuffer* gBuffer = NULL;
-vboBuffer* gTexBuffer = NULL;
+GLProgram gProgram;
+GLTexture gTexture;
+GLvboBuffer* gBuffer = NULL;
+GLvboBuffer* gTexBuffer = NULL;
 
 static void init()
 {
@@ -46,8 +46,8 @@ static void init()
     p.reshape();
     p.transform(projection);
     p.normalize();
-    gBuffer = new vboBuffer(&p);
-    gTexBuffer = new vboBuffer(&tex);
+    gBuffer = new GLvboBuffer(&p);
+    gTexBuffer = new GLvboBuffer(&tex);
 }
 
 static void display(void)

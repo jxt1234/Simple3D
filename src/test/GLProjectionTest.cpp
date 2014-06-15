@@ -28,8 +28,8 @@ class GLProjectionTest:public GLTest
             tex.addPoint(1.0, 1.0);
             tex.addPoint(0.0, 0.0);
             GL_FragPosition f;
-            GLBmp texture("ori.png");
-            GL_FragTexcord ftex(texture.getWidth(), texture.getHeight());
+            GLBmp GLTexture("ori.png");
+            GL_FragTexcord ftex(GLTexture.getWidth(), GLTexture.getHeight());
             vector<IVarying*> inputs;
             inputs.push_back(&p);
             inputs.push_back(&tex);
@@ -58,7 +58,7 @@ class GLProjectionTest:public GLTest
                     FUNC_PRINT(u);
                     FUNC_PRINT(v);
                 }
-                b.setColor(texture.getColor(u, v), x, y);
+                b.setColor(GLTexture.getColor(u, v), x, y);
             }
             b.save("output/GLProjectionTest.png");
         }

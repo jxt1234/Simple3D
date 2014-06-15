@@ -5,14 +5,14 @@
 #include <vector>
 #include "head.h"
 
-class program
+class GLProgram
 {
     public:
-        program();
-        program(const std::string& vertex, const std::string& frag);
+        GLProgram();
+        GLProgram(const std::string& vertex, const std::string& frag);
         void load(const std::string& vertex, const std::string& frag);
         void loadFiles(const char* vertex, const char* frag);
-        virtual ~program();
+        virtual ~GLProgram();
 
         inline unsigned int id(){return mId;}
 

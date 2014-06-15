@@ -1,4 +1,4 @@
-#include "display/program.h"
+#include "display/GLProgram.h"
 #include <GL/glew.h>
 #include <assert.h>
 
@@ -23,7 +23,7 @@ static bool compileShader(GLuint s)
     return true;
 }
 
-CONTEXT_API void program::init()
+CONTEXT_API void GLProgram::init()
 {
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
@@ -61,17 +61,17 @@ CONTEXT_API void program::init()
     mFragId = frag;
 }
 
-CONTEXT_API int program::attr(const char* name)
+CONTEXT_API int GLProgram::attr(const char* name)
 {
     assert(NULL!=name && 0!=mId);
     return glGetAttribLocation(mId, name);
 }
-CONTEXT_API int program::uniform(const char* name)
+CONTEXT_API int GLProgram::uniform(const char* name)
 {
     assert(NULL!=name && 0!=mId);
     return glGetUniformLocation(mId, name);
 }
-CONTEXT_API void program::destory()
+CONTEXT_API void GLProgram::destory()
 {
     if (!mInit) return;
     glDeleteProgram(mId);
@@ -80,7 +80,7 @@ CONTEXT_API void program::destory()
     mInit = false;
 }
 
-CONTEXT_API void program::use()
+CONTEXT_API void GLProgram::use()
 {
     if (!mInit)
     {

@@ -6,13 +6,13 @@
 #include <vector>
 /*Only Support float arrays*/
 
-class vboBuffer
+class GLvboBuffer
 {
     public:
         /*unit*size*sizeof(float) = sizeof(b)*/
-        CONTEXT_API vboBuffer(float* buffer, int unit, int size);
-        CONTEXT_API vboBuffer(IVarying* buffer);
-        CONTEXT_API ~vboBuffer();
+        CONTEXT_API GLvboBuffer(float* buffer, int unit, int size);
+        CONTEXT_API GLvboBuffer(IVarying* buffer);
+        CONTEXT_API ~GLvboBuffer();
         CONTEXT_API void use(int id);
         /*off and len is counted by points*/
         CONTEXT_API void update(float* subBuffer, int off, int len);

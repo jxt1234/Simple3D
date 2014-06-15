@@ -1,7 +1,7 @@
 #include "test/GLTest.h"
 #include "core/GLBmp.h"
 #include "fragment/GLLightFunction.h"
-#include "fragment/texture2D.h"
+#include "fragment/GLTexture2D.h"
 #include "core/GLRasterization.h"
 #include "vertex/GL_position.h"
 #include "fragment/GL_FragTexcord.h"
@@ -36,7 +36,7 @@ class GLSingleLightTest:public GLTest
             int w = 720;
             int h = 1280;
             GLDepthBuffer depth(w, h);
-            GLBmp texture("ori.png");
+            GLBmp GLTexture("ori.png");
             GLBmp output(w, h);
             GLBmp output_origin(w, h);
             gl_MaterialParameters m;
@@ -71,7 +71,7 @@ class GLSingleLightTest:public GLTest
             p.transform(projection);
             p.normalize();
             GL_FragPosition f;
-            GL_FragTexcord ftex(texture.getWidth(), texture.getHeight());
+            GL_FragTexcord ftex(GLTexture.getWidth(), GLTexture.getHeight());
             GL_vPosition vPostion;
             GL_vPosition vNormal;
             //Arranging
@@ -86,7 +86,7 @@ class GLSingleLightTest:public GLTest
             outputs.push_back(&vPostion);
             outputs.push_back(&vNormal);
             GLRasterization(inputs, outputs, w, h, &depth);
-            IRasterizatedVarying* basicColor = texture2D(&texture, &ftex);
+            IRasterizatedVarying* basicColor = GLTexture2D(&GLTexture, &ftex);
             IRasterizatedVarying* finalColor = GLSingleLightFunction(&m, lightpos, eyepos, &vPostion, &vNormal, basicColor);
             for (int i=0; i<finalColor->size(); ++i)
             {

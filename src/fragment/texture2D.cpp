@@ -1,17 +1,17 @@
-#include "fragment/texture2D.h"
+#include "fragment/GLTexture2D.h"
 #include "fragment/GL_FragColor.h"
 
 using namespace std;
 
-class texture2DCompute:public IFragmentFunction
+class GLTexture2DCompute:public IFragmentFunction
 {
     public:
-        texture2DCompute(IBitmap* pic):mPic(pic)
+        GLTexture2DCompute(IBitmap* pic):mPic(pic)
         {
             mHeight = pic->getHeight();
             mWidth = pic->getWidth();
         }
-        virtual ~texture2DCompute(){}
+        virtual ~GLTexture2DCompute(){}
         virtual void unitcompute(std::vector<float*> input, vector<float*> output)
         {
             float* pos = input[0];
@@ -34,9 +34,9 @@ class texture2DCompute:public IFragmentFunction
         int mHeight;
 };
 
-IRasterizatedVarying* texture2D(IBitmap* sample, IRasterizatedVarying* texcord)
+IRasterizatedVarying* GLTexture2D(IBitmap* sample, IRasterizatedVarying* texcord)
 {
-    texture2DCompute t(sample);
+    GLTexture2DCompute t(sample);
     IRasterizatedVarying* result = new GL_FragColor;
     result->alloc(texcord->size());
     vector<IRasterizatedVarying*> inputs;

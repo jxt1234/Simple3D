@@ -4,6 +4,6 @@
 #include "interface/IFragmentFunction.h"
 #include "interface/IBitmap.h"
 
-IRasterizatedVarying* texture2D(IBitmap* sample, IRasterizatedVarying* texcord);
+IRasterizatedVarying* GLTexture2D(IBitmap* sample, IRasterizatedVarying* texcord);
 
 #endif

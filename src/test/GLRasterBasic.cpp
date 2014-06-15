@@ -38,8 +38,8 @@ class GLRasterBasicTest:public GLTest
             tex->addPoint(0.0, 1.0);
             tex->addPoint(1.0, 0.0);
             GL_FragPosition* f = new GL_FragPosition;
-            GLBmp texture("ori.png");
-            GL_FragTexcord* ftex = new GL_FragTexcord(texture.getWidth(), texture.getHeight());
+            GLBmp GLTexture("ori.png");
+            GL_FragTexcord* ftex = new GL_FragTexcord(GLTexture.getWidth(), GLTexture.getHeight());
             //
             vector<IVarying*> inputs;
             inputs.push_back(p);
@@ -76,7 +76,7 @@ class GLRasterBasicTest:public GLTest
                     FUNC_PRINT(u);
                     FUNC_PRINT(v);
                 }
-                b.setColor(texture.getColor(u, v), x, y);
+                b.setColor(GLTexture.getColor(u, v), x, y);
             }
             b.save("output/raster.png");
             delete p;

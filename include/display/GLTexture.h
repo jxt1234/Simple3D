@@ -1,13 +1,13 @@
 #ifndef DISPLAY_TEXTURE_H
 #define DISPLAY_TEXTURE_H
-/*Basic texture, has no mipmap and just support ARGB texture*/
+/*Basic GLTexture, has no mipmap and just support ARGB GLTexture*/
 #include "head.h"
 
-class texture
+class GLTexture
 {
     public:
-        texture();
-        virtual ~texture();
+        GLTexture();
+        virtual ~GLTexture();
         CONTEXT_API virtual void init();
         CONTEXT_API void destory();
         CONTEXT_API void use();

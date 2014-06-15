@@ -1,6 +1,6 @@
 #include "package/fragment.h"
 #include <assert.h>
-#include "fragment/texture2D.h"
+#include "fragment/GLTexture2D.h"
 #include "fragment/GLWritePixels.h"
 
 using namespace std;
@@ -18,7 +18,7 @@ GP_Output GLPackageTexture2D(GP_Input inputs)
     IBitmap* s = (IBitmap*)inputs[0];
     IRasterizatedVarying* t = (IRasterizatedVarying*)inputs[1];
     GP_Output::GP_Unit result;
-    result.content = texture2D(s, t);
+    result.content = GLTexture2D(s, t);
     result.freeCallBack = fragment_free;
     GP_OUTPUT_SINGLE_EXIT(x, result);
 }

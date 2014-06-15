@@ -1,6 +1,6 @@
 all:libglsl.so test.out display.out 
 
-ALL_INCLUESlibglsl.so= include/core/GLFloatBmp.h include/core/GLBmp.h include/core/GLDepthBuffer.h include/core/GLRasterization.h include/fragment/GL_FragTexcord.h include/fragment/GLAbstractRasterizatedVarying.h include/fragment/GL_FragPosition.h include/fragment/GLLightFunction.h include/fragment/GL_vPosition.h include/fragment/texture2D.h include/fragment/GLWritePixels.h include/fragment/GL_FragColor.h include/math/GLVector.h include/math/GLMatrix4.h include/math/GLSphere.h include/math/GLCurveSurface.h include/package/vertex.h include/package/basic.h include/package/fragment.h include/package/package.h include/transform/GLFragPicture.h include/transform/GLBasicTransform.h include/utils/debug.h include/vertex/GLVectorVarying.h include/vertex/GL_texcord.h include/vertex/GLAbstractVarying.h include/vertex/GL_Normal.h include/vertex/GL_position.h
+ALL_INCLUESlibglsl.so= include/core/GLFloatBmp.h include/core/GLBmp.h include/core/GLDepthBuffer.h include/core/GLRasterization.h include/fragment/GL_FragTexcord.h include/fragment/GLAbstractRasterizatedVarying.h include/fragment/GL_FragPosition.h include/fragment/GLLightFunction.h include/fragment/GL_vPosition.h include/fragment/GLWritePixels.h include/fragment/GL_FragColor.h include/fragment/GLTexture2D.h include/math/GLVector.h include/math/GLMatrix4.h include/math/GLSphere.h include/math/GLCurveSurface.h include/package/vertex.h include/package/basic.h include/package/fragment.h include/package/package.h include/transform/GLFragPicture.h include/transform/GLBasicTransform.h include/utils/RefCount.h include/utils/debug.h include/vertex/GLVectorVarying.h include/vertex/GL_texcord.h include/vertex/GLAbstractVarying.h include/vertex/GL_Normal.h include/vertex/GL_position.h
 
 libglsl.so:  build/core_weightTable.o build/core_GLBmp.o build/core_GLRasterization.o build/core_GLDepthBuffer.o build/fragment_GLWritePixels.o build/fragment_GLLightFunction.o build/fragment_GLAbstractRasterizatedVarying.o build/fragment_texture2D.o build/math_GLMatrix.o build/math_GLVector.o build/math_GLSphere.o build/package_fragment.o build/transform_GLBasicTransform.o build/transform_ColorMover.o build/transform_SceneNewton.o build/transform_GLFragPicture.o build/vertex_GLAbstractVarying.o build/vertex_GL_position.o build/vertex_GL_Normal.o build/vertex_GLVectorVarying.o build/utils_debug.o 
 	g++  -O3 --share  -o libglsl.so  build/core_weightTable.o build/core_GLBmp.o build/core_GLRasterization.o build/core_GLDepthBuffer.o build/fragment_GLWritePixels.o build/fragment_GLLightFunction.o build/fragment_GLAbstractRasterizatedVarying.o build/fragment_texture2D.o build/math_GLMatrix.o build/math_GLVector.o build/math_GLSphere.o build/package_fragment.o build/transform_GLBasicTransform.o build/transform_ColorMover.o build/transform_SceneNewton.o build/transform_GLFragPicture.o build/vertex_GLAbstractVarying.o build/vertex_GL_position.o build/vertex_GL_Normal.o build/vertex_GLVectorVarying.o build/utils_debug.o  -lfreeimage  ${SELF_VARIABLES}
@@ -68,18 +68,18 @@ build/test_GLFragTest.o : src/test/GLFragTest.cpp ${ALL_INCLUEStest.out}
 build/main.o : ./main.cpp ${ALL_INCLUEStest.out}
 	g++ -O3 -o build/main.o -c ./main.cpp -Iinclude 
 
-ALL_INCLUESdisplay.out= include/display/texture.h include/display/vboBuffer.h include/display/scene.h include/display/object.h include/display/debug.h include/display/program.h include/display/head.h
+ALL_INCLUESdisplay.out= include/display/GLvboBuffer.h include/display/GLProgram.h include/display/GLTexture.h include/display/debug.h include/display/GLObject.h include/display/head.h include/display/GLScene.h
 
-display.out:  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_vboBuffer.o build/display_gles2_texture.o build/display_texture.o libglsl.so
-	g++  -O3 -o display.out  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_vboBuffer.o build/display_gles2_texture.o build/display_texture.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
+display.out:  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_GLvboBuffer.o build/display_gles2_texture.o build/display_texture.o libglsl.so
+	g++  -O3 -o display.out  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_GLvboBuffer.o build/display_gles2_texture.o build/display_texture.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
 build/display_main.o : src/display/main.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_main.o -c src/display/main.cpp -Iinclude 
 build/display_program.o : src/display/program.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_program.o -c src/display/program.cpp -Iinclude 
 build/display_gles2_program.o : src/display/gles2/program.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_gles2_program.o -c src/display/gles2/program.cpp -Iinclude 
-build/display_gles2_vboBuffer.o : src/display/gles2/vboBuffer.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_gles2_vboBuffer.o -c src/display/gles2/vboBuffer.cpp -Iinclude 
+build/display_gles2_GLvboBuffer.o : src/display/gles2/GLvboBuffer.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_GLvboBuffer.o -c src/display/gles2/GLvboBuffer.cpp -Iinclude 
 build/display_gles2_texture.o : src/display/gles2/texture.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_gles2_texture.o -c src/display/gles2/texture.cpp -Iinclude 
 build/display_texture.o : src/display/texture.cpp ${ALL_INCLUESdisplay.out}

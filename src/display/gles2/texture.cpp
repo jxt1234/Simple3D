@@ -1,9 +1,9 @@
-#include "display/texture.h"
+#include "display/GLTexture.h"
 #include "display/debug.h"
 #include <GL/glew.h>
 
 
-void texture::init()
+void GLTexture::init()
 {
     glGenTextures(1, &mId);
     OPENGL_CHECK_ERROR;
@@ -19,7 +19,7 @@ void texture::init()
     OPENGL_CHECK_ERROR;
 }
 
-void texture::upload(void* pixels, int w, int h)
+void GLTexture::upload(void* pixels, int w, int h)
 {
     glBindTexture(GL_TEXTURE_2D, mId);
     OPENGL_CHECK_ERROR;
@@ -27,18 +27,18 @@ void texture::upload(void* pixels, int w, int h)
     OPENGL_CHECK_ERROR;
 }
 
-void texture::destory()
+void GLTexture::destory()
 {
     glDeleteTextures(1, &mId);
     OPENGL_CHECK_ERROR;
     mId = 0;
 }
 
-void texture::use()
+void GLTexture::use()
 {
     glBindTexture(GL_TEXTURE_2D, mId);
 }
 
-void texture::use(int uniId, int texId)
+void GLTexture::use(int uniId, int texId)
 {
 }

@@ -1,10 +1,10 @@
-#include "display/texture.h"
+#include "display/GLTexture.h"
 
-texture::texture()
+GLTexture::GLTexture()
 {
     mId = 0;
 }
 
-texture::~texture()
+GLTexture::~GLTexture()
 {
 }

@@ -1,10 +1,10 @@
-#include "display/program.h"
+#include "display/GLProgram.h"
 #include <assert.h>
 #include <sstream>
 #include <fstream>
 using namespace std;
 
-program::program()
+GLProgram::GLProgram()
 {
     mId = 0;
     mInit = false; 
@@ -12,7 +12,7 @@ program::program()
     mFragment = NULL;
 }
 
-void program::load(const std::string& vertex, const std::string& frag)
+void GLProgram::load(const std::string& vertex, const std::string& frag)
 {
     mInit = false;
     if (mVertex) delete [] mVertex;
@@ -37,7 +37,7 @@ static void loadAllContent(const char* file, char* &c)
     is.close();
 }
 
-void program::loadFiles(const char* vertex, const char* frag)
+void GLProgram::loadFiles(const char* vertex, const char* frag)
 {
     assert(NULL!=vertex);
     assert(NULL!=frag);
@@ -48,16 +48,16 @@ void program::loadFiles(const char* vertex, const char* frag)
     loadAllContent(frag, mFragment);
 }
 
-program::program(const std::string& vertex, const std::string& frag)
+GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 {
     mInit = false;
     mId = 0;
     load(vertex, frag);
 }
 
-program::~program()
+GLProgram::~GLProgram()
 {
-    ///*If the program is not destory before, it shouldn't be freed*/
+    ///*If the GLProgram is not destory before, it shouldn't be freed*/
     //assert(!mInit);
     if (mVertex) delete [] mVertex;
     if (mFragment) delete [] mFragment;

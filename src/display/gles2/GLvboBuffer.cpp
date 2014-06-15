@@ -1,11 +1,11 @@
-#include "display/vboBuffer.h"
+#include "display/GLvboBuffer.h"
 #include "display/debug.h"
 #include <GL/glew.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
-CONTEXT_API vboBuffer::vboBuffer(float* buffer, int unit, int size)
+CONTEXT_API GLvboBuffer::GLvboBuffer(float* buffer, int unit, int size)
 {
     glGenBuffers(1, &mId);
     OPENGL_CHECK_ERROR;
@@ -17,7 +17,7 @@ CONTEXT_API vboBuffer::vboBuffer(float* buffer, int unit, int size)
     OPENGL_CHECK_ERROR;
 }
 
-CONTEXT_API vboBuffer::vboBuffer(IVarying* buffer)
+CONTEXT_API GLvboBuffer::GLvboBuffer(IVarying* buffer)
 {
     glGenBuffers(1, &mId);
     OPENGL_CHECK_ERROR;
@@ -42,19 +42,19 @@ CONTEXT_API vboBuffer::vboBuffer(IVarying* buffer)
 }
 
 
-CONTEXT_API void vboBuffer::reset()
+CONTEXT_API void GLvboBuffer::reset()
 {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     OPENGL_CHECK_ERROR;
 }
 
-CONTEXT_API vboBuffer::~vboBuffer()
+CONTEXT_API GLvboBuffer::~GLvboBuffer()
 {
     glDeleteBuffers(1, &mId);
     OPENGL_CHECK_ERROR;
 }
 
-CONTEXT_API void vboBuffer::use(int id)
+CONTEXT_API void GLvboBuffer::use(int id)
 {
     assert(0!=mId);
     glEnableVertexAttribArray(id);
@@ -65,7 +65,7 @@ CONTEXT_API void vboBuffer::use(int id)
     OPENGL_CHECK_ERROR;
 }
 
-CONTEXT_API void vboBuffer::update(float* subBuffer, int off, int len)
+CONTEXT_API void GLvboBuffer::update(float* subBuffer, int off, int len)
 {
     assert(0!=mId);
     glBindBuffer(GL_ARRAY_BUFFER, mId);
