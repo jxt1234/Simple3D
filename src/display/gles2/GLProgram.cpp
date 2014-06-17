@@ -25,6 +25,7 @@ static bool compileShader(GLuint s)
 
 CONTEXT_API void GLProgram::init()
 {
+    if (mInit) return;
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
     OPENGL_CHECK_ERROR;
@@ -71,7 +72,7 @@ CONTEXT_API int GLProgram::uniform(const char* name)
     assert(NULL!=name && 0!=mId);
     return glGetUniformLocation(mId, name);
 }
-CONTEXT_API void GLProgram::destory()
+CONTEXT_API void GLProgram::destroy()
 {
     if (!mInit) return;
     glDeleteProgram(mId);
@@ -87,4 +88,19 @@ CONTEXT_API void GLProgram::use()
         init();
     }
     glUseProgram(mId);
+}
+void GLProgram::setMatrix(const GLMatrix4& matrix, int id)
+{
+    float tempMatrix[16];
+    matrix.copy(tempMatrix);
+    glUniformMatrix4fv(id, 1, GL_FALSE, tempMatrix);
+}
+void GLProgram::setUniform(int value, int id)
+{
+    glUniform1i(id, value);
+}
+
+void GLProgram::setUniform(float value, int id)
+{
+    glUniform1f(id, value);
 }

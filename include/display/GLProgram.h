@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include "math/GLMatrix4.h"
 #include "head.h"
 
 class GLProgram
@@ -18,10 +19,13 @@ class GLProgram
 
         /*These API must be called in openGL context Thread*/
         CONTEXT_API void init();
-        CONTEXT_API void destory();
+        CONTEXT_API void destroy();
         CONTEXT_API void use();
         CONTEXT_API int attr(const char* name);
         CONTEXT_API int uniform(const char* name);
+        CONTEXT_API static void setMatrix(const GLMatrix4& matrix, int id);
+        CONTEXT_API static void setUniform(int value, int id);
+        CONTEXT_API static void setUniform(float value, int id);
     protected:
         unsigned int mId;
         bool mInit;

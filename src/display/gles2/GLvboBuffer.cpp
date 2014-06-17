@@ -74,3 +74,11 @@ CONTEXT_API void GLvboBuffer::update(float* subBuffer, int off, int len)
     OPENGL_CHECK_ERROR;
 }
 
+void GLvboBuffer::draw(int type)
+{
+    if (-1 == type)
+    {
+        type = GL_TRIANGLES;
+    }
+    glDrawArrays(type, 0, mSize);
+}

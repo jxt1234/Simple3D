@@ -4,9 +4,10 @@
 #include "head.h"
 #include "interface/IVarying.h"
 #include <vector>
+#include "utils/RefCount.h"
 /*Only Support float arrays*/
 
-class GLvboBuffer
+class GLvboBuffer:public RefCount
 {
     public:
         /*unit*size*sizeof(float) = sizeof(b)*/
@@ -14,6 +15,7 @@ class GLvboBuffer
         CONTEXT_API GLvboBuffer(IVarying* buffer);
         CONTEXT_API ~GLvboBuffer();
         CONTEXT_API void use(int id);
+        CONTEXT_API void draw(int type = -1);
         /*off and len is counted by points*/
         CONTEXT_API void update(float* subBuffer, int off, int len);
         CONTEXT_API void update(IVarying* buffer, int off, int staBuffer, int finBuffer);

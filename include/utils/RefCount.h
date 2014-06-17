@@ -1,6 +1,8 @@
 #ifndef INCLUDE_UTILS_REFCOUNT_H
 #define INCLUDE_UTILS_REFCOUNT_H
 #include <iostream>
+#define SAVE_UNREF(x) {if(NULL!=x) x->decRef();}
+
 class RefCount
 {
     public:

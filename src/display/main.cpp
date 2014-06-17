@@ -6,6 +6,7 @@
 #include "display/GLProgram.h"
 #include "display/GLvboBuffer.h"
 #include "display/GLTexture.h"
+#include "display/GLCurveObject.h"
 #include "vertex/GL_position.h"
 #include "vertex/GL_texcord.h"
 #include "vertex/GL_Normal.h"
@@ -14,6 +15,7 @@
 #include "core/GLRasterization.h"
 #include "utils/debug.h"
 #include "core/GLBmp.h"
+#include <fstream>
 
 
 using namespace std;
@@ -21,17 +23,27 @@ using namespace std;
 float gPos[] = {-0.9,1.0,0.4,0.5,-1.0,-0.5};
 
 GLProgram gProgram;
-GLTexture gTexture;
+GLTexture* gTexture = NULL;
 GLvboBuffer* gBuffer = NULL;
 GLvboBuffer* gTexBuffer = NULL;
 
+static void testCurveShader()
+{
+    ofstream vertex("output/shader.vertex");
+    ofstream frag("output/shader.frag");
+    GLCurveObject::GenerateShader(vertex, frag, string("1-u"), string("u*v"), string("v*v"));
+    vertex.close();
+    frag.close();
+}
+
 static void init()
 {
+    testCurveShader();
     gProgram.loadFiles("glsl/basic.vertex", "glsl/basic.frag");
-    gTexture.init();
+    gTexture = new GLTexture();
     GLBmp b;
     b.loadPicture("ori.png");
-    gTexture.upload(b.pixels(), b.getWidth(), b.getHeight());
+    gTexture->upload(b.pixels(), b.getWidth(), b.getHeight());
     GLMatrix4 projection = GLMatrix4::projection(-300, 300, -300, 300, 100, 400, 1);
     GLSphere sphere(150, 0, 0, -350);
     GLRectArea area;
@@ -52,7 +64,6 @@ static void init()
 
 static void display(void)
 {
-    glLoadIdentity(); 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     gProgram.use();
     int pid = gProgram.attr("pos");
@@ -60,8 +71,9 @@ static void display(void)
     gTexBuffer->use(tid);
     gBuffer->use(pid);
     assert(gBuffer->size() == gTexBuffer->size());
-    gTexture.use();
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, gBuffer->size());
+    gTexture->use();
+    gBuffer->draw();
+    //glDrawArrays(GL_TRIANGLE_STRIP, 0, gBuffer->size());
     glutSwapBuffers(); 
 } 
 

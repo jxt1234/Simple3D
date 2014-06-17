@@ -68,22 +68,22 @@ build/test_GLFragTest.o : src/test/GLFragTest.cpp ${ALL_INCLUEStest.out}
 build/main.o : ./main.cpp ${ALL_INCLUEStest.out}
 	g++ -O3 -o build/main.o -c ./main.cpp -Iinclude 
 
-ALL_INCLUESdisplay.out= include/display/GLvboBuffer.h include/display/GLProgram.h include/display/GLTexture.h include/display/debug.h include/display/GLObject.h include/display/head.h include/display/GLScene.h
+ALL_INCLUESdisplay.out= include/display/GLvboBuffer.h include/display/GLProgram.h include/display/GLTexture.h include/display/debug.h include/display/GLObject.h include/display/GLCurveObject.h include/display/head.h include/display/GLScene.h
 
-display.out:  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_GLvboBuffer.o build/display_gles2_texture.o build/display_texture.o libglsl.so
-	g++  -O3 -o display.out  build/display_main.o build/display_program.o build/display_gles2_program.o build/display_gles2_GLvboBuffer.o build/display_gles2_texture.o build/display_texture.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
+display.out:  build/display_main.o build/display_program.o build/display_gles2_GLProgram.o build/display_gles2_GLTexture.o build/display_gles2_GLvboBuffer.o build/display_GLCurveObject.o libglsl.so
+	g++  -O3 -o display.out  build/display_main.o build/display_program.o build/display_gles2_GLProgram.o build/display_gles2_GLTexture.o build/display_gles2_GLvboBuffer.o build/display_GLCurveObject.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11 ${SELF_VARIABLES}
 build/display_main.o : src/display/main.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_main.o -c src/display/main.cpp -Iinclude 
 build/display_program.o : src/display/program.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_program.o -c src/display/program.cpp -Iinclude 
-build/display_gles2_program.o : src/display/gles2/program.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_gles2_program.o -c src/display/gles2/program.cpp -Iinclude 
+build/display_gles2_GLProgram.o : src/display/gles2/GLProgram.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_GLProgram.o -c src/display/gles2/GLProgram.cpp -Iinclude 
+build/display_gles2_GLTexture.o : src/display/gles2/GLTexture.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_gles2_GLTexture.o -c src/display/gles2/GLTexture.cpp -Iinclude 
 build/display_gles2_GLvboBuffer.o : src/display/gles2/GLvboBuffer.cpp ${ALL_INCLUESdisplay.out}
 	g++ -O3 -o build/display_gles2_GLvboBuffer.o -c src/display/gles2/GLvboBuffer.cpp -Iinclude 
-build/display_gles2_texture.o : src/display/gles2/texture.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_gles2_texture.o -c src/display/gles2/texture.cpp -Iinclude 
-build/display_texture.o : src/display/texture.cpp ${ALL_INCLUESdisplay.out}
-	g++ -O3 -o build/display_texture.o -c src/display/texture.cpp -Iinclude 
+build/display_GLCurveObject.o : src/display/GLCurveObject.cpp ${ALL_INCLUESdisplay.out}
+	g++ -O3 -o build/display_GLCurveObject.o -c src/display/GLCurveObject.cpp -Iinclude 
 
 clean:
 	rm build/*.o

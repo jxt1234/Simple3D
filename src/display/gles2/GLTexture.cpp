@@ -2,6 +2,16 @@
 #include "display/debug.h"
 #include <GL/glew.h>
 
+GLTexture::GLTexture()
+{
+    mId = 0;
+    init();
+}
+
+GLTexture::~GLTexture()
+{
+    destory();
+}
 
 void GLTexture::init()
 {
