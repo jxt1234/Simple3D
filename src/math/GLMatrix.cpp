@@ -1,6 +1,17 @@
 #include "math/GLMatrix4.h"
 #include <sstream>
 #include <string.h>
+void GLMatrix4::setUnit()
+{
+    for (int i=0; i<16; ++i)
+    {
+        _m[i] = 0;
+    }
+    for (int i=0; i<4; ++i)
+    {
+        m[i][i] = 1;
+    }
+}
 
 GLMatrix4::GLMatrix4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33 )
 {

@@ -20,15 +20,15 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "uniform float "<<us_f <<";\n";
     vertex << "uniform float "<<vs_f <<";\n";
     vertex << "void main(void)\n{\n";
-    vertex << "vec4 temp(1.0);\n";
+    vertex << "vec4 temp = vec4(1.0);\n";
     //Compute Curve
     vertex << "float u,v;\n";
-    vertex << "u = tex_v.x * "<<us_f<<"; v = tex_v.y * "<<vs_f<<";\n";
+    vertex << "u = "<<tex_v<<".x * "<<us_f<<"; v = "<<tex_v<<".y * "<<vs_f<<";\n";
     vertex << "temp.x = " << xf << ";\n";
     vertex << "temp.y = " << yf << ";\n";
     vertex << "temp.z = " << zf << ";\n";
     //Compute MVP
-    vertex << "temp = temp * "<<trans_m <<" * "<<proj_m<<";\n";
+    vertex << "temp = "<<trans_m <<" * "<<proj_m<<" * temp;\n";
     vertex << "gl_Position = temp;\n";
     vertex << vTex <<" = "<<tex_v<<";\n";
     vertex << "}\n";
@@ -36,7 +36,7 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     //Fragment shader
     frag << "uniform sampler2D "<<texture_s<<";\n";
     frag << "varying vec2 "<<vTex<<";\n";
-    frag << "void main(void);\n{\n";
+    frag << "void main(void)\n{\n";
     frag << "gl_FragColor = texture2D("<<texture_s << ", "<<vTex<<");\n";
     frag << "}\n";
 }
@@ -88,7 +88,7 @@ void GLCurveObject::setColor(unsigned int argb)
 void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
 {
     assert(NULL!=mVbo);
-    mPro.init();
+    mPro.use();
     if (NULL == mTex) setColor(0xFF00FF00);//Default green
     mTex->use();
     GLProgram::setMatrix(projection, mPro.uniform(proj_m.c_str()));

@@ -20,31 +20,26 @@
 
 using namespace std;
 
-float gPos[] = {-0.9,1.0,0.4,0.5,-1.0,-0.5};
 
-GLProgram gProgram;
 GLTexture* gTexture = NULL;
-GLvboBuffer* gBuffer = NULL;
 GLvboBuffer* gTexBuffer = NULL;
 
-static void testCurveShader()
+static GLCurveObject* initCurve()
 {
-    ofstream vertex("output/shader.vertex");
-    ofstream frag("output/shader.frag");
-    GLCurveObject::GenerateShader(vertex, frag, string("1-u"), string("u*v"), string("v*v"));
-    vertex.close();
-    frag.close();
+    GLCurveObject* result = new GLCurveObject();
+    result->setTexture(gTexture);
+    result->setVBO(gTexBuffer);
+    result->setFormula(string("sin(2*3.141592654*u)"), string("cos(2*3.141592654*u)"), string("-v"));
+    //result->setScale(100.0,200.0);
+    return result;
 }
 
 static void init()
 {
-    testCurveShader();
-    gProgram.loadFiles("glsl/basic.vertex", "glsl/basic.frag");
     gTexture = new GLTexture();
     GLBmp b;
     b.loadPicture("ori.png");
     gTexture->upload(b.pixels(), b.getWidth(), b.getHeight());
-    GLMatrix4 projection = GLMatrix4::projection(-300, 300, -300, 300, 100, 400, 1);
     GLSphere sphere(150, 0, 0, -350);
     GLRectArea area;
     area.set(0,0,1,1,0.01,0.01);
@@ -54,28 +49,22 @@ static void init()
     GL_texcord tex;
     GL_position p;
     GLCSVertexGenerate(&p, &normal, &tex, &sphere, &area, 0);
-    assert(p.size() == tex.size());
-    p.reshape();
-    p.transform(projection);
-    p.normalize();
-    gBuffer = new GLvboBuffer(&p);
     gTexBuffer = new GLvboBuffer(&tex);
 }
 
 static void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    gProgram.use();
-    int pid = gProgram.attr("pos");
-    int tid = gProgram.attr("tex");
-    gTexBuffer->use(tid);
-    gBuffer->use(pid);
-    assert(gBuffer->size() == gTexBuffer->size());
-    gTexture->use();
-    gBuffer->draw();
-    //glDrawArrays(GL_TRIANGLE_STRIP, 0, gBuffer->size());
+    GLMatrix4 projection = GLMatrix4::projection(-1, 1, -1, 1, 1, 400, 1);
+    GLMatrix4 transform;
+    static GLCurveObject* obj = NULL;
+    if (obj == NULL)
+    {
+        obj = initCurve();
+    }
+    obj->onDraw(transform, projection);
     glutSwapBuffers(); 
-} 
+}
 
 int main(int argc, char* argv[])
 {
