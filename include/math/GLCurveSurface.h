@@ -33,5 +33,14 @@ class GLCurveSurface
         virtual void normal(float* out, float u, float v) = 0;
 };
 
+class GLEmptyCurveSurface:public GLCurveSurface
+{
+    public:
+        GLEmptyCurveSurface(){}
+        ~GLEmptyCurveSurface(){}
+        virtual void pos(float* out, float u, float v){}
+        virtual void normal(float* out, float u, float v){}
+};
+
 
 #endif

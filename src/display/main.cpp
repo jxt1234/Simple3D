@@ -20,41 +20,38 @@
 
 using namespace std;
 
-
-GLTexture* gTexture = NULL;
-GLvboBuffer* gTexBuffer = NULL;
-
 static GLCurveObject* initCurve()
 {
+    GLTexture* texture = new GLTexture();
+    GLBmp b;
+    b.loadPicture("ori.png");
+    texture->upload(b.pixels(), b.getWidth(), b.getHeight());
+    GLEmptyCurveSurface s;
+    GLRectArea area;
+    area.set(0,0,1,1,0.01,0.01);
+    GL_Normal normal;
+    GL_texcord tex;
+    GL_position p;
+    GLCSVertexGenerate(&p, &normal, &tex, &s, &area, 0);
+    GLvboBuffer* texBuffer = new GLvboBuffer(&tex);
+
     GLCurveObject* result = new GLCurveObject();
-    result->setTexture(gTexture);
-    result->setVBO(gTexBuffer);
-    result->setFormula(string("sin(2*3.141592654*u)"), string("cos(2*3.141592654*u)"), string("-v"));
+    result->setTexture(texture);
+    result->setVBO(texBuffer);
+    result->setFormula(string("sin(2*3.141592654*u)"), string("2*v-1"), string("-2.0 - cos(2*3.141592654*u)"));
+    //result->setFormula(string("1.0"), string("10*u"), string("-10.0*v"));
     //result->setScale(100.0,200.0);
     return result;
 }
 
 static void init()
 {
-    gTexture = new GLTexture();
-    GLBmp b;
-    b.loadPicture("ori.png");
-    gTexture->upload(b.pixels(), b.getWidth(), b.getHeight());
-    GLSphere sphere(150, 0, 0, -350);
-    GLRectArea area;
-    area.set(0,0,1,1,0.01,0.01);
-    //Vertex
-    GL_Normal normal;
-    //Texcorder
-    GL_texcord tex;
-    GL_position p;
-    GLCSVertexGenerate(&p, &normal, &tex, &sphere, &area, 0);
-    gTexBuffer = new GLvboBuffer(&tex);
 }
 
 static void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
     GLMatrix4 projection = GLMatrix4::projection(-1, 1, -1, 1, 1, 400, 1);
     GLMatrix4 transform;
     static GLCurveObject* obj = NULL;

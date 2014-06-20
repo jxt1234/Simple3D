@@ -200,9 +200,9 @@ void GLCSVertexGenerate(IVarying* pos, IVarying* normal, IVarying* tex, GLCurveS
     float *p;
     float *v;
     float *t;
-    for (int i=0; i<uNumber; ++i)
+    for (int i=0; i<=uNumber; ++i)
     {
-        for (int j=0; j<vNumber; ++j)
+        for (int j=0; j<=vNumber; ++j)
         {
             u_1 = u_interval*i + u1;
             u_2 = u_interval*(i+1) + u1;
