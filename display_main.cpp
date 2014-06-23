@@ -24,7 +24,7 @@ static GLCurveObject* initCurve()
 {
     GLTexture* texture = new GLTexture();
     GLBmp b;
-    b.loadPicture("ori.png");
+    b.loadPicture("input.jpg");
     texture->upload(b.pixels(), b.getWidth(), b.getHeight());
     GLEmptyCurveSurface s;
     GLRectArea area;
@@ -50,6 +50,8 @@ static void init()
 
 static void display(void)
 {
+	glClearDepth(1.0);
+	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     GLMatrix4 projection = GLMatrix4::projection(-1, 1, -1, 1, 1, 400, 1);
