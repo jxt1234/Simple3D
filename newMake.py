@@ -9,11 +9,11 @@ CPP="g++ "
 C="gcc "
 MIDPATH='build/'
 
-MAIN_PROGRAM=['libglsl.so', 'test.out', 'display.out']
-gDepends = ['', 'libglsl.so', 'libglsl.so']
-gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex'], ['test'], ['display']]
-gSrcFiles = [[], ['./main.cpp'], []]
-gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so ', ' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
+MAIN_PROGRAM=['libglsl.so', 'test.out','display.out']
+gDepends = ['', 'libglsl.so','libglsl.so']
+gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'display'], ['test'], []]
+gSrcFiles = [[], ['./main.cpp'], ['./display_main.cpp']]
+gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGLEW -lGL',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
 
 def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 	#Find all files
