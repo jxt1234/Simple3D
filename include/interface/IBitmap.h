@@ -27,7 +27,7 @@ class IBitmap
                 }
             }
         }
-        void clear(GLColor c)
+        virtual void clear(GLColor c)
         {
             for (int i=0; i<mWidth; ++i)
             {
