@@ -1,6 +1,5 @@
-#include "display/GLTexture.h"
-#include "display/debug.h"
-#include <GL/glew.h>
+#include "GL/GLTexture.h"
+#include "GL/debug.h"
 
 GLTexture::GLTexture()
 {

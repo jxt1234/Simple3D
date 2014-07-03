@@ -11,7 +11,7 @@ MIDPATH='build/'
 
 MAIN_PROGRAM=['libglsl.so', 'test.out','display.out']
 gDepends = ['', 'libglsl.so','libglsl.so']
-gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'display'], ['test'], []]
+gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL'], ['test'], []]
 gSrcFiles = [[], ['./main.cpp'], ['./display_main.cpp']]
 gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGLEW -lGL',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
 

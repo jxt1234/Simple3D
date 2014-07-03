@@ -9,6 +9,7 @@
 #define CONTEXT_FREE_API
 
 #include <assert.h>
+#include <GL/glew.h>
 #define OPENGL_ASSERT(x) assert(x)
 
 #endif

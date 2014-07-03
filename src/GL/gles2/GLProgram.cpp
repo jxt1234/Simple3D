@@ -1,8 +1,7 @@
-#include "display/GLProgram.h"
-#include <GL/glew.h>
+#include "GL/GLProgram.h"
 #include <assert.h>
 
-#include "display/debug.h"
+#include "GL/debug.h"
 
 static bool compileShader(GLuint s)
 {

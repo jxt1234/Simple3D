@@ -1,4 +1,4 @@
-#include "display/GLProgram.h"
+#include "GL/GLProgram.h"
 #include <assert.h>
 #include <sstream>
 #include <fstream>

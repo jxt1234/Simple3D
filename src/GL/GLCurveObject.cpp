@@ -1,4 +1,4 @@
-#include "display/GLCurveObject.h"
+#include "GL/GLCurveObject.h"
 #include <string>
 #include <sstream>
 using namespace std;

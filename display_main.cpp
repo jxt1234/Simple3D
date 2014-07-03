@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "display/GLProgram.h"
-#include "display/GLvboBuffer.h"
-#include "display/GLTexture.h"
-#include "display/GLCurveObject.h"
+#include "GL/GLProgram.h"
+#include "GL/GLvboBuffer.h"
+#include "GL/GLTexture.h"
+#include "GL/GLCurveObject.h"
 #include "vertex/GL_position.h"
 #include "vertex/GL_texcord.h"
 #include "vertex/GL_Normal.h"
