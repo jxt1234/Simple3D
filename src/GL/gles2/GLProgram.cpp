@@ -39,8 +39,10 @@ CONTEXT_API void GLProgram::init()
     glShaderSource(frag, 1, _frag, NULL);
     OPENGL_CHECK_ERROR;
     /*TODO move assert to be log*/
-    assert(compileShader(vert));
-    assert(compileShader(frag));
+    bool res = compileShader(vert);
+    assert(true == res);
+    res = (compileShader(frag));
+    assert(true == res);
     /*Create Program*/
     mId = glCreateProgram();
     OPENGL_CHECK_ERROR;
