@@ -58,6 +58,9 @@ static void display(void)
     glEnable(GL_DEPTH_TEST);
     GLMatrix4 projection = GLMatrix4::projection(-10, 10, -10, 10, 10, 400, 1);
     GLMatrix4 transform;
+	static float a = 0;
+	transform.setRotate(1,1,1,a);
+	a+=0.005;
     static GLCurveObject* obj = NULL;
     if (obj == NULL)
     {
@@ -78,6 +81,7 @@ int main(int argc, char* argv[])
     glewInit();
     init();
     glutDisplayFunc(display);                        // Send graphics to display window 
+	glutIdleFunc(display);
 
     glutMainLoop();                                    // Display everything and wait 
     return 1;

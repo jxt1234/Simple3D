@@ -27,6 +27,11 @@ class GLMatrix4
         GLMatrix4 multi(const GLMatrix4 &m2) const;
         inline GLMatrix4 operator * ( const GLMatrix4 &m2 ) const { return multi(m2);}
 
+        /*Transform*/
+        void setRotate(float x, float y, float z, float radium);
+        void setScale(float x, float y, float z);
+        void setTranslate(float x, float y, float z);
+
         /*Assume the size of vector is 4*/
         void transform(float* out, float* in) const;
 

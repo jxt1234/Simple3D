@@ -1,6 +1,7 @@
 #include "math/GLMatrix4.h"
 #include <sstream>
 #include <string.h>
+#include <math.h>
 void GLMatrix4::reset()
 {
     for (int i=0; i<16; ++i)
@@ -135,4 +136,37 @@ GLMatrix4 GLMatrix4::ortho(float left, float right, float top, float bottom, flo
     result.m[2][3] = qn;
     result.m[3][3] = 1;
     return result;
+}
+void GLMatrix4::setRotate(float x, float y, float z, float rad)
+{
+    reset();
+    float r = sqrt(x*x+y*y+z*z);
+    float nx = x/r;
+    float ny = y/r;
+    float nz = z/r;
+    float cr = cos(rad);
+    float sr = sin(rad);
+    m[0][0] = nx*nx*(1-cr) + cr;
+    m[1][0] = nx*ny*(1-cr) + nz*sr;
+    m[2][0] = nx*nz*(1-cr) - ny*sr;
+    m[0][1] = nx*ny*(1-cr) - nz*sr;
+    m[1][1] = ny*ny*(1-cr) + cr;
+    m[2][1] = ny*nz*(1-cr) + nx*sr;
+    m[0][2] = nx*nz*(1-cr) + ny*sr;
+    m[1][2] = ny*nz*(1-cr) - nx*sr;
+    m[2][2] = nz*nz*(1-cr) + cr;
+}
+void GLMatrix4::setScale(float x, float y, float z)
+{
+    reset();
+    m[0][0] = x;
+    m[1][1] = y;
+    m[2][2] = z;
+}
+void GLMatrix4::setTranslate(float x, float y, float z)
+{
+    reset();
+    m[0][3] = x;
+    m[1][3] = y;
+    m[2][3] = z;
 }
