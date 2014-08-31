@@ -23,14 +23,17 @@ class GLCurveObject:public GLObject
         void setColor(unsigned int argb);
         void setVBO(GLvboBuffer* vbo);
         inline void setScale(float us, float vs){mUs = us, mVs = vs;}
+        inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
         virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection);
         static void GenerateShader(std::ostream& vertex, std::ostream& frag, const std::string& xf, const std::string& yf, const std::string& zf);
     private:
         GLProgram mPro;
         GLTexture* mTex;
         GLvboBuffer* mVbo;
-        /*u = mXScale*u, y = mYScale*v*/
+        /*u = mUs*(u+mUf), y = mVs*(v+mVf)*/
         float mUs;
         float mVs;
+        float mUf;
+        float mVf;
 };
 #endif

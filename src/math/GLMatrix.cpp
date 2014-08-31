@@ -1,7 +1,7 @@
 #include "math/GLMatrix4.h"
 #include <sstream>
 #include <string.h>
-void GLMatrix4::setUnit()
+void GLMatrix4::reset()
 {
     for (int i=0; i<16; ++i)
     {

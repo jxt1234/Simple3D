@@ -6,12 +6,12 @@
 class GLMatrix4
 {
     public:
-        GLMatrix4(){setUnit();}
+        GLMatrix4(){reset();}
         GLMatrix4(const GLMatrix4& matrix);
         void operator=(const GLMatrix4& matrix);
         GLMatrix4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33 );
         std::string print();
-        void setUnit();
+        void reset();
         void copy(float* dst) const;
         inline float* operator [](int iRow)
         {

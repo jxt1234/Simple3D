@@ -6,6 +6,8 @@ const static string trans_m("transform");
 const static string proj_m("projection");
 const static string us_f("us");
 const static string vs_f("vs");
+const static string uf_f("uf");
+const static string vf_f("vf");
 const static string tex_v("tex");
 const static string texture_s("texture");
 
@@ -19,11 +21,13 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "uniform mat4 "<<proj_m <<";\n";
     vertex << "uniform float "<<us_f <<";\n";
     vertex << "uniform float "<<vs_f <<";\n";
+    vertex << "uniform float "<<uf_f <<";\n";
+    vertex << "uniform float "<<vf_f <<";\n";
     vertex << "void main(void)\n{\n";
     vertex << "vec4 temp = vec4(1.0);\n";
     //Compute Curve
     vertex << "float u,v;\n";
-    vertex << "u = "<<tex_v<<".x * "<<us_f<<"; v = "<<tex_v<<".y * "<<vs_f<<";\n";
+    vertex << "u = ("<<tex_v<<".x + "+uf_f+ ")* "<<us_f<<"; v = ("<<tex_v<<".y +"+vf_f +")* "<<vs_f<<";\n";
     vertex << "temp.x = " << xf << ";\n";
     vertex << "temp.y = " << yf << ";\n";
     vertex << "temp.z = " << zf << ";\n";
@@ -51,6 +55,8 @@ GLCurveObject::GLCurveObject()
     mVbo = NULL;
     mUs = 1.0;
     mVs = 1.0;
+    mUf = 0.0;
+    mVf = 0.0;
 }
 GLCurveObject::~GLCurveObject()
 {
@@ -95,6 +101,8 @@ void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& projecti
     GLProgram::setMatrix(transform, mPro.uniform(trans_m.c_str()));
     GLProgram::setUniform(mUs, mPro.uniform(us_f.c_str()));
     GLProgram::setUniform(mVs, mPro.uniform(vs_f.c_str()));
+    GLProgram::setUniform(mUf, mPro.uniform(uf_f.c_str()));
+    GLProgram::setUniform(mVf, mPro.uniform(vf_f.c_str()));
     mVbo->use(mPro.attr(tex_v.c_str()));
     mVbo->draw();
 }

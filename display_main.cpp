@@ -16,6 +16,7 @@
 #include "utils/debug.h"
 #include "core/GLBmp.h"
 #include <fstream>
+#define PI 3.141592654
 
 
 using namespace std;
@@ -38,9 +39,10 @@ static GLCurveObject* initCurve()
     GLCurveObject* result = new GLCurveObject();
     result->setTexture(texture);
     result->setVBO(texBuffer);
-    result->setFormula(string("sin(2*3.141592654*u)"), string("2*v-1"), string("-2.0 - cos(2*3.141592654*u)"));
+    result->setFormula(string("(1.0+v/2.0*cos(u/2.0))*cos(u)"), string("(1.0+v/2.0*cos(u/2.0))*sin(u)"), string("v/2.0*sin(u/2.0)"));
     //result->setFormula(string("1.0"), string("10*u"), string("-10.0*v"));
-    //result->setScale(100.0,200.0);
+    result->setScale(2*PI,2);
+    result->setOffset(0,-0.5);
     return result;
 }
 
@@ -54,7 +56,7 @@ static void display(void)
 	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    GLMatrix4 projection = GLMatrix4::projection(-1, 1, -1, 1, 1, 400, 1);
+    GLMatrix4 projection = GLMatrix4::projection(-10, 10, -10, 10, 10, 400, 1);
     GLMatrix4 transform;
     static GLCurveObject* obj = NULL;
     if (obj == NULL)
