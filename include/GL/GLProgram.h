@@ -26,6 +26,7 @@ class GLProgram
         CONTEXT_API static void setMatrix(const GLMatrix4& matrix, int id);
         CONTEXT_API static void setUniform(int value, int id);
         CONTEXT_API static void setUniform(float value, int id);
+        CONTEXT_API static void setUniform(float* value, int n, int id);
     protected:
         unsigned int mId;
         bool mInit;

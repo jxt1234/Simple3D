@@ -9,6 +9,7 @@ class CONTEXT_CLASS GLObject:public RefCount
     public:
         GLObject(){}
         virtual ~GLObject(){}
+        virtual void onPrepare() {}
         virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection) = 0;
 };
 

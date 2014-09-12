@@ -7,7 +7,7 @@
 #define OPENGL_CHECK_ERROR \
 {GLenum error = glGetError();\
     if (GL_NO_ERROR!=error) \
-    FUNC_PRINT(error); \
+    FUNC_PRINT_ALL(error, 0x); \
     assert(GL_NO_ERROR == error);}
 
 

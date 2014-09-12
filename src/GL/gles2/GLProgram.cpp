@@ -89,19 +89,28 @@ CONTEXT_API void GLProgram::use()
         init();
     }
     glUseProgram(mId);
+    OPENGL_CHECK_ERROR;
 }
 void GLProgram::setMatrix(const GLMatrix4& matrix, int id)
 {
     float tempMatrix[16];
     matrix.copy(tempMatrix);
     glUniformMatrix4fv(id, 1, GL_FALSE, tempMatrix);
+    OPENGL_CHECK_ERROR;
 }
 void GLProgram::setUniform(int value, int id)
 {
     glUniform1i(id, value);
+    OPENGL_CHECK_ERROR;
 }
 
 void GLProgram::setUniform(float value, int id)
 {
     glUniform1f(id, value);
+    OPENGL_CHECK_ERROR;
+}
+void GLProgram::setUniform(float* value, int n, int id)
+{
+    glUniform1fv(id, n, value);
+    OPENGL_CHECK_ERROR;
 }
