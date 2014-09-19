@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "GLColor.h"
-class IBitmap
+#include "utils/RefCount.h"
+class IBitmap:public RefCount
 {
     public:
         IBitmap():mWidth(0), mHeight(0){}

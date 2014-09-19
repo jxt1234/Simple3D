@@ -3,6 +3,7 @@
 #include <iostream>
 #define SAVE_UNREF(x) {if(NULL!=x) x->decRef();}
 
+/*FIXME Use atomic or mutex*/
 class RefCount
 {
     public:

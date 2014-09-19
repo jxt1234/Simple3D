@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <sstream>
 #include <fstream>
+#include <string.h>
 using namespace std;
 
 GLProgram::GLProgram()
@@ -23,6 +24,24 @@ void GLProgram::load(const std::string& vertex, const std::string& frag)
     mFragment = new char[frag.size()+1];
     frag.copy(mFragment, frag.size(), 0);
     mFragment[frag.size()] = 0;
+}
+
+void GLProgram::load(const char* vex, const char* frag)
+{
+    assert(NULL!=vex);
+    assert(NULL!=frag);
+#define COPYS(dst, src)\
+    {\
+        if (dst) delete [] dst;\
+        int n = strlen(vex);\
+        dst = new char[n+1];\
+        memcpy(dst, src, n);\
+        dst[n] = '\0';\
+    }
+
+    COPYS(mVertex, vex);
+    COPYS(mFragment, frag);
+#undef COPYS
 }
 
 static void loadAllContent(const char* file, char* &c)
@@ -57,7 +76,8 @@ GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 
 GLProgram::~GLProgram()
 {
-    ///*If the GLProgram is not destory before, it shouldn't be freed*/
+    destroy();
+    ///*If the GLProgram is not destroy before, it shouldn't be freed*/
     //assert(!mInit);
     if (mVertex) delete [] mVertex;
     if (mFragment) delete [] mFragment;

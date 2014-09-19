@@ -12,6 +12,7 @@ class GLProgram
         GLProgram();
         GLProgram(const std::string& vertex, const std::string& frag);
         void load(const std::string& vertex, const std::string& frag);
+        void load(const char* vertex, const char* frag);
         void loadFiles(const char* vertex, const char* frag);
         virtual ~GLProgram();
 
