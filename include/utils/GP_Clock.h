@@ -13,36 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************/
-#ifndef GENETIC_PROGRGAM_DEBUG_H
-#define GENETIC_PROGRGAM_DEBUG_H
+#ifndef UTILS_TIMES_H
+#define UTILS_TIMES_H
 
-#include <stdlib.h>
-#include <stdio.h>
+class GP_Clock
+{
+    public:
+        GP_Clock(int func, const char* name);
+        ~GP_Clock();
+        int reset();
+    protected:
+        int mStart;
+        int mId;
+        char* mName;
+};
 
-#define DEBUG_ON
-
-#ifdef DEBUG_ON
-#define GPPRINT(format, ...) printf(format,##__VA_ARGS__)
-
-#define FUNC_PRINT(x) printf(#x"=%d in %s, %d \n",x,  __func__, __LINE__);
-#define FUNC_PRINT_ALL(x, type) printf(#x"="#type"%"#type" in %s, %d \n",x,  __func__, __LINE__);
-
-#define CHECK_POINTER(x) {if(NULL==x){FUNC_PRINT_ALL(x,p);break;}}
-
-#else
-
-#define FUNC_PRINT(x)
-#define FUNC_PRINT_ALL(x, type)
-#define CHECK_POINTER(x)
-
-#endif
-
-#ifdef __cplusplus
-extern "C"{
-#endif
-void dump_stack();
-#ifdef __cplusplus
-}
-#endif
+#define GPCLOCK GP_Clock __clock(__LINE__, __func__)
 
 #endif

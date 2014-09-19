@@ -13,36 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************/
-#ifndef GENETIC_PROGRGAM_DEBUG_H
-#define GENETIC_PROGRGAM_DEBUG_H
+#include <time.h>
+#include "utils/debug.h"
+#include "utils/GP_Clock.h"
+#include "string.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-
-#define DEBUG_ON
-
-#ifdef DEBUG_ON
-#define GPPRINT(format, ...) printf(format,##__VA_ARGS__)
-
-#define FUNC_PRINT(x) printf(#x"=%d in %s, %d \n",x,  __func__, __LINE__);
-#define FUNC_PRINT_ALL(x, type) printf(#x"="#type"%"#type" in %s, %d \n",x,  __func__, __LINE__);
-
-#define CHECK_POINTER(x) {if(NULL==x){FUNC_PRINT_ALL(x,p);break;}}
-
-#else
-
-#define FUNC_PRINT(x)
-#define FUNC_PRINT_ALL(x, type)
-#define CHECK_POINTER(x)
-
-#endif
-
-#ifdef __cplusplus
-extern "C"{
-#endif
-void dump_stack();
-#ifdef __cplusplus
+GP_Clock::GP_Clock(int func, const char* name)
+{
+    mStart = clock();
+    mId = func;
+    int l = strlen(name);
+    mName = new char[l+1];
+    memcpy(mName, name, l);
+    mName[l] = '\0';
 }
-#endif
 
-#endif
+GP_Clock::~GP_Clock()
+{
+    int inter = clock()-mStart;
+    GPPRINT("%s __ %d, times = %dms+%dus\n", mName, mId, inter/1000, inter%1000);
+    delete [] mName;
+}

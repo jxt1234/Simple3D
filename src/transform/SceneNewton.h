@@ -12,26 +12,26 @@
 
 class CSceneNewton
 {
-protected:
-    CColorMover     m_ColorMover;
-    double          m_ColorK1;
-    double          m_ColorK2;
-    double          m_ColorK3;
-    long            m_UpdateTime;
-    bool            m_IsExtract3Ex;
-    long            m_ExtractNumber;
-    bool            m_isTanRev;
-    long            m_iteratInc;
+    protected:
+        CColorMover     m_ColorMover;
+        double          m_ColorK1;
+        double          m_ColorK2;
+        double          m_ColorK3;
+        long            m_UpdateTime;
+        bool            m_IsExtract3Ex;
+        long            m_ExtractNumber;
+        bool            m_isTanRev;
+        long            m_iteratInc;
 
-    must_inline GLColor getColor(const double dL1,const double dL2,const double dL3);
-    void DoDraw(IBitmap& dst);
-    void Inti();
-public:
-    void Scene_Inti(long ScreenWidth,long ScreenHeight) { Scene_Clear(); Inti(); }
-    void Scene_Clear();
-    void Scene_Update(unsigned long StepTime_ms, int* randList, int* randListColor);
-    void Scene_Draw(IBitmap& dst) { DoDraw(dst); }
-    ~CSceneNewton(){}
+        must_inline GLColor getColor(const double dL1,const double dL2,const double dL3);
+        void DoDraw(IBitmap& dst);
+        void Inti();
+    public:
+        void Scene_Inti(long ScreenWidth,long ScreenHeight) { Scene_Clear(); Inti(); }
+        void Scene_Clear();
+        void Scene_Update(unsigned long StepTime_ms, int* randList, int* randListColor);
+        void Scene_Draw(IBitmap& dst) { DoDraw(dst); }
+        ~CSceneNewton(){}
 };
 
 
