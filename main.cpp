@@ -4,7 +4,7 @@
 #include <FreeImage.h>
 #include "test/GLTest.h"
 
-int main()
+int main(int argc, char* argv[])
 {
     srand(time(NULL));
     FreeImage_Initialise(TRUE);

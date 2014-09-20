@@ -22,8 +22,8 @@ class GLBitmapWork:public GLWork
 
         };
 
-        GLBitmapWork(Shader* shader, GLBmp* src, GLBmp* dst=NULL);
-        GLBitmapWork(Shader* shader, GLTexture* src, GLTexture* dst);
+        GLBitmapWork(GLBmp* src, GLBmp* dst=NULL, Shader* shader = NULL);
+        GLBitmapWork(GLTexture* src, GLTexture* dst, Shader* shader = NULL);
         ~GLBitmapWork();
 
         virtual bool onPrepare();

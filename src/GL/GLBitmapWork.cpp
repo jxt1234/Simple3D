@@ -6,17 +6,17 @@ static const char gVertex[] =
 "varying vec2 vTex;\n"
 "void main(void)\n"
 "{\n"
-"gl_Position = vec4(aPos);\n"
-"vTex = 0.5*(aPos+vec2(1.0));\n"
+"gl_Position = vec4(aPos.x, aPos.y, 1.0, 1.0);\n"
+"vTex = 0.5*(aPos+1.0);\n"
 "}\n"
 ;
 
 static const char gDefaultFrag[] = 
 "varying vec2 vTex;\n"
-"sampler2D bmp;\n"
+"uniform sampler2D buffer;\n"
 "void main(void)\n"
 "{\n"
-"gl_FragColor = texture2D(bmp, vTex);\n"
+"gl_FragColor = texture2D(buffer, vTex);\n"
 "}\n"
 ;
 GLBitmapWork::Shader::Shader(const char* fragSource, bool xlinear, bool ylinear, bool mipmiap, bool repeat)
@@ -37,10 +37,18 @@ int GLBitmapWork::Shader::setUp()
 }
 
 
-GLBitmapWork::GLBitmapWork(GLBitmapWork::Shader* shader, GLBmp* src, GLBmp* dst)
+GLBitmapWork::GLBitmapWork(GLBmp* src, GLBmp* dst, Shader* shader)
 {
     assert(NULL!=src);
-    assert(NULL!=shader);
+    if (NULL == shader)
+    {
+        mShader = new Shader;
+    }
+    else
+    {
+        shader->addRef();
+        mShader = shader;
+    }
     src->addRef();
     mSrc = src;
     if (NULL == dst)
@@ -51,23 +59,26 @@ GLBitmapWork::GLBitmapWork(GLBitmapWork::Shader* shader, GLBmp* src, GLBmp* dst)
     dst->addRef();
     mSrcT = NULL;
     mDstT = NULL;
-
-    shader->addRef();
-    mShader = shader;
 }
-GLBitmapWork::GLBitmapWork(GLBitmapWork::Shader* shader, GLTexture* src, GLTexture* dst)
+GLBitmapWork::GLBitmapWork(GLTexture* src, GLTexture* dst, Shader* shader)
 {
     assert(NULL!=src);
     assert(NULL!=dst);
-    assert(NULL!=shader);
     src->addRef();
     dst->addRef();
     mSrcT = src;
     mDstT = dst;
     mSrc = NULL;
     mDst = NULL;
-    shader->addRef();
-    mShader = shader;
+    if (NULL == shader)
+    {
+        mShader = new Shader;
+    }
+    else
+    {
+        shader->addRef();
+        mShader = shader;
+    }
 }
 GLBitmapWork::~GLBitmapWork()
 {

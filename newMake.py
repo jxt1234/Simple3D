@@ -3,17 +3,17 @@
 
 import os
 import sys
-CFLAGS="-O3"
-#CFLAGS="-rdynamic -g"
+CFLAGS="-O3 -fPIC"
+#CFLAGS="-rdynamic -g -FPIC"
 CPP="g++ "
 C="gcc "
 MIDPATH='build/'
 
-MAIN_PROGRAM=['libglsl.so', 'test.out','display.out']
-gDepends = ['', 'libglsl.so','libglsl.so']
-gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL'], ['test'], []]
-gSrcFiles = [[], ['./main.cpp'], ['./display_main.cpp']]
-gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGLEW -lGL',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
+MAIN_PROGRAM=['libglsl.so', 'test.out', 'gputest.out', 'display.out']
+gDepends = ['', 'libglsl.so','libglsl.so', 'libglsl.so']
+gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL'], ['test'], ['gltest'], []]
+gSrcFiles = [[], ['./main.cpp'], ['./opengltest_main.cpp'], ['./display_main.cpp']]
+gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGL -lGLEW',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut', ' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
 
 def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 	#Find all files
