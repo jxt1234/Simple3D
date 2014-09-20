@@ -1,7 +1,7 @@
 #ifndef INCLUDE_UTILS_REFCOUNT_H
 #define INCLUDE_UTILS_REFCOUNT_H
 #include <iostream>
-#define SAVE_UNREF(x) {if(NULL!=x) x->decRef();}
+#define SAFE_UNREF(x) {if(NULL!=x) x->decRef();}
 
 /*FIXME Use atomic or mutex*/
 class RefCount

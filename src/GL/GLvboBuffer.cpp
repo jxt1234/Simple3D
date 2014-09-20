@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-CONTEXT_API GLvboBuffer::GLvboBuffer(float* buffer, int unit, int size)
+CONTEXT_API GLvboBuffer::GLvboBuffer(const float* buffer, int unit, int size, int type):mType(type)
 {
     glGenBuffers(1, &mId);
     OPENGL_CHECK_ERROR;
@@ -17,7 +17,7 @@ CONTEXT_API GLvboBuffer::GLvboBuffer(float* buffer, int unit, int size)
     OPENGL_CHECK_ERROR;
 }
 
-CONTEXT_API GLvboBuffer::GLvboBuffer(IVarying* buffer)
+CONTEXT_API GLvboBuffer::GLvboBuffer(IVarying* buffer, int type):mType(type)
 {
     glGenBuffers(1, &mId);
     OPENGL_CHECK_ERROR;
@@ -28,11 +28,6 @@ CONTEXT_API GLvboBuffer::GLvboBuffer(IVarying* buffer)
     {
         float* src = buffer->load(i);
         memcpy(tempBuffer+i*mUnit, src, mUnit*sizeof(float));
-        //for (int j=0; j<mUnit; ++j)
-        //{
-        //    printf("%f,", src[j]);
-        //}
-        //printf("\n");
     }
     glBindBuffer(GL_ARRAY_BUFFER, mId);
     OPENGL_CHECK_ERROR;
@@ -74,11 +69,7 @@ CONTEXT_API void GLvboBuffer::update(float* subBuffer, int off, int len)
     OPENGL_CHECK_ERROR;
 }
 
-void GLvboBuffer::draw(int type)
+void GLvboBuffer::draw()
 {
-    if (-1 == type)
-    {
-        type = GL_TRIANGLES;
-    }
-    glDrawArrays(type, 0, mSize);
+    glDrawArrays(mType, 0, mSize);
 }

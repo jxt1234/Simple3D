@@ -10,6 +10,7 @@
 
 #include <assert.h>
 #include <GL/glew.h>
+#include "debug.h"
 #define OPENGL_ASSERT(x) assert(x)
 
 #endif

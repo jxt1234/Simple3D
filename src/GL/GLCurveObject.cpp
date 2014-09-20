@@ -61,21 +61,21 @@ GLCurveObject::GLCurveObject()
 GLCurveObject::~GLCurveObject()
 {
     mPro.destroy();
-    SAVE_UNREF(mTex);
-    SAVE_UNREF(mVbo);
+    SAFE_UNREF(mTex);
+    SAFE_UNREF(mVbo);
 }
 void GLCurveObject::setTexture(GLTexture* tex)
 {
     assert(NULL!=tex);
     tex->addRef();
-    SAVE_UNREF(mTex);
+    SAFE_UNREF(mTex);
     mTex = tex;
 }
 void GLCurveObject::setVBO(GLvboBuffer* vbo)
 {
     assert(NULL!=vbo);
     vbo->addRef();
-    SAVE_UNREF(mVbo);
+    SAFE_UNREF(mVbo);
     mVbo = vbo;
 }
 
@@ -87,7 +87,7 @@ void GLCurveObject::setFormula(const std::string& formula_x, const std::string& 
 }
 void GLCurveObject::setColor(unsigned int argb)
 {
-    SAVE_UNREF(mTex);
+    SAFE_UNREF(mTex);
     mTex = new GLTexture();
     mTex->upload(&argb, 1, 1);
 }

@@ -14,6 +14,8 @@ class IBitmap:public RefCount
 
         inline int getWidth() const{return mWidth;}
         inline int getHeight() const{return mHeight;}
+        inline int width() const{return mWidth;}
+        inline int height() const{return mHeight;}
         /*Must Ensure there has enough memory for the dst*/
         static void copy(IBitmap* src, IBitmap* dst)
         {

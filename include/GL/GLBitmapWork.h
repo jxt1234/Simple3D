@@ -1,6 +1,8 @@
 #include "head.h"
 #include "GLWork.h"
 #include "GLProgram.h"
+#include "GLTexture.h"
+#include "core/GLBmp.h"
 
 /*This kind of work run glsl from src to dst, if dst is NULL, then it write result to src*/
 class GLBitmapWork:public GLWork
@@ -13,12 +15,15 @@ class GLBitmapWork:public GLWork
                 ~Shader();
                 /*Return mProgram's id*/
                 int setUp();
+                const GLProgram& program() const {return mProgram;}
             private:
                 GLProgram mProgram;
+                bool mValid;
 
         };
-        GLBitmapWork(GLBitmapWorkShader* shader, GLBmp* src, GLBmp* dst=NULL);
-        GLBitmapWork(GLBitmapWorkShader* shader, GLTexture* src, GLTexture* dst);
+
+        GLBitmapWork(Shader* shader, GLBmp* src, GLBmp* dst=NULL);
+        GLBitmapWork(Shader* shader, GLTexture* src, GLTexture* dst);
         ~GLBitmapWork();
 
         virtual bool onPrepare();
@@ -30,4 +35,6 @@ class GLBitmapWork:public GLWork
 
         GLTexture* mSrcT;
         GLTexture* mDstT;
+
+        Shader* mShader;
 };

@@ -162,5 +162,6 @@ void GLBezier::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
 
     glLineWidth(mWidth);//FIXME avoid use opengl directly
     mVertex->use(mProgram.attr(U.c_str()));
-    mVertex->draw(GL_LINE_STRIP);
+    mVertex->setType(GL_LINE);
+    mVertex->draw();
 }

@@ -16,14 +16,14 @@ class GLProgram
         void loadFiles(const char* vertex, const char* frag);
         virtual ~GLProgram();
 
-        inline unsigned int id(){return mId;}
+        inline unsigned int id() const{return mId;}
 
         /*These API must be called in openGL context Thread*/
         CONTEXT_API void init();
         CONTEXT_API void destroy();
         CONTEXT_API void use();
-        CONTEXT_API int attr(const char* name);
-        CONTEXT_API int uniform(const char* name);
+        CONTEXT_API int attr(const char* name) const;
+        CONTEXT_API int uniform(const char* name) const;
         CONTEXT_API static void setMatrix(const GLMatrix4& matrix, int id);
         CONTEXT_API static void setUniform(int value, int id);
         CONTEXT_API static void setUniform(float value, int id);

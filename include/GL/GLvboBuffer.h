@@ -10,12 +10,13 @@
 class GLvboBuffer:public RefCount
 {
     public:
+        inline void setType(int t){mType = t;}
         /*unit*size*sizeof(float) = sizeof(b)*/
-        CONTEXT_API GLvboBuffer(float* buffer, int unit, int size);
-        CONTEXT_API GLvboBuffer(IVarying* buffer);
+        CONTEXT_API GLvboBuffer(const float* buffer, int unit, int size, int type = GL_TRIANGLES);
+        CONTEXT_API GLvboBuffer(IVarying* buffer, int type = GL_TRIANGLES);
         CONTEXT_API ~GLvboBuffer();
         CONTEXT_API void use(int id);
-        CONTEXT_API void draw(int type = -1);
+        CONTEXT_API void draw();
         /*off and len is counted by points*/
         CONTEXT_API void update(float* subBuffer, int off, int len);
         CONTEXT_API void update(IVarying* buffer, int off, int staBuffer, int finBuffer);
@@ -25,6 +26,7 @@ class GLvboBuffer:public RefCount
         unsigned int mId;
         int mUnit;
         int mSize;
+        int mType;
 };
 
 #endif
