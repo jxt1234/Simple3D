@@ -33,7 +33,7 @@ void GLProgram::load(const char* vex, const char* frag)
 #define COPYS(dst, src)\
     {\
         if (dst) delete [] dst;\
-        int n = strlen(vex);\
+        int n = strlen(src);\
         dst = new char[n+1];\
         memcpy(dst, src, n);\
         dst[n] = '\0';\

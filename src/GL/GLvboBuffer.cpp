@@ -72,4 +72,5 @@ CONTEXT_API void GLvboBuffer::update(float* subBuffer, int off, int len)
 void GLvboBuffer::draw()
 {
     glDrawArrays(mType, 0, mSize);
+    OPENGL_CHECK_ERROR;
 }

@@ -19,11 +19,12 @@ static const char gDefaultFrag[] =
 "gl_FragColor = texture2D(buffer, vTex);\n"
 "}\n"
 ;
-GLBitmapWork::Shader::Shader(const char* fragSource, bool xlinear, bool ylinear, bool mipmiap, bool repeat)
+GLBitmapWork::Shader::Shader(const char* fragSource)
 {
+    const char* frag = fragSource;
     /*Construct Default Vertex Shader*/
-    /*FIXME For debug*/
-    mProgram.load(gVertex, gDefaultFrag);
+    if (NULL == frag) frag = gDefaultFrag;
+    mProgram.load(gVertex, frag);
     /*TODO support for linear, mipmiap and repeat*/
 }
 
@@ -31,6 +32,12 @@ GLBitmapWork::Shader::~Shader()
 {
 }
 int GLBitmapWork::Shader::setUp()
+{
+    mProgram.init();
+    return mProgram.id();
+}
+
+int GLBitmapWork::Shader::use()
 {
     mProgram.use();
     return mProgram.id();
@@ -40,15 +47,8 @@ int GLBitmapWork::Shader::setUp()
 GLBitmapWork::GLBitmapWork(GLBmp* src, GLBmp* dst, Shader* shader)
 {
     assert(NULL!=src);
-    if (NULL == shader)
-    {
-        mShader = new Shader;
-    }
-    else
-    {
-        shader->addRef();
-        mShader = shader;
-    }
+    SAFE_REF(shader);
+    mShader = shader;
     src->addRef();
     mSrc = src;
     if (NULL == dst)
@@ -57,59 +57,31 @@ GLBitmapWork::GLBitmapWork(GLBmp* src, GLBmp* dst, Shader* shader)
     }
     mDst = dst;
     dst->addRef();
-    mSrcT = NULL;
-    mDstT = NULL;
-}
-GLBitmapWork::GLBitmapWork(GLTexture* src, GLTexture* dst, Shader* shader)
-{
-    assert(NULL!=src);
-    assert(NULL!=dst);
-    src->addRef();
-    dst->addRef();
-    mSrcT = src;
-    mDstT = dst;
-    mSrc = NULL;
-    mDst = NULL;
-    if (NULL == shader)
-    {
-        mShader = new Shader;
-    }
-    else
-    {
-        shader->addRef();
-        mShader = shader;
-    }
 }
 GLBitmapWork::~GLBitmapWork()
 {
     SAFE_UNREF(mSrc);
     SAFE_UNREF(mDst);
-    SAFE_UNREF(mSrcT);
-    SAFE_UNREF(mDstT);
-    SAFE_UNREF(mShader);
 }
 
 bool GLBitmapWork::onPrepare()
 {
-    if (NULL == mSrcT)
+    mSrcT = new GLTexture;
+    mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
+    mDstT = new GLTexture;
+    mDstT->upload(NULL, mDst->width(), mDst->height());
+    if (NULL == mShader.get())
     {
-        mSrcT = new GLTexture;
-        mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
-    }
-    if (NULL == mDstT)
-    {
-        mDstT = new GLTexture;
-        mDstT->upload(NULL, mDst->width(), mDst->height());
+        mShader = new Shader;
     }
     int id = mShader->setUp();
-    assert(id > 0);//FIXME If id <= 0, return false
-    return true;
+    return id>0;
 }
 
 void GLBitmapWork::onProcess()
 {
     GLAutoFbo __f(*mDstT);
-    mShader->setUp();
+    mShader->use();
     const GLProgram& program = mShader->program();
     mSrcT->use();
     /*TODO Use globle vbo buffer Optimize this*/
@@ -128,11 +100,18 @@ void GLBitmapWork::onProcess()
 void GLBitmapWork::onFinish()
 {
     /*Read result back from texture*/
+    assert(mDst!=NULL);
+    if (NULL!=mDstT.get())
     {
         GLAutoFbo __f(*mDstT);
         mDstT->download(mDst->pixels());
     }
-    SAFE_UNREF(mDstT);
-    SAFE_UNREF(mSrcT);
-    SAFE_UNREF(mShader);
 }
+
+void GLBitmapWork::onDestroy()
+{
+    mDstT = NULL;
+    mSrcT = NULL;
+    mShader = NULL;
+}
+

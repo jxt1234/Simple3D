@@ -12,13 +12,11 @@ class GLBitmapWorkTest:public GLTest
 
 void GLBitmapWorkTest::run()
 {
-    GLBmp src("input.jpg");
+    GLBmp src("input2.jpg");
     GLBmp dst(1024, 720);
     {
         GLBitmapWork* w = new GLBitmapWork(&src, &dst);
-        w->onPrepare();
-        w->onProcess();
-        w->onFinish();
+        w->runOnePass();
         
         w->decRef();
     }

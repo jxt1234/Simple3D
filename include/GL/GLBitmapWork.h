@@ -11,30 +11,30 @@ class GLBitmapWork:public GLWork
         class Shader:public RefCount
         {
             public:
-                Shader(const char* fragSource = NULL, bool xlinear = false, bool ylinear = false, bool mipmiap = false, bool repeat = false);
+                Shader(const char* fragSource = NULL);
                 ~Shader();
                 /*Return mProgram's id*/
                 int setUp();
+                int use();
                 const GLProgram& program() const {return mProgram;}
             private:
                 GLProgram mProgram;
-                bool mValid;
 
         };
 
         GLBitmapWork(GLBmp* src, GLBmp* dst=NULL, Shader* shader = NULL);
-        GLBitmapWork(GLTexture* src, GLTexture* dst, Shader* shader = NULL);
-        ~GLBitmapWork();
+        virtual ~GLBitmapWork();
 
         virtual bool onPrepare();
         virtual void onProcess();
         virtual void onFinish();
-    private:
+        virtual void onDestroy();
+    protected:
         GLBmp* mSrc;
         GLBmp* mDst;
 
-        GLTexture* mSrcT;
-        GLTexture* mDstT;
+        GPPtr<GLTexture> mSrcT;
+        GPPtr<GLTexture> mDstT;
 
-        Shader* mShader;
+        GPPtr<Shader> mShader;
 };

@@ -155,13 +155,16 @@ void GLBezier::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
         ostringstream os;
         os << VEX<<i;
         glUniform4fv(mProgram.uniform(os.str().c_str()), 1, mControl->load(i));//FIXME
+        OPENGL_CHECK_ERROR;
     }
     glUniform4fv(mProgram.uniform(COLOR.c_str()), 1, mColor);//FIXME
+    OPENGL_CHECK_ERROR;
     GLProgram::setMatrix(transform, mProgram.uniform(trans_m.c_str()));
     GLProgram::setMatrix(projection, mProgram.uniform(proj_m.c_str()));
 
     glLineWidth(mWidth);//FIXME avoid use opengl directly
+    OPENGL_CHECK_ERROR;
     mVertex->use(mProgram.attr(U.c_str()));
-    mVertex->setType(GL_LINE);
+    mVertex->setType(GL_LINES);
     mVertex->draw();
 }
