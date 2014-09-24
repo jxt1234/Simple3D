@@ -22,13 +22,13 @@ class GLBitmapWorkFactory
         static void printMethods(std::ostream& os);
 
         //For GLBitmapWorkCreatorRegister
-        void insert(GLBitmapWorkCreater* c, const char* claim);
+        void insert(GLBitmapWorkCreater* c, const std::string& s);
         static GLBitmapWorkFactory& get();
     private:
         GLBitmapWork* _create(const char* name, std::istream* input);
         GLBitmapWorkFactory();
         ~GLBitmapWorkFactory();
-        static GLBitmapWorkFactory gFactory;
+        static GLBitmapWorkFactory* gFactory;
         typedef std::map<std::string, GLBitmapWorkCreater*> CREATERS;
         CREATERS mCreator;
 };
@@ -39,8 +39,9 @@ class GLBitmapWorkCreatorRegister
         GLBitmapWorkCreatorRegister(const char* claim)
         {
             T* test = new T;
-            GLBitmapWorkFactory* ts = GLBitmapWorkFactory::get();
-            ts->insert(test, claim);
+            GLBitmapWorkFactory& ts = GLBitmapWorkFactory::get();
+            std::string s(claim);
+            ts.insert(test, s);
         }
         ~GLBitmapWorkCreatorRegister(){}
 };

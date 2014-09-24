@@ -1,6 +1,8 @@
 #include "GL/GLBitmapWork.h"
 #include "GL/GLAutoFbo.h"
 #include "GL/GLvboBuffer.h"
+#include "GL/GLBitmapWorkFactory.h"
+
 static const char gVertex[] = 
 "attribute vec2 aPos;\n"
 "varying vec2 vTex;\n"
@@ -30,6 +32,7 @@ GLBitmapWork::Shader::Shader(const char* fragSource)
 
 GLBitmapWork::Shader::~Shader()
 {
+    mProgram.destroy();
 }
 int GLBitmapWork::Shader::setUp()
 {
@@ -115,3 +118,24 @@ void GLBitmapWork::onDestroy()
     mShader = NULL;
 }
 
+void GLBitmapWork::set(GPPtr<GLBmp> src, GPPtr<GLBmp> dst)
+{
+    mSrc = src;
+    mDst = dst;
+    this->onSet(src, dst);
+}
+
+class GLBitmapWork_Creater:public GLBitmapWorkCreater
+{
+    public:
+        virtual GLBitmapWork* vCreate(std::istream* input) const
+        {
+            return new GLBitmapWork;
+        }
+        virtual void vDetail(std::ostream& os) const
+        {
+            os <<"Usage, inputStream be null"<<std::endl;
+        }
+};
+
+static GLBitmapWorkCreatorRegister<GLBitmapWork_Creater> __T("Scale");

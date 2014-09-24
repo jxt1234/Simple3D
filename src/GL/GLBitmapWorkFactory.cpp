@@ -1,14 +1,18 @@
 #include "GL/GLBitmapWorkFactory.h"
-GLBitmapWorkFactory GLBitmapWorkFactory::gFactory;
+GLBitmapWorkFactory* GLBitmapWorkFactory::gFactory = NULL;
 
 GLBitmapWorkFactory& GLBitmapWorkFactory::get()
 {
-    return gFactory;
+    if (NULL == gFactory)
+    {
+        gFactory = new GLBitmapWorkFactory;
+    }
+    return *gFactory;
 }
 
 void GLBitmapWorkFactory::printMethods(std::ostream& os)
 {
-    CREATERS& c = gFactory.mCreator;
+    CREATERS& c = gFactory->mCreator;
     CREATERS::iterator it = c.begin();
     for (;it!=c.end(); it++)
     {
@@ -32,6 +36,11 @@ GLBitmapWork* GLBitmapWorkFactory::_create(const char* name, std::istream* input
         return (i->second)->vCreate(input);
     }
     return NULL;
+}
+
+void GLBitmapWorkFactory::insert(GLBitmapWorkCreater* c, const std::string& s)
+{
+    mCreator.insert(make_pair(s, c));
 }
 
 GLBitmapWorkFactory::GLBitmapWorkFactory()

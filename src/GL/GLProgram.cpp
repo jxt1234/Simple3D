@@ -76,9 +76,9 @@ GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 
 GLProgram::~GLProgram()
 {
-    destroy();
+    //destroy();
     ///*If the GLProgram is not destroy before, it shouldn't be freed*/
-    //assert(!mInit);
+    assert(!mInit);
     if (mVertex) delete [] mVertex;
     if (mFragment) delete [] mFragment;
 }

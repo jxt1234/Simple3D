@@ -7,6 +7,7 @@ class GLMultiPassWork:public GLBitmapWork
         GLMultiPassWork(GLBmp* src, GLBmp* dst);
         virtual ~GLMultiPassWork();
         void addShader(GPPtr<Shader> s);
+        inline void clearShaders() {mShaders.clear();}
         virtual bool onPrepare();
         virtual void onProcess();
         virtual void onDestroy();

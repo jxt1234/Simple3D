@@ -96,14 +96,16 @@ build/main.o : ./main.cpp ${ALL_INCLUEStest.out}
 
 ALL_INCLUESgputest.out=
 
-gputest.out:  build/gltest_GLTest.o build/gltest_GLBitmapWorkTest.o build/gltest_GLFilterTest.o build/opengltest_main.o libglsl.so
-	g++  -O3 -fPIC -o gputest.out  build/gltest_GLTest.o build/gltest_GLBitmapWorkTest.o build/gltest_GLFilterTest.o build/opengltest_main.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut ${SELF_VARIABLES}
+gputest.out:  build/gltest_GLTest.o build/gltest_GLBitmapWorkTest.o build/gltest_GLFilterTest.o build/gltest_GLFactoryTest.o build/opengltest_main.o libglsl.so
+	g++  -O3 -fPIC -o gputest.out  build/gltest_GLTest.o build/gltest_GLBitmapWorkTest.o build/gltest_GLFilterTest.o build/gltest_GLFactoryTest.o build/opengltest_main.o  -lfreeimage ./libglsl.so -lGLEW -lGL -lglut ${SELF_VARIABLES}
 build/gltest_GLTest.o : src/gltest/GLTest.cpp ${ALL_INCLUESgputest.out}
 	g++ -O3 -fPIC -o build/gltest_GLTest.o -c src/gltest/GLTest.cpp -Iinclude 
 build/gltest_GLBitmapWorkTest.o : src/gltest/GLBitmapWorkTest.cpp ${ALL_INCLUESgputest.out}
 	g++ -O3 -fPIC -o build/gltest_GLBitmapWorkTest.o -c src/gltest/GLBitmapWorkTest.cpp -Iinclude 
 build/gltest_GLFilterTest.o : src/gltest/GLFilterTest.cpp ${ALL_INCLUESgputest.out}
 	g++ -O3 -fPIC -o build/gltest_GLFilterTest.o -c src/gltest/GLFilterTest.cpp -Iinclude 
+build/gltest_GLFactoryTest.o : src/gltest/GLFactoryTest.cpp ${ALL_INCLUESgputest.out}
+	g++ -O3 -fPIC -o build/gltest_GLFactoryTest.o -c src/gltest/GLFactoryTest.cpp -Iinclude 
 build/opengltest_main.o : ./opengltest_main.cpp ${ALL_INCLUESgputest.out}
 	g++ -O3 -fPIC -o build/opengltest_main.o -c ./opengltest_main.cpp -Iinclude 
 
