@@ -11,7 +11,7 @@ MIDPATH='build/'
 
 MAIN_PROGRAM=['libglsl.so', 'test.out', 'gputest.out', 'display.out']
 gDepends = ['', 'libglsl.so','libglsl.so', 'libglsl.so']
-gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL'], ['test'], ['gltest'], []]
+gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL', 'platform'], ['test'], ['gltest'], []]
 gSrcFiles = [[], ['./main.cpp'], ['./opengltest_main.cpp'], ['./display_main.cpp']]
 gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGL -lGLEW',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut', ' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
 

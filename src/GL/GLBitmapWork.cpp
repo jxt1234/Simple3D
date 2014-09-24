@@ -46,26 +46,25 @@ int GLBitmapWork::Shader::use()
 
 GLBitmapWork::GLBitmapWork(GLBmp* src, GLBmp* dst, Shader* shader)
 {
-    assert(NULL!=src);
-    SAFE_REF(shader);
-    mShader = shader;
-    src->addRef();
-    mSrc = src;
     if (NULL == dst)
     {
         dst = src;
     }
+    SAFE_REF(shader);
+    SAFE_REF(src);
+    SAFE_REF(dst);
+    mShader = shader;
+    mSrc = src;
     mDst = dst;
-    dst->addRef();
 }
 GLBitmapWork::~GLBitmapWork()
 {
-    SAFE_UNREF(mSrc);
-    SAFE_UNREF(mDst);
 }
 
 bool GLBitmapWork::onPrepare()
 {
+    assert(NULL!=mSrc.get() && NULL!=mDst.get());
+    GLAutoLock _l(mLock);
     mSrcT = new GLTexture;
     mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
     mDstT = new GLTexture;
@@ -99,8 +98,9 @@ void GLBitmapWork::onProcess()
 
 void GLBitmapWork::onFinish()
 {
+    GLAutoLock _l(mLock);
     /*Read result back from texture*/
-    assert(mDst!=NULL);
+    assert(NULL!=mDst.get());
     if (NULL!=mDstT.get())
     {
         GLAutoFbo __f(*mDstT);
