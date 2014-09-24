@@ -1,3 +1,5 @@
+#ifndef GL_GLBEZIER_H
+#define GL_GLBEZIER_H
 #include "GLObject.h"
 #include <string>
 #include <vector>
@@ -6,7 +8,6 @@
 #include "GLvboBuffer.h"
 #include "vertex/GL_position.h"
 #include <ostream>
-
 class GLBezier:public GLObject
 {
     public:
@@ -30,3 +31,4 @@ class GLBezier:public GLObject
         GLvboBuffer* mVertex;
         float mWidth;
 };
+#endif

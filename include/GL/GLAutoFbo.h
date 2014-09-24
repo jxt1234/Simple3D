@@ -1,6 +1,7 @@
+#ifndef GL_GLAUTOFBO_H
+#define GL_GLAUTOFBO_H
 #include "head.h"
 #include "GLTexture.h"
-
 /*TODO Support MRT*/
 CONTEXT_CLASS class GLAutoFbo
 {
@@ -11,3 +12,4 @@ CONTEXT_CLASS class GLAutoFbo
         unsigned int mId;
         unsigned int mPrevious;
 };
+#endif

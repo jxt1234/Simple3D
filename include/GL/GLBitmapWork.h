@@ -1,9 +1,10 @@
+#ifndef GL_GLBITMAPWORK_H
+#define GL_GLBITMAPWORK_H
 #include "head.h"
 #include "GLWork.h"
 #include "GLProgram.h"
 #include "GLTexture.h"
 #include "core/GLBmp.h"
-
 /*This kind of work run glsl from src to dst, if dst is NULL, then it write result to src*/
 class GLBitmapWork:public GLWork
 {
@@ -19,12 +20,9 @@ class GLBitmapWork:public GLWork
                 const GLProgram& program() const {return mProgram;}
             private:
                 GLProgram mProgram;
-
         };
-
         GLBitmapWork(GLBmp* src, GLBmp* dst=NULL, Shader* shader = NULL);
         virtual ~GLBitmapWork();
-
         virtual bool onPrepare();
         virtual void onProcess();
         virtual void onFinish();
@@ -32,9 +30,8 @@ class GLBitmapWork:public GLWork
     protected:
         GLBmp* mSrc;
         GLBmp* mDst;
-
         GPPtr<GLTexture> mSrcT;
         GPPtr<GLTexture> mDstT;
-
         GPPtr<Shader> mShader;
 };
+#endif

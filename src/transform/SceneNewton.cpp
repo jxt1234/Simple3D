@@ -46,7 +46,6 @@ void CSceneNewton::Scene_Update(unsigned long StepTime_ms, int* randList, int* r
     m_IsExtract3Ex= (m_ExtractNumber==3) && (randList[1]>(RAND_MAX/2));
 
     m_ColorK1=0; m_ColorK2=0; m_ColorK3=0;
-    //while ((m_ColorK1+m_ColorK2+m_ColorK3)<0.8)
     {
         m_ColorK1=(randList[2]*(1.0/RAND_MAX)*randList[3]*(1.0/RAND_MAX)*randList[4]*(1.0/RAND_MAX));
         m_ColorK2=(randList[5]*(1.0/RAND_MAX));

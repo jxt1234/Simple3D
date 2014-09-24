@@ -1,5 +1,6 @@
+#ifndef GL_GLWORK_H
+#define GL_GLWORK_H
 #include "utils/RefCount.h"
-
 class GLWork:public RefCount
 {
     public:
@@ -8,7 +9,6 @@ class GLWork:public RefCount
         virtual void onProcess() = 0;//Run (In most case, glDrawArray)
         virtual void onFinish() = 0;//After this work is done, copy result if needed
         virtual void onDestroy() = 0;;//destroy resource
-
         void runOnePass()
         {
             this->onPrepare();
@@ -16,10 +16,8 @@ class GLWork:public RefCount
             this->onFinish();
             this->onDestroy();
         }
-
         /*Run in other Thread*/
-
         GLWork(){}
         virtual ~GLWork(){}
 };
-
+#endif

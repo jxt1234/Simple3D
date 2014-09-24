@@ -1,5 +1,6 @@
+#ifndef GL_GLFILTERWORK_H
+#define GL_GLFILTERWORK_H
 #include "GLMultiPassWork.h"
-
 class GLFilterWork:public GLMultiPassWork
 {
     public:
@@ -8,3 +9,4 @@ class GLFilterWork:public GLMultiPassWork
     private:
         static void _genShader(std::ostream& os, const float* p, int n, float xOffset, float yOffset);
 };
+#endif
