@@ -37,7 +37,7 @@ void GLFilterWork::_buildShaders()
     addShader(s);
 }
 
-void GLFilterWork::onSet(GPPtr<GLBmp> src, GPPtr<GLBmp> dst)
+void GLFilterWork::onSet()
 {
     _buildShaders();
 }

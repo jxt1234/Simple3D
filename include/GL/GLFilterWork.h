@@ -7,7 +7,7 @@ class GLFilterWork:public GLMultiPassWork
         GLFilterWork(GLBmp* src, GLBmp* dst, const float* p=NULL, int n=0);
         virtual ~GLFilterWork();
 
-        virtual void onSet(GPPtr<GLBmp> src, GPPtr<GLBmp> dst);
+        virtual void onSet();
     private:
         void _buildShaders();
         static void _genShader(std::ostream& os, const float* p, int n, float xOffset, float yOffset);

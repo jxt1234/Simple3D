@@ -121,6 +121,7 @@ CONTEXT_API void GLProgram::init()
     bool res = compileShader(vert);
     assert(true == res);
     res = (compileShader(frag));
+    if (!res) FUNC_PRINT_ALL(mFragment, s);
     assert(true == res);
     /*Create Program*/
     mId = glCreateProgram();

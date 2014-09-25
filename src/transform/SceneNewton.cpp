@@ -47,7 +47,8 @@ void CSceneNewton::Scene_Update(unsigned long StepTime_ms, int* randList, int* r
 
     m_ColorK1=0; m_ColorK2=0; m_ColorK3=0;
     {
-        m_ColorK1=(randList[2]*(1.0/RAND_MAX)*randList[3]*(1.0/RAND_MAX)*randList[4]*(1.0/RAND_MAX));
+        //m_ColorK1=(randList[2]*(1.0/RAND_MAX)*randList[3]*(1.0/RAND_MAX)*randList[4]*(1.0/RAND_MAX));
+        m_ColorK1=(randList[2]*(1.0/RAND_MAX));
         m_ColorK2=(randList[5]*(1.0/RAND_MAX));
         m_ColorK3=(randList[6]*(1.0/RAND_MAX));
     }
@@ -230,7 +231,7 @@ void CSceneNewton::DoDraw(IBitmap& dst)
     GPCLOCK;
     int width = dst.getWidth();
     int height = dst.getHeight();
-    const double rTop    =-1.37;
+    const double rTop    =-1;
     const double rBottom =-rTop+0.000001;
     const double rLeft   =-(rBottom*width)/height;
     const double rRight  =-rLeft+0.000002;

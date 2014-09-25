@@ -26,7 +26,7 @@ class GLBitmapWork:public GLWork
         virtual ~GLBitmapWork();
         void set(GPPtr<GLBmp> src, GPPtr<GLBmp> dst);
 
-        virtual void onSet(GPPtr<GLBmp> src, GPPtr<GLBmp> dst){}
+        virtual void onSet(){}
 
         //Must in GL Thread
         virtual bool onPrepare();

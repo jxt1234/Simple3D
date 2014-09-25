@@ -4,6 +4,7 @@
 #include "test/GLTest.h"
 int main(int argc, char* argv[])
 {
+    srand(time(NULL));
     FreeImage_Initialise(TRUE);
 	//TODO Divide GPU Test to another file
     glutInit(&argc, argv);

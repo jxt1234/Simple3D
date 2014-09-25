@@ -2,6 +2,7 @@
 #include "GL/GLAutoFbo.h"
 #include "GL/GLvboBuffer.h"
 #include "GL/GLBitmapWorkFactory.h"
+#include <sstream>
 
 static const char gVertex[] = 
 "attribute vec2 aPos;\n"
@@ -122,7 +123,7 @@ void GLBitmapWork::set(GPPtr<GLBmp> src, GPPtr<GLBmp> dst)
 {
     mSrc = src;
     mDst = dst;
-    this->onSet(src, dst);
+    this->onSet();
 }
 
 class GLBitmapWork_Creater:public GLBitmapWorkCreater
@@ -130,12 +131,21 @@ class GLBitmapWork_Creater:public GLBitmapWorkCreater
     public:
         virtual GLBitmapWork* vCreate(std::istream* input) const
         {
-            return new GLBitmapWork;
+            if (NULL == input)
+            {
+                return new GLBitmapWork;
+            }
+            std::istream& is = *input;
+            std::ostringstream os;
+            os << is.rdbuf();
+            GPPtr<GLBitmapWork::Shader> s = new GLBitmapWork::Shader(os.str().c_str());
+            return new GLBitmapWork(NULL, NULL, s.get());
         }
         virtual void vDetail(std::ostream& os) const
         {
-            os <<"Usage, inputStream be null"<<std::endl;
+            os <<"Usage: input stream was the fragment shader, default shader is below:"<<std::endl;
+            os << gDefaultFrag <<std::endl;
         }
 };
 
-static GLBitmapWorkCreatorRegister<GLBitmapWork_Creater> __T("Scale");
+static GLBitmapWorkCreatorRegister<GLBitmapWork_Creater> __T("Basic");

@@ -18,6 +18,7 @@ void GLBitmapWorkFactory::printMethods(std::ostream& os)
     {
         os << it->first<<std::endl;
         it->second->vDetail(os);
+        os << std::endl;
     }
 }
 
