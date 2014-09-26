@@ -13,11 +13,10 @@ static const char tail[] =
 "}\n"
 ;
 
-static void _genShaderFrac(std::ostream& os, int n, int iternumber, float kR, float kG, float kB, float pR, float pG, float pB, int w, int h)
+static void _genShaderFrac(std::ostream& os, int n, int iternumber, float kR, float kG, float kB, float pR, float pG, float pB, float w, float h)
 {
     os << head;
-    os << "vec2 p = vTex*vec2("<<w<<", "<<h<<"); vec2 q;\n";
-    os << "mat3 weight;\n";
+    os << "vec2 p = (2.0*vTex-1.0)*vec2("<<w<<", "<<h<<"); vec2 q;\n";
     os << "const vec4 cweight = vec4("<<pR<<","<<pG<<", "<<pB<<", 1.0);\n";
     os << "const vec3 weight1 = vec3("<<kR<<","<<kG<<", "<<-kB<<");\n";
     os << "const vec3 weight2 = vec3("<<kR<<", "<<-kG<<", "<<kB<<");\n";
@@ -40,7 +39,7 @@ static void _genShaderFrac(std::ostream& os, int n, int iternumber, float kR, fl
         ITER;
     }
     os <<"dl.x = 0.6*log(abs(p.x-q.x)*abs(p.y-q.y));\n";
-    os <<"dl.y = 0.3*log(distance(p, q));\n";
+    os <<"dl.y = 1.2*log(distance(p, q));\n";
     ITER;
     os <<"dl.z = 2.0*log(abs(p.x-q.x)*abs(p.y-q.y));\n";
 #undef ITER
@@ -86,7 +85,7 @@ GLBitmapWork* GLFractionCreator::vCreate(std::istream* input) const
     }
     int iternumber = GPRandom::mid(1, 6);
     std::ostringstream os;
-    _genShaderFrac(os, n, iternumber, kR, kG, kB, pR, pG, pB, 1000,1000);
+    _genShaderFrac(os, n, iternumber, kR, kG, kB, pR, pG, pB, 0.1,0.1);
     GPPtr<GLBitmapWork::Shader> s = new GLBitmapWork::Shader(os.str().c_str());
     return new GLBitmapWork(NULL, NULL, s.get());
 }
