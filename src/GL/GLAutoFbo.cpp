@@ -1,4 +1,5 @@
 #include "GL/GLAutoFbo.h"
+//FIXME Store viewport and revert
 GLAutoFbo::GLAutoFbo(GLTexture& dst)
 {
     GLint previous;

@@ -17,7 +17,7 @@ class GLSphere:public GLCurveSurface
         virtual void normal(float* out, float u, float v);
         virtual ~GLSphere(){}
     protected:
-        vec3 m;
+        GLVector::vec3 m;
         float r;
 };
 

@@ -48,6 +48,8 @@ class RefCount
         }\
         dst = src;\
     }
+
+/*In this project, the smart pointer is specitial when get T, because the initial count of T is 1*/
 template <typename T>
 class GPPtr {
     public:

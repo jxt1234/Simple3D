@@ -62,8 +62,8 @@ GLObject* initBezier()
 
 static void init()
 {
-    //gObj = initCurve();
-	gObj = initBezier();
+    gObj = initCurve();
+	//gObj = initBezier();
 }
 
 static void display(void)

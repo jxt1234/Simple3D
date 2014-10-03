@@ -4,9 +4,10 @@
 #include <iostream>
 #include <vector>
 #include "math/GLMatrix4.h"
+#include "utils/RefCount.h"
 #include "head.h"
 
-class GLProgram
+class GLProgram:public RefCount
 {
     public:
         GLProgram();

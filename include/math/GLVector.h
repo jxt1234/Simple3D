@@ -1,10 +1,10 @@
 #ifndef CORE_GLVECTOR_H
 #define CORE_GLVECTOR_H
 
-typedef float vec3[3];
-typedef float vec4[4];
 namespace GLVector
 {
+typedef float vec3[3];
+typedef float vec4[4];
 
 void setVec4(float x, float y, float z, float w, float* out);
 void setVec3(float x, float y, float z, float* out);

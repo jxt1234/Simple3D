@@ -17,7 +17,12 @@ void GLFractionByGLTest::run()
     GPPtr<GLBitmapWork> work = GLBitmapWorkFactory::create("Fraction");
     assert(NULL!=work.get());
     work->set(dst, dst);
-    work->runOnePass();
+    {
+        int start = clock();
+        work->runOnePass();
+        int end = clock();
+        FUNC_PRINT(end-start);
+    }
     dst->save("output/Fraction.png");
 }
 static GLTestRegister<GLFractionByGLTest> a("GLFractionByGLTest");
