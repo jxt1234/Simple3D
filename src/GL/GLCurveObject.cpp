@@ -2,7 +2,8 @@
 #include <string>
 #include <sstream>
 using namespace std;
-const static string trans_m("transform");
+const static string trans_m("modle_m");
+const static string view_m("view_m");
 const static string proj_m("projection");
 const static string us_f("us");
 const static string vs_f("vs");
@@ -18,6 +19,7 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "attribute vec2 "<<tex_v<<";\n";
     vertex << "varying vec2 "<<vTex<<";\n";
     vertex << "uniform mat4 "<<trans_m <<";\n";
+    vertex << "uniform mat4 "<<view_m <<";\n";
     vertex << "uniform mat4 "<<proj_m <<";\n";
     vertex << "uniform float "<<us_f <<";\n";
     vertex << "uniform float "<<vs_f <<";\n";
@@ -32,7 +34,7 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "temp.y = " << yf << ";\n";
     vertex << "temp.z = " << zf << ";\n";
     //Compute MVP
-    vertex << "temp = "<<trans_m <<" * "<<proj_m<<" * temp;\n";
+    vertex << "temp = temp*"<<trans_m <<"*"<<view_m<<" * "<<proj_m<<";\n";
     vertex << "gl_Position = temp;\n";
     vertex << vTex <<" = "<<tex_v<<";\n";
     vertex << "}\n";
@@ -91,7 +93,7 @@ void GLCurveObject::setColor(unsigned int argb)
     mTex = new GLTexture();
     mTex->upload(&argb, 1, 1);
 }
-void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
+void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
     assert(NULL!=mVbo);
     mPro.use();
@@ -99,6 +101,7 @@ void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& projecti
     mTex->use();
     GLProgram::setMatrix(projection, mPro.uniform(proj_m.c_str()));
     GLProgram::setMatrix(transform, mPro.uniform(trans_m.c_str()));
+    GLProgram::setMatrix(view, mPro.uniform(view_m.c_str()));
     GLProgram::setUniform(mUs, mPro.uniform(us_f.c_str()));
     GLProgram::setUniform(mVs, mPro.uniform(vs_f.c_str()));
     GLProgram::setUniform(mUf, mPro.uniform(uf_f.c_str()));

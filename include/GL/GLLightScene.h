@@ -49,7 +49,7 @@ class GLLightScene:public GLScene, GLObjectCreator
             public:
                 GLLightObject(const GLProgram& pro, const GLLightAttr& attr);
                 virtual ~GLLightObject();
-                virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection);
+                virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
             private:
                 const GLProgram& mProgram;
                 const GLLightAttr& mAttr;

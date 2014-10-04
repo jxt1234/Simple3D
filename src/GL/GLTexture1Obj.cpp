@@ -23,9 +23,9 @@ GLTexture1Obj::~GLTexture1Obj()
 {
 }
 
-void GLTexture1Obj::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
+void GLTexture1Obj::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
-    mBasic->onDraw(transform, projection);
+    mBasic->onDraw(transform, view, projection);
     mTexture->use();
     mVertex->use(mVerId);
     mTexCord->use(mTexId);

@@ -60,7 +60,7 @@ void GLLightScene::onPrepare()
 
 GLObject* GLLightScene::vCreate(std::istream* parameter) const
 {
-    GPPtr<GLLightObject> basic = new GLLightObject(mProgram, mLights);
+    GPPtr<GLLightObject> basic = new GLLightObject(*mProgram, mLights);
     return basic.get();
 }
 
@@ -76,7 +76,7 @@ GLLightScene::GLLightObject::GLLightObject(const GLProgram& pro, const GLLightAt
 GLLightScene::GLLightObject::~GLLightObject()
 {
 }
-void GLLightScene::GLLightObject::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
+void GLLightScene::GLLightObject::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
     int id = mProgram.id();
 }

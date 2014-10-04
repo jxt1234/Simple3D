@@ -24,7 +24,7 @@ class GLCurveObject:public GLObject
         void setVBO(GLvboBuffer* vbo);
         inline void setScale(float us, float vs){mUs = us, mVs = vs;}
         inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
-        virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection);
+        virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
         static void GenerateShader(std::ostream& vertex, std::ostream& frag, const std::string& xf, const std::string& yf, const std::string& zf);
     private:
         GLProgram mPro;

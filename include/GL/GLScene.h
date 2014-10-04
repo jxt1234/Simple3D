@@ -15,7 +15,7 @@ class GLScene:public GLObject, GLObjectIterator
 
         virtual void vAddObject(GPPtr<GLObject> obj) = 0;
         virtual void onPrepare();
-        virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection);
+        virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
         virtual void vRemoveObject(GPPtr<GLObject> obj) = 0;
         virtual void vRemoveAll() = 0;
     private:

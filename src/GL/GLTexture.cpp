@@ -56,7 +56,7 @@ void GLTexture::destory()
 
 void GLTexture::use()
 {
-    glActiveTexture(0);
+    glActiveTexture(GL_TEXTURE0);
     OPENGL_CHECK_ERROR;
     glBindTexture(GL_TEXTURE_2D, mId);
     OPENGL_CHECK_ERROR;

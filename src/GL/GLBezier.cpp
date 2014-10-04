@@ -75,6 +75,7 @@ const static string U("u");
 const static string VEX("p");
 const static string COLOR("color");
 const static string trans_m("transform");
+const static string view_m("view");
 const static string proj_m("projection");
 
 void GLBezier::_genShader(ostream& vertex, ostream& frag)
@@ -82,6 +83,7 @@ void GLBezier::_genShader(ostream& vertex, ostream& frag)
     vertex << "attribute float "<<U<<";\n";
     //TODO Add Project
     vertex << "uniform mat4 "<<trans_m <<";\n";
+    vertex << "uniform mat4 "<<view_m <<";\n";
     vertex << "uniform mat4 "<<proj_m <<";\n";
     for (int i=0; i<mControl->size(); ++i)
     {
@@ -96,7 +98,7 @@ void GLBezier::_genShader(ostream& vertex, ostream& frag)
     }
     vertex << ";\n";
 
-    vertex << "gl_Position = "<<trans_m <<" * "<<proj_m<<" * temp;\n";
+    vertex << "gl_Position = temp*"<<trans_m <<" * "<<view_m<<"*"<<proj_m<<";\n";
     //vertex << "gl_Position = temp;\n";//For debug
 
     vertex<<"}\n";
@@ -147,7 +149,7 @@ void GLBezier::reset(int precision)
     mVertex = new GLvboBuffer(p, 1, precision+1);
     delete [] p;
 }
-void GLBezier::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
+void GLBezier::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
     mProgram.use();
     for (int i=0; i<mControl->size(); ++i)
@@ -161,6 +163,7 @@ void GLBezier::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
     OPENGL_CHECK_ERROR;
     GLProgram::setMatrix(transform, mProgram.uniform(trans_m.c_str()));
     GLProgram::setMatrix(projection, mProgram.uniform(proj_m.c_str()));
+    GLProgram::setMatrix(view, mProgram.uniform(view_m.c_str()));
 
     glLineWidth(mWidth);//FIXME avoid use opengl directly
     OPENGL_CHECK_ERROR;

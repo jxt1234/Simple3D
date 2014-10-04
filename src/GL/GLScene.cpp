@@ -11,14 +11,14 @@ GLScene::GLScene(GPPtr<GLTransformer> t)
 GLScene::~GLScene()
 {
 }
-void GLScene::onDraw(const GLMatrix4& transform, const GLMatrix4& projection)
+void GLScene::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
-    GLMatrix4 curTransform = (mTransformer->get())*transform;
+    GLMatrix4 curTransform = (mTransformer->get())*M;
     this->vRewind();
     while(!this->vEnd())
     {
         GPPtr<GLObject> o = this->vCurrent();
-        o->onDraw(curTransform, projection);
+        o->onDraw(curTransform, V, P);
         this->vNext();
     }
 }

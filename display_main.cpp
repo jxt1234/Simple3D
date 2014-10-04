@@ -17,6 +17,7 @@
 #include "utils/debug.h"
 #include "core/GLBmp.h"
 #include <fstream>
+#include "utils/GP_Clock.h"
 #define PI 3.141592654
 
 
@@ -68,16 +69,20 @@ static void init()
 
 static void display(void)
 {
+    GPCLOCK;
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //GLMatrix4 projection = GLMatrix4::projection(-10, 10, -10, 10, 10, 400, 1);
-    GLMatrix4 projection;
+    GLMatrix4 projection = GLMatrix4::projection(-2, 2, -2, 2, 3, 400, 1);
+    //GLMatrix4 projection;
     GLMatrix4 transform;
+    GLMatrix4 view;
+    float p = -5;
+    view.setTranslate(0,0,p);
 	static float a = 0;
 	transform.setRotate(0,1,0,a);
 	a+=0.001;
-    gObj->onDraw(transform, projection);
+    gObj->onDraw(transform, view, projection);
     glutSwapBuffers(); 
 }
 

@@ -11,7 +11,7 @@ class CONTEXT_CLASS GLObject:public RefCount
         virtual ~GLObject(){}
         virtual void onGenerateShader(std::ostream& vertex, std::ostream& frag) const {}
         virtual void onPrepare() {}
-        virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection) = 0;
+        virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P) = 0;
 };
 
 class GLObjectCreator

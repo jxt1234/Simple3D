@@ -10,7 +10,7 @@ class CONTEXT_CLASS GLTexture1Obj:public GLObject
         virtual ~GLTexture1Obj();
 
         virtual void onPrepare(){}
-        virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& projection);
+        virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection);
 
     private:
         GPPtr<GLTexture> mTexture;
