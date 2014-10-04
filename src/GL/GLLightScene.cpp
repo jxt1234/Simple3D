@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "GL/GLSquareObjectCreator.h"
+#include "utils/debug.h"
 
 GLLightScene::GLLightScene(int n)
 {
@@ -24,7 +25,7 @@ void GLLightScene::initDefaultAttr(GLLightAttr& attr)
     attr.ka = 0.0;
     attr.kd = 1.0;
     attr.ks = 1.0;
-    attr.ns = 0.5;
+    attr.ns = 11.0;
 }
 void GLLightScene::setEyePos(float x, float y, float z)
 {
@@ -122,9 +123,12 @@ GLLightScene::GLLightObject::~GLLightObject()
 void GLLightScene::GLLightObject::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
     int id = mProgram.id();
+    GLMatrix4 N = M;
+    N = N.transpose().inverse();
     GLProgram::setMatrix(M, mProgram.uniform("M"));
     GLProgram::setMatrix(V, mProgram.uniform("V"));
     GLProgram::setMatrix(P, mProgram.uniform("P"));
+    GLProgram::setMatrix(N, mProgram.uniform("N"));
     /*TODO Avoid use opengl directly*/
     glUniform4fv(mProgram.uniform("lightColor"), 1, mAttr.lightColor);
     OPENGL_CHECK_ERROR;

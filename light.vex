@@ -13,13 +13,14 @@ uniform vec4 eyepos;
 uniform mat4 M;
 uniform mat4 V;
 uniform mat4 P;
+uniform mat4 N;
 
 void main()
 {
-    vec4 pos = aPos*M*V;
-    gl_Position = pos*P;
-    vL = vec3(lightpos-pos);
-    vN = vec3(vec4(aNormal,1.0)*V*M);
+    vec4 pos = aPos*M;
+    gl_Position = aPos*M*V*P;
+    vL = vec3(lightpos/lightpos.w)-vec3(pos/pos.w);
+    vN = vec3(vec4(aNormal,1.0)*N);
     vTex = aTex;
-    vH = vec3(vL+lightpos-eyepos);
+    vH = vL+vec3(lightpos/lightpos.w)-vec3(eyepos/eyepos.w);
 }

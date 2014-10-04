@@ -29,5 +29,6 @@ void GLTexture1Obj::onDraw(const GLMatrix4& transform, const GLMatrix4& view, co
     mTexture->use();
     mVertex->use(mVerId);
     mTexCord->use(mTexId);
+    mNormal->use(mNormalId);
     mVertex->draw();
 }

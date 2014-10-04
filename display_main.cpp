@@ -8,6 +8,7 @@
 #include "GL/GLTexture.h"
 #include "GL/GLCurveObject.h"
 #include "GL/GLBezier.h"
+#include "GL/GLLightScene.h"
 #include "vertex/GL_position.h"
 #include "vertex/GL_texcord.h"
 #include "vertex/GL_Normal.h"
@@ -18,6 +19,7 @@
 #include "core/GLBmp.h"
 #include <fstream>
 #include "utils/GP_Clock.h"
+#include <sstream>
 #define PI 3.141592654
 
 
@@ -46,6 +48,8 @@ static GLCurveObject* initCurve()
     result->setScale(2*PI,2);
     result->setOffset(0,-0.5);
     glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+    glClearDepth(1.0);
     return result;
 }
 
@@ -61,27 +65,49 @@ GLObject* initBezier()
 	return res;
 }
 
+GLObject* initLight()
+{
+    GLLightScene* scene = new GLLightScene;
+    GLTexture* texture = new GLTexture();
+    GLBmp b;
+    b.loadPicture("input.jpg");
+    texture->upload(b.pixels(), b.getWidth(), b.getHeight());
+    ostringstream os;
+    os.write((char*)(&texture), sizeof(GLTexture*));
+    istringstream input(os.str());
+    GPPtr<GLObject> square = scene->vCreate(&input);
+    scene->vAddObject(square);
+    scene->setEyePos(0, 0, -5.0);
+    scene->setLightPos(0, 0, 0, -100);
+    glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+    glClearDepth(1.0);
+    return scene;
+}
+
 static void init()
 {
-    gObj = initCurve();
+    //gObj = initCurve();
 	//gObj = initBezier();
+    gObj = initLight();
 }
 
 static void display(void)
 {
-    GPCLOCK;
-	glClearDepth(1.0);
-	glDepthFunc(GL_LESS);
+   // GPCLOCK;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     GLMatrix4 projection = GLMatrix4::projection(-2, 2, -2, 2, 3, 400, 1);
     //GLMatrix4 projection;
     GLMatrix4 transform;
     GLMatrix4 view;
-    float p = -5;
+    float p = -10;
     view.setTranslate(0,0,p);
 	static float a = 0;
 	transform.setRotate(0,1,0,a);
 	a+=0.001;
+    int angle = (a/PI*180);
+    angle = angle%360;
+    //printf("angle = %d\n", angle);
     gObj->onDraw(transform, view, projection);
     glutSwapBuffers(); 
 }

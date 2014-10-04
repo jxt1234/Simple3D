@@ -19,9 +19,9 @@ void GLSquareObjectCreator::_init()
     float tex[2*6*6];
     for (int i=0; i<6; ++i)
     {
-        int fix = i%3;
+        int fix = (i+2)%3;
         int vary1 = (i+1)%3;
-        int vary2 = (i+2)%3;
+        int vary2 = (i)%3;
         float fixValue = (float)(2*(i%2) - 1);
         for (int j=0; j<6; ++j)
         {
@@ -47,18 +47,22 @@ void GLSquareObjectCreator::_init()
             {
                 _nor[k] = 0.0;
             }
-            _nor[fix] = fixValue;
+            _nor[fix] = -fixValue;
         }
     }
+#ifdef DEBUG
     for (int i=0;i<6;++i)
     {
         for (int j=0; j<6; ++j)
         {
             float* _ver = ver + (i*6+j)*4;
-            printf("%f, %f, %f, %f\n", _ver[0], _ver[1], _ver[2], _ver[3]);
+            float* _nor = nor + (i*6+j)*3;
+            printf("%2.0f, %2.0f, %2.0f, %2.0f,", _ver[0], _ver[1], _ver[2], _ver[3]);
+            printf("%2.0f, %2.0f, %2.0f\n", _nor[0], _nor[1], _nor[2]);
         }
         printf("\n");
     }
+#endif
     mVertex = new GLvboBuffer(ver, 4, 6*6);
     mNormal = new GLvboBuffer(nor, 3, 6*6);
     mTexcord = new GLvboBuffer(tex, 2, 6*6);
