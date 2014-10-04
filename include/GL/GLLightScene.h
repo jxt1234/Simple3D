@@ -10,20 +10,22 @@ class GLLightScene:public GLScene, GLObjectCreator
         //TODO Divide scene attribute and object attribute
         struct GLLightAttr
         {
-            GLVector::vec3 lightpos;
-            GLVector::vec3 mEyePos;
-            GLVector::vec4 emission;
-            GLVector::vec4 ambient;
-            GLVector::vec4 diffuse;
-            GLVector::vec4 specular;
-            GLVector::vec4 sceneColor;
-            float shininess;
+            GLVector::vec4 lightpos;
+            GLVector::vec4 lightColor;
+            GLVector::vec4 eyepos;
+            GLVector::vec4 ambientColor;
+            float ka;
+            float kd;
+            float ks;
+            float ns;
         };
         //n means the light's number
         GLLightScene(int n=1);
         virtual ~GLLightScene();
+        void setEyePos(float x, float y, float z);
+        void initDefaultAttr(GLLightAttr& attr);
         void setLightNumber(int n);
-        void setLightPos(int n, GLVector::vec3 pos);
+        void setLightPos(int n, float x, float y, float z);
         //As GLObject
         virtual void onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
         virtual void onPrepare();
@@ -55,7 +57,7 @@ class GLLightScene:public GLScene, GLObjectCreator
                 const GLLightAttr& mAttr;
         };
         GPPtr<GLProgram> mProgram;
-        GLLightAttr mLights;
+        GLLightAttr mAttr;
         std::vector<GPPtr<GLObject> > mObjs;
         std::vector<GPPtr<GLObject> >::iterator mIter;
         friend class GLLightObject;

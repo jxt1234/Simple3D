@@ -17,7 +17,7 @@ class CONTEXT_CLASS GLObject:public RefCount
 class GLObjectCreator
 {
     public:
-        virtual GLObject* vCreate(std::istream* parameter=NULL) const = 0;
+        virtual CONTEXT_API GLObject* vCreate(std::istream* parameter=NULL) const = 0;
         virtual void vGetInfo(std::ostream& output) const = 0;
 
         GLObjectCreator(){}

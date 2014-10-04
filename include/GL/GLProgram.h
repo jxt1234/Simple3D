@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include "math/GLMatrix4.h"
+#include "utils/GLLock.h"
 #include "utils/RefCount.h"
 #include "head.h"
 
@@ -37,6 +38,8 @@ class GLProgram:public RefCount
         char* mFragment;
         unsigned int mVertId;
         unsigned int mFragId;
+
+        GLLock mLock;
 };
 
 

@@ -15,6 +15,7 @@ GLProgram::GLProgram()
 
 void GLProgram::load(const std::string& vertex, const std::string& frag)
 {
+    GLAutoLock _l(mLock);
     mInit = false;
     if (mVertex) delete [] mVertex;
     if (mFragment) delete [] mFragment;
@@ -104,6 +105,7 @@ static bool compileShader(GLuint s)
 CONTEXT_API void GLProgram::init()
 {
     if (mInit) return;
+    GLAutoLock _l(mLock);
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
     OPENGL_CHECK_ERROR;
@@ -156,6 +158,7 @@ CONTEXT_API int GLProgram::uniform(const char* name) const
 CONTEXT_API void GLProgram::destroy()
 {
     if (!mInit) return;
+    GLAutoLock _l(mLock);
     glDeleteProgram(mId);
     glDeleteShader(mVertId);
     glDeleteShader(mFragId);

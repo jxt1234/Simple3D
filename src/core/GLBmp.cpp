@@ -51,7 +51,6 @@ void GLBmp::setColor(const GLColor& c, int x, int y)
 
 void GLBmp::loadPicture(const char* pic)
 {
-    /*Just support png*/
     FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
     FIBITMAP* bitmap = FreeImage_Load(f, pic);
     mBitmap = FreeImage_ConvertTo32Bits(bitmap);
