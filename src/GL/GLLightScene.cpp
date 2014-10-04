@@ -1,6 +1,7 @@
 #include "GL/GLLightScene.h"
 #include <fstream>
 #include <sstream>
+#include "GL/GLSquareObjectCreator.h"
 
 GLLightScene::GLLightScene(int n)
 {
@@ -85,8 +86,24 @@ void GLLightScene::onPrepare()
 
 GLObject* GLLightScene::vCreate(std::istream* parameter) const
 {
+    assert(NULL!=parameter);
+    //TODO Expand
+    GLTexture* t;
+    parameter->read((char*)(&t), sizeof(t));
     GPPtr<GLLightObject> basic = new GLLightObject(*mProgram, mAttr);
-    return basic.get();
+    GLSquareObjectCreator::SquarePara para;
+    para.basic = basic.get();
+    para.t = t;
+    mProgram->use();
+    para.verId = mProgram->attr("aPos");
+    para.normaliId = mProgram->attr("aNormal");
+    para.texId = mProgram->attr("aTex");
+    std::ostringstream os;
+    os.write((char*)(&para), sizeof(para));
+    std::istringstream is(os.str());
+    GLSquareObjectCreator c;
+    GLObject* obj = c.vCreate(&is);
+    return obj;
 }
 
 void GLLightScene::vGetInfo(std::ostream& output) const
