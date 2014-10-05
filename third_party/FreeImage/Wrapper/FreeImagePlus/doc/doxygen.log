@@ -1,0 +1,36 @@
+C:/Projects/FreeImage/Source/FreeImage.h:159: Warning: Compound tagRGBQUAD is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:172: Warning: Compound tagRGBTRIPLE is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:204: Warning: Compound tagBITMAPINFO is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:190: Warning: Compound tagBITMAPINFOHEADER is not documented.
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:150: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:150: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:149: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1300: Warning: argument `flag' of command @param is not found in the argument list of fipMultiPage::open(FreeImageIO *io, fi_handle handle, int flags=0)
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1300: Warning: The following parameters of fipMultiPage::open(FreeImageIO *io, fi_handle handle, int flags=0) are not documented:
+  parameter flags
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1318: Warning: argument `flag' of command @param is not found in the argument list of fipMultiPage::saveToHandle(FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags=0) const
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1318: Warning: The following parameters of fipMultiPage::saveToHandle(FREE_IMAGE_FORMAT fif, FreeImageIO *io, fi_handle handle, int flags=0) const are not documented:
+  parameter flags
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1329: Warning: argument `flag' of command @param is not found in the argument list of fipMultiPage::saveToMemory(FREE_IMAGE_FORMAT fif, fipMemoryIO &memIO, int flags=0) const
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1329: Warning: The following parameters of fipMultiPage::saveToMemory(FREE_IMAGE_FORMAT fif, fipMemoryIO &memIO, int flags=0) const are not documented:
+  parameter flags
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1466: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1440: Warning: argument `name' of command @param is not found in the argument list of fipTag::setKeyValue(const char *key, const char *value)
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1440: Warning: The following parameters of fipTag::setKeyValue(const char *key, const char *value) are not documented:
+  parameter key
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1466: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Wrapper/FreeImagePlus/FreeImagePlus.h:1465: Warning: end of comment block while expecting command </b>
+C:/Projects/FreeImage/Source/FreeImage.h:222: Warning: Member red (variable) of class tagFIRGB16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:223: Warning: Member green (variable) of class tagFIRGB16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:224: Warning: Member blue (variable) of class tagFIRGB16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:230: Warning: Member red (variable) of class tagFIRGBA16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:231: Warning: Member green (variable) of class tagFIRGBA16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:232: Warning: Member blue (variable) of class tagFIRGBA16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:233: Warning: Member alpha (variable) of class tagFIRGBA16 is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:247: Warning: Member red (variable) of class tagFIRGBAF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:248: Warning: Member green (variable) of class tagFIRGBAF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:249: Warning: Member blue (variable) of class tagFIRGBAF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:250: Warning: Member alpha (variable) of class tagFIRGBAF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:239: Warning: Member red (variable) of class tagFIRGBF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:240: Warning: Member green (variable) of class tagFIRGBF is not documented.
+C:/Projects/FreeImage/Source/FreeImage.h:241: Warning: Member blue (variable) of class tagFIRGBF is not documented.

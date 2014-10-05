@@ -19,25 +19,45 @@ define all-cpp-files
 $(shell find $(LOCAL_PATH)/../src -name "*.cpp")
 endef
 
-define third_party_cpp
-$(shell find $(LOCAL_PATH)/../third_party/FreeImage -name "*.cpp")
-endef
 LOCAL_MODULE    := libsimple3D
-#LOCAL_CFLAGS    := -Werror
+LOCAL_CFLAGS    := -Werror
 LOCAL_CFLAGS    += -DGL_BUILD_FOR_ANDROID
+LOCAL_SRC_FILES := $(call all-cpp-files)
 
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/ \
-    $(LOCAL_PATH)/../third_party/FreeImage/ \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibJPEG \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibMNG \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibOpenJPEG \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibPNG \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibRawLite \
-    $(LOCAL_PATH)/../third_party/FreeImage/LibTIFF \
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/\
+    $(LOCAL_PATH)/../third_party/FreeImage/Source
 
-LOCAL_SRC_FILES := $(call all-cpp-files)\
-                   $(call third_party_cpp)
-
+LOCAL_STATIC_LIBRARIES+= FreeImage
 LOCAL_LDLIBS    := -llog -lGLESv2
 
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+LOCAL_PATH:=$(LOCAL_PATH)/../third_party/FreeImage
+include $(LOCAL_PATH)/Makefile.srcs
+LOCAL_MODULE    := FreeImage
+LOCAL_C_INCLUDES +=\
+                   $(LOCAL_PATH)/Source/ \
+                   $(LOCAL_PATH)/Source/Metadata \
+                   $(LOCAL_PATH)/Source/FreeImageToolkit \
+                   $(LOCAL_PATH)/Source/LibJPEG \
+                   $(LOCAL_PATH)/Source/LibPNG \
+                   $(LOCAL_PATH)/Source/LibTIFF4 \
+                   $(LOCAL_PATH)/Source/ZLib \
+                   $(LOCAL_PATH)/Source/LibOpenJPEG \
+                   $(LOCAL_PATH)/Source/OpenEXR \
+                   $(LOCAL_PATH)/Source/OpenEXR/Half \
+                   $(LOCAL_PATH)/Source/OpenEXR/Iex \
+                   $(LOCAL_PATH)/Source/OpenEXR/IlmImf \
+                   $(LOCAL_PATH)/Source/OpenEXR/IlmThread \
+                   $(LOCAL_PATH)/Source/OpenEXR/Imath \
+                   $(LOCAL_PATH)/Source/LibRawLite \
+                   $(LOCAL_PATH)/Source/LibRawLite/dcraw \
+                   $(LOCAL_PATH)/Source/LibRawLite/internal \
+                   $(LOCAL_PATH)/Source/LibRawLite/libraw \
+                   $(LOCAL_PATH)/Source/LibRawLite/src
+
+LOCAL_SRC_FILES := \
+                   $(SRCS)
+
+include $(BUILD_STATIC_LIBRARY)
