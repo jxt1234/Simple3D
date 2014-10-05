@@ -4,6 +4,7 @@
 *.o
 *.obj
 *.swp
+*.pyc
 
 # Compiled Dynamic libraries
 *.so
@@ -23,3 +24,6 @@
 
 tags
 output/*
+libs/*
+obj/*
+objs/*

@@ -9,29 +9,24 @@ CPP="g++ "
 C="gcc "
 MIDPATH='build/'
 
-MAIN_PROGRAM=['libglsl.so', 'test.out', 'gputest.out', 'display.out']
-gDepends = ['', 'libglsl.so','libglsl.so', 'libglsl.so']
-gDirs = [['core', 'fragment', 'math', 'package', 'transform', 'utils', 'vertex', 'GL', 'platform'], ['test'], ['gltest'], []]
-gSrcFiles = [[], ['./main.cpp'], ['./opengltest_main.cpp'], ['./display_main.cpp']]
-gLinks = [' -lfreeimage ', ' -lfreeimage ./libglsl.so -lGL -lGLEW',' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut', ' -lfreeimage ./libglsl.so -lGLEW -lGL -lglut -lm -lX11']
-
+from config import *
 def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 	#Find all files
 	include_h = []
 	sources_cpp = []
 	sources_c = []
 	for dir in srcDirs:
-		cmd = "find include/" + dir + " -name \"*.h\""
+		cmd = "find include/" + " -name \"*.h\""
 		include_h_temp = os.popen(cmd).read().split('\n');
 		for f in include_h_temp:
 			if len(f) > 0:
 				include_h.append(f)
-		cmd = "find src/" + dir + " -name \"*.cpp\""
+		cmd = "find " + dir + " -name \"*.cpp\""
 		temp_cpp = os.popen(cmd).read().split('\n');
 		for f in temp_cpp:
 			if len(f) > 0:
 				sources_cpp.append(f)
-		cmd = "find src/" + dir + " -name \"*.c\""
+		cmd = "find " + dir + " -name \"*.c\""
 		temp_c = os.popen(cmd).read().split('\n');
 		for f in temp_c:
 			if len(f) > 0:
@@ -40,7 +35,6 @@ def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 		sources_cpp.append(f)
 	fileContents = ""
 	#Head Files
-	include_Flag = '-Iinclude'
 	include = "ALL_INCLUES"+outName
 	fileContents += include+'='
 	for h in include_h:
@@ -49,9 +43,9 @@ def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 	fileContents+='\n'
 	def getNameWithofO(fileName):
 		pos = 0
-		while fileName[pos]!='/':
+		while fileName[pos]=='.':
 			pos+=1
-		sta = pos+1
+		sta = pos
 		pos+=1
 		while fileName[pos]!='.':
 			pos+=1
@@ -63,7 +57,7 @@ def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
 	def getSequencesAndAppend(src, program):
 		obj = getNameWithofO(src)
 		objs.append(obj)
-		sequence = MIDPATH + obj + ' : ' + src + ' ${'+include + '}\n'
+		sequence = MIDPATH + obj + ' : ' + src + " "+depend+" "+' ${'+include + '}\n'
 		sequence += '\t' + program + CFLAGS + ' -o ' + MIDPATH + obj + ' -c ' + src + ' '+include_Flag+' \n'
 		sequences.append(sequence)
 	for cpp in sources_cpp:
