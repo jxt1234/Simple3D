@@ -251,7 +251,7 @@
 #ifdef _MSC_VER 
 #define lfind _lfind
 /* Define to 1 if you have the <search.h> header file. */
-#define HAVE_SEARCH_H 1
+//#define HAVE_SEARCH_H 1
 #endif // _MSC_VER
 
 

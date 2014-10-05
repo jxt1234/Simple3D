@@ -28,11 +28,15 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/\
     $(LOCAL_PATH)/../third_party/FreeImage/Source
 
 LOCAL_STATIC_LIBRARIES+= FreeImage
-LOCAL_LDLIBS    := -llog -lGLESv2
+LOCAL_LDLIBS    := -lz -lm -llog -lGLESv2
+LOCAL_CPP_FEATURES := rtti exceptions
 
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
+define jpeg-files
+$(shell find $(LOCAL_PATH)/Source/LibJPEG -name "j*.c")
+endef
 LOCAL_PATH:=$(LOCAL_PATH)/../third_party/FreeImage
 include $(LOCAL_PATH)/Makefile.srcs
 LOCAL_MODULE    := FreeImage
@@ -57,7 +61,8 @@ LOCAL_C_INCLUDES +=\
                    $(LOCAL_PATH)/Source/LibRawLite/libraw \
                    $(LOCAL_PATH)/Source/LibRawLite/src
 
+LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_SRC_FILES := \
-                   $(SRCS)
+                   $(SRCS)\
 
 include $(BUILD_STATIC_LIBRARY)

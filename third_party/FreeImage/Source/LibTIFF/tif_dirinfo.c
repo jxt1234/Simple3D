@@ -792,12 +792,17 @@ _TIFFFindFieldInfoByName(TIFF* tif, const char *field_name, TIFFDataType dt)
         key.field_name = (char *)field_name;
         key.field_type = dt;
 
+        //FIXME For compile delete this JXT
+#if 0
         ret = (const TIFFFieldInfo **) lfind(&pkey,
 					     tif->tif_fieldinfo, 
 					     &tif->tif_nfields,
 					     sizeof(TIFFFieldInfo *),
 					     tagNameCompare);
 	return tif->tif_foundfield = (ret ? *ret : NULL);
+#else
+    return NULL;
+#endif
 }
 
 const TIFFFieldInfo*
