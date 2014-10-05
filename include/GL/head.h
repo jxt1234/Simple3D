@@ -9,7 +9,12 @@
 #define CONTEXT_FREE_API
 
 #include <assert.h>
+#ifdef GL_BUILD_FOR_ANDROID
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else
 #include <GL/glew.h>
+#endif
 #include "debug.h"
 #define OPENGL_ASSERT(x) assert(x)
 
