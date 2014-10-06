@@ -47,7 +47,7 @@ void GLSquareObjectCreator::_init()
             {
                 _nor[k] = 0.0;
             }
-            _nor[fix] = -fixValue;
+            _nor[fix] = fixValue;
         }
     }
 #ifdef DEBUG

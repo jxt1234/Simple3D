@@ -34,6 +34,7 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "temp.y = " << yf << ";\n";
     vertex << "temp.z = " << zf << ";\n";
     //Compute MVP
+    //vertex << "temp = "<<trans_m <<"*"<<view_m<<" * "<<proj_m<<"*temp;\n";
     vertex << "temp = temp*"<<trans_m <<"*"<<view_m<<" * "<<proj_m<<";\n";
     vertex << "gl_Position = temp;\n";
     vertex << vTex <<" = "<<tex_v<<";\n";
