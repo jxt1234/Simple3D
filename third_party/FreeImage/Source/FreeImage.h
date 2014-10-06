@@ -80,11 +80,7 @@
 // This really only affects 24 and 32 bit formats, the rest are always RGB order.
 #define FREEIMAGE_COLORORDER_BGR	0
 #define FREEIMAGE_COLORORDER_RGB	1
-#if defined(FREEIMAGE_BIGENDIAN)
 #define FREEIMAGE_COLORORDER FREEIMAGE_COLORORDER_RGB
-#else
-#define FREEIMAGE_COLORORDER FREEIMAGE_COLORORDER_BGR
-#endif
 
 // Ensure 4-byte enums if we're using Borland C++ compilers
 #if defined(__BORLANDC__)

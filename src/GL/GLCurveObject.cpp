@@ -40,6 +40,7 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "}\n";
     
     //Fragment shader
+    frag << "precision mediump float;\n";
     frag << "uniform sampler2D "<<texture_s<<";\n";
     frag << "varying vec2 "<<vTex<<";\n";
     frag << "void main(void)\n{\n";

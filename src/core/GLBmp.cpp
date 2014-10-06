@@ -1,5 +1,6 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
+#include <FreeImage.h>
 static const int mBpp = 4;
 
 GLBmp::GLBmp(int w, int h)
@@ -16,6 +17,9 @@ GLBmp::~GLBmp()
         FreeImage_Unload(mBitmap);
     }
 }
+
+
+
 
 void GLBmp::save(const char* path)
 {
@@ -49,10 +53,32 @@ void GLBmp::setColor(const GLColor& c, int x, int y)
     bitsLine[FI_RGBA_ALPHA] = c.a;
 }
 
+void GLBmp::loadPicture(unsigned char* data, int length)
+{
+    FIMEMORY* memory = FreeImage_OpenMemory(data, length);
+    FREE_IMAGE_FORMAT f = FreeImage_GetFileTypeFromMemory(memory, length);
+    FIBITMAP* bitmap = FreeImage_LoadFromMemory(f, memory);
+    FreeImage_CloseMemory(memory);
+
+    if (NULL!=mBitmap)
+    {
+        FreeImage_Unload(mBitmap);
+    }
+    mBitmap = FreeImage_ConvertTo32Bits(bitmap);
+    FreeImage_Unload(bitmap);
+
+    mWidth  = FreeImage_GetWidth(mBitmap);
+    mHeight = FreeImage_GetHeight(mBitmap);
+}
+
 void GLBmp::loadPicture(const char* pic)
 {
     FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
     FIBITMAP* bitmap = FreeImage_Load(f, pic);
+    if (NULL!=mBitmap)
+    {
+        FreeImage_Unload(mBitmap);
+    }
     mBitmap = FreeImage_ConvertTo32Bits(bitmap);
     FreeImage_Unload(bitmap);
     mWidth  = FreeImage_GetWidth(mBitmap);

@@ -22,10 +22,15 @@
 #define DEBUG_ON
 
 #ifdef DEBUG_ON
+#ifdef GL_BUILD_FOR_ANDROID
+#include <android/log.h>
+#define GPPRINT(format, ...) __android_log_print(ANDROID_LOG_INFO, "simple3D", format,##__VA_ARGS__)
+#else
 #define GPPRINT(format, ...) printf(format,##__VA_ARGS__)
+#endif
 
-#define FUNC_PRINT(x) printf(#x"=%d in %s, %d \n",x,  __func__, __LINE__);
-#define FUNC_PRINT_ALL(x, type) printf(#x"="#type"%"#type" in %s, %d \n",x,  __func__, __LINE__);
+#define FUNC_PRINT(x) GPPRINT(#x"=%d in %s, %d \n",x,  __func__, __LINE__);
+#define FUNC_PRINT_ALL(x, type) GPPRINT(#x"="#type"%"#type" in %s, %d \n",x,  __func__, __LINE__);
 
 #define CHECK_POINTER(x) {if(NULL==x){FUNC_PRINT_ALL(x,p);break;}}
 
