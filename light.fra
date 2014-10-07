@@ -1,3 +1,4 @@
+precision mediump float;
 uniform vec4 lightColor;
 uniform vec4 ambientColor;
 uniform float ka;

@@ -43,6 +43,7 @@ void GLProgram::load(const char* vex, const char* frag)
     COPYS(mVertex, vex);
     COPYS(mFragment, frag);
 #undef COPYS
+    mInit = false;
 }
 
 static void loadAllContent(const char* file, char* &c)

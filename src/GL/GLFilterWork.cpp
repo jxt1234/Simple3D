@@ -44,6 +44,7 @@ void GLFilterWork::onSet()
 
 void GLFilterWork::_genShader(std::ostream& os, const float* p, int n, float x, float y)
 {
+    os <<"precision mediump float;\n";
     os <<"varying vec2 vTex;\n";
     os <<"uniform sampler2D buffer;\n";
     os <<"void main()\n{\n";
