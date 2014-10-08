@@ -20,4 +20,6 @@ class GLWork:public RefCount
         GLWork(){}
         virtual ~GLWork(){}
 };
+
+
 #endif
