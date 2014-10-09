@@ -10,6 +10,7 @@ class CONTEXT_CLASS GLTexture:public RefCount
         virtual ~GLTexture();
         void use();
         void use(int uniId, int texId);
+        void setFilter(bool filter);
         inline int width() const {return mW;}
         inline int height() const {return mH;}
         /*Only support RGBA*/

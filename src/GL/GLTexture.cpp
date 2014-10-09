@@ -30,6 +30,26 @@ void GLTexture::init()
     OPENGL_CHECK_ERROR;
 }
 
+void GLTexture::setFilter(bool filter)
+{
+    glBindTexture(GL_TEXTURE_2D, mId);
+    OPENGL_CHECK_ERROR;
+    if (filter)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        OPENGL_CHECK_ERROR;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        OPENGL_CHECK_ERROR;
+    }
+    else
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        OPENGL_CHECK_ERROR;
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        OPENGL_CHECK_ERROR;
+    }
+}
+
 void GLTexture::upload(void* pixels, int w, int h)
 {
     glBindTexture(GL_TEXTURE_2D, mId);

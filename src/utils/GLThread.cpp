@@ -29,6 +29,7 @@ GLThread::~GLThread()
 
 void GLThread::run()
 {
+    this->readyToRun();
     bool rerun = true;
     while(mRunning && rerun)
     {

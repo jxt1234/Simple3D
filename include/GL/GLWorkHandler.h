@@ -5,7 +5,7 @@ class GLWorkSemore:public RefCount
         GLWorkSemore(){}
         virtual ~GLWorkSemore(){}
 
-        virtual bool wait(int timeout_ms) = 0;
+        virtual bool wait(int timeout_ms=0) = 0;
 };
 class GLWorkHandler
 {

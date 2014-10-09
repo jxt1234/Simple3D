@@ -1,5 +1,5 @@
 #include "GL/GLWorkThread.h"
-GLWorkThread::GLWorkThread(func create, func dest)
+GLWorkThread::GLWorkThread(func create, func dest):GLThread(false)
 {
     mInit = create;
     mDestroy = dest;
@@ -28,19 +28,17 @@ GPPtr<GLWorkSemore> GLWorkThread::queueWork(GPPtr<GLWork> work)
 
 bool GLWorkThread::threadLoop()
 {
-    if (mWorks.empty())
-    {
-        mWait4Work.wait();
-    }
+    mWait4Work.wait();
     WORK w;
+    GLAutoLock _l(mWorkLock);
+    while (!mWorks.empty())
     {
-        GLAutoLock _l(mWorkLock);
         w = mWorks.front();
         mWorks.pop();
+        (w.first)->runOnePass();
+        Sema* s = (Sema*)(w.second.get());
+        s->post();
     }
-    (w.first)->runOnePass();
-    Sema* s = (Sema*)(w.second.get());
-    s->post();
     return true;
 }
 
