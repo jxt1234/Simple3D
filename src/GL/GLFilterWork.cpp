@@ -3,16 +3,14 @@
 #include <sstream>
 #include <iostream>
 #include <string.h>
-GLFilterWork::GLFilterWork(GLBmp* src, GLBmp* dst, const float* p, int n):GLMultiPassWork(src, dst)
+static const int gTotolPass = 2;
+GLFilterWork::GLFilterWork(const float* p, int n)
 {
     assert(n>1);
     mP = new float[n];
     mN = n;
     memcpy(mP, p, n*sizeof(float));
-    if (NULL!=mSrc.get() && NULL!=mDst.get())
-    {
-        _buildShaders();
-    }
+    mPass = 0;
 }
 
 GLFilterWork::~GLFilterWork()
@@ -20,26 +18,21 @@ GLFilterWork::~GLFilterWork()
     delete [] mP;
 }
 
-void GLFilterWork::_buildShaders()
+bool GLFilterWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) const
 {
-    clearShaders();
-    std::ostringstream os;
-    float w = mSrc->width();
-    float h = mSrc->height();
-    _genShader(os, mP, mN, 1.0/w, 0);
-    GPPtr<GLBitmapWork::Shader> s = new GLBitmapWork::Shader(os.str().c_str());
-    addShader(s);
-    os.str("");
-    w = mDst->width();
-    h = mDst->height();
-    _genShader(os, mP, mN, 0, 1.0/h);
-    s = new GLBitmapWork::Shader(os.str().c_str());
-    addShader(s);
-}
-
-void GLFilterWork::onSet()
-{
-    _buildShaders();
+    GLASSERT(mPass<=1);
+    DefaultVertex(vertex);
+    float x=0.0,y=0.0;
+    if (0==mPass)
+    {
+        x = 1.0/(float)(src_()->width());
+    }
+    else if (1==mPass)
+    {
+        y = 1.0/(float)(src_()->height());
+    }
+    _genShader(frag, mP, mN, x, y);
+    return true;
 }
 
 void GLFilterWork::_genShader(std::ostream& os, const float* p, int n, float x, float y)
@@ -56,30 +49,39 @@ void GLFilterWork::_genShader(std::ostream& os, const float* p, int n, float x, 
     os <<";\n";
     os <<"}\n";
 }
+bool GLFilterWork::vFinish() const
+{
+    return mPass>=gTotolPass;
+}
+void GLFilterWork::vNext()
+{
+    mPass++;
+}
 
 class GLFilterWork_Creater:public GLBitmapWorkCreater
 {
     public:
         virtual GLBitmapWork* vCreate(std::istream* input) const
         {
-            GLBitmapWork* w = NULL;
+            GPPtr<GLTextureWork> w;
             if (NULL == input)
             {
                 const float p[] = {0.2, 0.6,0.2};
-                w = new GLFilterWork(NULL, NULL, p, sizeof(p)/sizeof(float));
-                return w;
+                w = new GLFilterWork(p, sizeof(p)/sizeof(float));
+                return new GLBitmapWork(w);
             }
             std::istream& is = *input;
             int n;
             is >> n;
-            assert(n>1);
+            GLASSERT(n>1);
             float* p = new float[n];
             for (int i=0; i<n; ++i)
             {
                 is >> p[i];
             }
+            w = new GLFilterWork(p, sizeof(p)/sizeof(float));
             delete [] p;
-            return w;
+            return new GLBitmapWork(w);
         }
         virtual void vDetail(std::ostream& os) const
         {

@@ -1,7 +1,8 @@
 #include "GL/GLMultiPassWork.h"
-typedef std::vector<GPPtr<GLBitmapWork::Shader> >::iterator ITER;
+#include <sstream>
+typedef std::vector<GPPtr<GLProgram> >::iterator ITER;
 
-GLMultiPassWork::GLMultiPassWork(GLBmp* src, GLBmp* dst):GLBitmapWork(src, dst)
+GLMultiPassWork::GLMultiPassWork()
 {
 }
 GLMultiPassWork::~GLMultiPassWork()
@@ -10,14 +11,25 @@ GLMultiPassWork::~GLMultiPassWork()
 
 bool GLMultiPassWork::onPrepare()
 {
+    while(!this->vFinish())
+    {
+        std::ostringstream vertex, frag;
+        this->onGenerateShader(vertex, frag);
+        mShaders.push_back(new GLProgram(vertex.str(), frag.str()));
+        this->vNext();
+    }
     bool res = true;
     for (ITER i = mShaders.begin(); i!=mShaders.end(); i++)
     {
-        res &= (*i)->setUp();
+        res &= (*i)->init();
+        if (!res)
+        {
+            FUNC_PRINT(res);
+            return false;
+        }
     }
-    res &= INHERIT::onPrepare();
     mTempBuffer = new GLTexture;
-    mTempBuffer->upload(NULL, mSrcT->width(), mSrcT->height());
+    mTempBuffer->upload(NULL, src_()->width(), src_()->height());
     return res;
 }
 
@@ -26,35 +38,44 @@ void GLMultiPassWork::onProcess()
 {
     int odd = mShaders.size()%2;
     GPPtr<GLTexture> current, next;
+    GPPtr<GLTexture> src = src_();
     if (odd)
     {
-        current = mDstT;
+        current = dst_();
         next = mTempBuffer;
     }
     else
     {
         current = mTempBuffer;
-        next = mDstT;
+        next = dst_();
     }
     for (ITER i = mShaders.begin(); i!=mShaders.end(); i++)
     {
-        mDstT = current;
-        mShader = *i;
+        setTexture(src, current);
+        setProgram(*i);
         INHERIT::onProcess();
         /*Ping-Pong*/
-        mSrcT = current;
+        src = current;
         current = next;
-        next = mSrcT;
+        next = src;
     }
 }
 
-void GLMultiPassWork::addShader(GPPtr<GLBitmapWork::Shader> s)
+void GLMultiPassWork::addShader(GPPtr<GLProgram> s)
 {
     mShaders.push_back(s);
 }
 
-void GLMultiPassWork::onDestroy()
+void GLMultiPassWork::clearShaders()
 {
     mShaders.clear();
+}
+
+void GLMultiPassWork::onDestroy()
+{
+    for (ITER i=mShaders.begin(); i!=mShaders.end(); i++)
+    {
+        (*i)->destroy();
+    }
     INHERIT::onDestroy();
 }

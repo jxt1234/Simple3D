@@ -21,7 +21,7 @@ class GLProgram:public RefCount
         inline unsigned int id() const{return mId;}
 
         /*These API must be called in openGL context Thread*/
-        CONTEXT_API void init();
+        CONTEXT_API bool init();
         CONTEXT_API void destroy();
         CONTEXT_API void use();
         CONTEXT_API int attr(const char* name) const;

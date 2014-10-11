@@ -12,14 +12,14 @@ class GLBitmapWorkTest:public GLTest
 
 void GLBitmapWorkTest::run()
 {
-    GLBmp src("input2.jpg");
-    GLBmp dst(1024, 720);
+    GPPtr<GLBmp> src = new GLBmp("input2.jpg");
+    GPPtr<GLBmp> dst = new GLBmp(1024, 720);
     {
-        GLBitmapWork* w = new GLBitmapWork(&src, &dst);
+        GPPtr<GLTextureWork> _w= new GLTextureWork(NULL, NULL);
+        GPPtr<GLBitmapWork> w = new GLBitmapWork(_w);
+        w->set(src, dst);
         w->runOnePass();
-        
-        w->decRef();
     }
-    dst.save("output/GLBitmapWorkTest.png");
+    dst->save("output/GLBitmapWorkTest.png");
 }
 static GLTestRegister<GLBitmapWorkTest> a("GLBitmapWorkTest");

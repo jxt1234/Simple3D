@@ -1,9 +1,10 @@
+#ifndef GL_GLLIGHTSCENE_H
+#define GL_GLLIGHTSCENE_H
 #include <vector>
 #include <map>
 #include "math/GLVector.h"
 #include "GLScene.h"
 #include "GLProgram.h"
-
 class GLLightScene:public GLScene, GLObjectCreator
 {
     public:
@@ -33,8 +34,6 @@ class GLLightScene:public GLScene, GLObjectCreator
         virtual void vAddObject(GPPtr<GLObject> obj);
         virtual void vRemoveObject(GPPtr<GLObject> obj);
         virtual void vRemoveAll();
-
-
         virtual const GLObjectCreator* vGetCreator() const {return this;}
         /*As creator*/
         virtual GLObject* vCreate(std::istream* parameter=NULL) const;
@@ -61,5 +60,5 @@ class GLLightScene:public GLScene, GLObjectCreator
         std::vector<GPPtr<GLObject> > mObjs;
         std::vector<GPPtr<GLObject> >::iterator mIter;
         friend class GLLightObject;
-
 };
+#endif

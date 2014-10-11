@@ -4,15 +4,18 @@
 class GLFilterWork:public GLMultiPassWork
 {
     public:
-        GLFilterWork(GLBmp* src, GLBmp* dst, const float* p=NULL, int n=0);
+        GLFilterWork(const float* p=NULL, int n=0);
         virtual ~GLFilterWork();
 
-        virtual void onSet();
+        virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
     private:
-        void _buildShaders();
+        virtual bool vFinish() const;
+        virtual void vNext();
         static void _genShader(std::ostream& os, const float* p, int n, float xOffset, float yOffset);
 
         float* mP;
         int mN;
+
+        int mPass;
 };
 #endif

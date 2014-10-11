@@ -1,5 +1,6 @@
+#ifndef GL_GLTRANSFORMER_H
+#define GL_GLTRANSFORMER_H
 #include "math/GLMatrix4.h"
-
 class GLTransformer:public RefCount
 {
     public:
@@ -11,3 +12,4 @@ class GLTransformer:public RefCount
     private:
         GLMatrix4 mMatrix;
 };
+#endif

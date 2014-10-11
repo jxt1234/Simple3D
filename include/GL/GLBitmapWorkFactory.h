@@ -1,3 +1,5 @@
+#ifndef GL_GLBITMAPWORKFACTORY_H
+#define GL_GLBITMAPWORKFACTORY_H
 #include "GLBitmapWork.h"
 #include <istream>
 #include <map>
@@ -8,19 +10,15 @@ class GLBitmapWorkCreater
         virtual GLBitmapWork* vCreate(std::istream* input) const = 0;
         //Give Detail for how to set input
         virtual void vDetail(std::ostream& os) const{}
-
         GLBitmapWorkCreater(){}
         virtual ~GLBitmapWorkCreater(){}
 };
-
-
 class GLBitmapWorkFactory
 {
     public:
         //For User
         static GLBitmapWork* create(const char* name, std::istream* input=NULL);
         static void printMethods(std::ostream& os);
-
         //For GLBitmapWorkCreatorRegister
         void insert(GLBitmapWorkCreater* c, const std::string& s);
         static GLBitmapWorkFactory& get();
@@ -45,3 +43,4 @@ class GLBitmapWorkCreatorRegister
         }
         ~GLBitmapWorkCreatorRegister(){}
 };
+#endif

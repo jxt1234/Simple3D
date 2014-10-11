@@ -1,19 +1,23 @@
 #ifndef GL_GLMULTIPASSWORK_H
 #define GL_GLMULTIPASSWORK_H
-#include "GLBitmapWork.h"
-class GLMultiPassWork:public GLBitmapWork
+#include "GLTextureWork.h"
+class GLMultiPassWork:public GLTextureWork
 {
     public:
-        GLMultiPassWork(GLBmp* src, GLBmp* dst);
+        GLMultiPassWork();
         virtual ~GLMultiPassWork();
-        void addShader(GPPtr<Shader> s);
-        inline void clearShaders() {mShaders.clear();}
         virtual bool onPrepare();
         virtual void onProcess();
         virtual void onDestroy();
     private:
-        std::vector<GPPtr<Shader> > mShaders;
+        /*FIXME delete this two api*/
+        void addShader(GPPtr<GLProgram> program);
+        void clearShaders();
+
+        virtual bool vFinish() const {return true;}
+        virtual void vNext() {}
+        std::vector<GPPtr<GLProgram> > mShaders;
         GPPtr<GLTexture> mTempBuffer;
-        typedef GLBitmapWork INHERIT;
+        typedef GLTextureWork INHERIT;
 };
 #endif

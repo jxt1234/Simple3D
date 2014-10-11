@@ -1,7 +1,8 @@
+#ifndef GL_GLWORKTHREAD_H
+#define GL_GLWORKTHREAD_H
 #include <queue>
 #include "utils/GLThread.h"
 #include "GLWorkHandler.h"
-
 class GLWorkThread:public GLThread, GLWorkHandler
 {
     public:
@@ -21,10 +22,8 @@ class GLWorkThread:public GLThread, GLWorkHandler
                 GLSema mSem;
         };
         virtual GPPtr<GLWorkSemore> queueWork(GPPtr<GLWork> work);
-
         GLWorkThread(func create=NULL, func dest=NULL);
         virtual ~GLWorkThread();
-
     protected:
         virtual void onStart();
         virtual void onStop();
@@ -34,10 +33,9 @@ class GLWorkThread:public GLThread, GLWorkHandler
     private:
         typedef std::pair<GPPtr<GLWork>, GPPtr<GLWorkSemore> >WORK;
         std::queue<WORK> mWorks;
-
         GLSema mWait4Work;
         GLLock mWorkLock;
-
         func mInit;
         func mDestroy;
 };
+#endif

@@ -1,7 +1,8 @@
+#ifndef GL_GLSQUAREOBJECTCREATOR_H
+#define GL_GLSQUAREOBJECTCREATOR_H
 #include "GLObject.h"
 #include "GLTexture.h"
 #include "GLvboBuffer.h"
-
 class GLSquareObjectCreator:public GLObjectCreator
 {
     public:
@@ -23,3 +24,4 @@ class GLSquareObjectCreator:public GLObjectCreator
         GPPtr<GLvboBuffer> mTexcord;
         GPPtr<GLvboBuffer> mNormal;
 };
+#endif

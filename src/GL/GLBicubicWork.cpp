@@ -10,19 +10,9 @@ GLBicubicWork::~GLBicubicWork()
 {
 }
 
-void GLBicubicWork::onSet()
-{
-    int w = mSrc->width();
-    int h = mSrc->height();
-    std::ostringstream os;
-    _genShader(os, w, h);
-    mShader = new Shader(os.str().c_str());
-}
-
-float BiCubicPoly(float x)
+float BiCubicPoly(float x, float a)
 {
     float abs_x = abs(x);
-    float a = -0.5;
     if( abs_x <= 1.0 )
     {
         return (a+2)*pow(abs_x,3) - (a+3)*pow(abs_x,2) + 1;
@@ -34,12 +24,32 @@ float BiCubicPoly(float x)
     else
         return 0.0;
 }
+void GLBicubicWork::onUse(int proId, int srcW, int srcH)
+{
+    float uUnit = 1.0/(float)srcW;
+    float vUnit = 1.0/(float)srcH; 
+    int uid = glGetUniformLocation(proId, "uUnit");
+    OPENGL_CHECK_ERROR;
+    glUniform1f(uid, uUnit);
+    OPENGL_CHECK_ERROR;
+    int vid = glGetUniformLocation(proId, "vUnit");
+    OPENGL_CHECK_ERROR;
+    glUniform1f(vid, vUnit);
+    OPENGL_CHECK_ERROR;
+}
+bool GLBicubicWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) const
+{
+    DefaultVertex(vertex);
+    _genShader(frag);
+}
 
-void GLBicubicWork::_genShader(std::ostream& os, int w, int h)
+void GLBicubicWork::_genShader(std::ostream& os) const
 {
     os <<"precision mediump float;\n";
     os <<"varying vec2 vTex;\n";
     os <<"uniform sampler2D buffer;\n";
+    os <<"uniform float uUnit;\n";
+    os <<"uniform float vUnit;\n";
     os <<"void main()\n{\n";
     os <<"gl_FragColor = vec4(0.0,0.0,0.0,0.0)\n";
     const int n = 4;
@@ -47,10 +57,10 @@ void GLBicubicWork::_genShader(std::ostream& os, int w, int h)
     {
         for (int j=0; j<n; ++j)
         {
-            float uOff = (i+1-n/2)/(float)w;
-            float vOff = (j+1-n/2)/(float)h;
-            float p = BiCubicPoly(uOff*w)*BiCubicPoly(vOff*h);
-            os <<"+ "<<p<<"*texture2D(buffer, vTex + vec2("<<uOff<<", "<<vOff<<"))\n";
+            float uOff = (i+1-n/2);
+            float vOff = (j+1-n/2);
+            float p = BiCubicPoly(uOff, mA)*BiCubicPoly(vOff, mA);
+            os <<"+ "<<p<<"*texture2D(buffer, vTex + vec2("<<uOff<<"*uUnit, "<<vOff<<"*vUnit))\n";
         }
     }
     os <<";\n"<<"}\n";
@@ -67,8 +77,8 @@ class GLBicubicWorkCreater:public GLBitmapWorkCreater
             {
                 (*input)>>a;
             }
-            GLBitmapWork* w = new GLBicubicWork(a);
-            return w;
+            GPPtr<GLTextureWork> w = new GLBicubicWork(a);
+            return new GLBitmapWork(w);
         }
         virtual void vDetail(std::ostream& os) const
         {

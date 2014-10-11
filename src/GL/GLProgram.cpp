@@ -71,6 +71,8 @@ void GLProgram::loadFiles(const char* vertex, const char* frag)
 
 GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 {
+    mFragment = NULL;
+    mVertex = NULL;
     mInit = false;
     mId = 0;
     load(vertex, frag);
@@ -103,9 +105,9 @@ static bool compileShader(GLuint s)
     return true;
 }
 
-CONTEXT_API void GLProgram::init()
+CONTEXT_API bool GLProgram::init()
 {
-    if (mInit) return;
+    if (mInit) return true;
     GLAutoLock _l(mLock);
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
@@ -122,10 +124,13 @@ CONTEXT_API void GLProgram::init()
     OPENGL_CHECK_ERROR;
     /*TODO move assert to be log*/
     bool res = compileShader(vert);
-    assert(true == res);
+    if (!res) FUNC_PRINT_ALL(mVertex, s);
+    GLASSERT(true == res);
+    if (false == res) return false;
     res = (compileShader(frag));
     if (!res) FUNC_PRINT_ALL(mFragment, s);
-    assert(true == res);
+    GLASSERT(true == res);
+    if (false == res) return false;
     /*Create Program*/
     mId = glCreateProgram();
     OPENGL_CHECK_ERROR;
@@ -140,10 +145,12 @@ CONTEXT_API void GLProgram::init()
     if (!linked)
     {
         FUNC_PRINT(linked);
+        return false;
     }
     mInit = true;
     mVertId = vert;
     mFragId = frag;
+    return true;
 }
 
 CONTEXT_API int GLProgram::attr(const char* name) const

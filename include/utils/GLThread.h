@@ -1,3 +1,5 @@
+#ifndef UTILS_GLTHREAD_H
+#define UTILS_GLTHREAD_H
 #include "GLLock.h"
 class GLThread
 {
@@ -10,21 +12,17 @@ class GLThread
         /*Outside thread method */
         virtual void onStart(){}
         virtual void onStop(){}
-
         /*Inside thread method*/
         virtual void readyToRun() = 0;
         virtual bool threadLoop() = 0;
         virtual void destroy() = 0;
-
         void run();
         static void* threadFunc(void* arg);
-
     private:
         bool mRunning;
         void* mData;
         GLLock mLock;
 };
-
 class GLSema
 {
     public:
@@ -35,3 +33,4 @@ class GLSema
     private:
         void* mData;
 };
+#endif

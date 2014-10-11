@@ -87,8 +87,8 @@ GLBitmapWork* GLFractionCreator::vCreate(std::istream* input) const
     int iternumber = GPRandom::mid(1, 6);
     std::ostringstream os;
     _genShaderFrac(os, n, iternumber, kR, kG, kB, pR, pG, pB, 0.1,0.1);
-    GPPtr<GLBitmapWork::Shader> s = new GLBitmapWork::Shader(os.str().c_str());
-    return new GLBitmapWork(NULL, NULL, s.get());
+    GPPtr<GLTextureWork> work = new GLTextureWork(NULL, os.str().c_str());
+    return new GLBitmapWork(work);
 }
 
 

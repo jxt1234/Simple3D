@@ -1,5 +1,6 @@
+#ifndef GL_GLAUTOPROGRAM_H
+#define GL_GLAUTOPROGRAM_H
 #include "head.h"
-
 CONTEXT_CLASS class GLAutoProgram
 {
     public:
@@ -9,3 +10,4 @@ CONTEXT_CLASS class GLAutoProgram
         int mId;
         int mPrevious;
 };
+#endif
