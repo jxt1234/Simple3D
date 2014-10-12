@@ -1,5 +1,5 @@
-#ifndef DISPLAY_GLCURVEOBJECT_H
-#define DISPLAY_GLCURVEOBJECT_H
+#ifndef GL_GLCURVEOBJECT_H
+#define GL_GLCURVEOBJECT_H
 #include "GLObject.h"
 #include <string>
 #include <vector>
@@ -10,7 +10,6 @@
  x = xf(u*us, v*vs)
  y = yf(u*us, v*vs)
  z = zf(u*us, v*vs)
-
  color = texture2D(u,v)
  */
 class GLCurveObject:public GLObject
@@ -25,8 +24,13 @@ class GLCurveObject:public GLObject
         inline void setScale(float us, float vs){mUs = us, mVs = vs;}
         inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
-        static void GenerateShader(std::ostream& vertex, std::ostream& frag, const std::string& xf, const std::string& yf, const std::string& zf);
+        virtual void onPrepare();
+    protected:
+        inline const GLProgram& program() const {return mPro;}
+        inline const GLTexture* texture() const {return mTex;}
     private:
+        virtual void vGetVertex(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf) const;
+        virtual void vGetFramgent(std::ostream& frag) const;
         GLProgram mPro;
         GLTexture* mTex;
         GLvboBuffer* mVbo;

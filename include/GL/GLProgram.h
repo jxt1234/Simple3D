@@ -24,6 +24,7 @@ class GLProgram:public RefCount
         CONTEXT_API bool init();
         CONTEXT_API void destroy();
         CONTEXT_API void use();
+        CONTEXT_API void useSingle() const;
         CONTEXT_API int attr(const char* name) const;
         CONTEXT_API int uniform(const char* name) const;
         CONTEXT_API static void setMatrix(const GLMatrix4& matrix, int id);

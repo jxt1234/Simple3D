@@ -12,6 +12,10 @@ GLBitmapWork::~GLBitmapWork()
 {
 }
 
+void GLBitmapWork::GetShader(std::ostream& vert, std::ostream& frag) const
+{
+    mWork->onGenerateShader(vert, frag);
+}
 bool GLBitmapWork::onPrepare()
 {
     GLASSERT(NULL!=mSrc.get() && NULL!=mDst.get());

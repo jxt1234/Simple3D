@@ -7,6 +7,7 @@
 #include "GL/GLvboBuffer.h"
 #include "GL/GLTexture.h"
 #include "GL/GLCurveObject.h"
+#include "GL/GLBiCubicCurveObj.h"
 #include "GL/GLBezier.h"
 #include "GL/GLLightScene.h"
 #include "vertex/GL_position.h"
@@ -26,7 +27,7 @@
 
 using namespace std;
 
-static GLCurveObject* initCurve()
+static GLCurveObject* initCurve(bool cubic)
 {
     GLTexture* texture = new GLTexture();
     GLBmp b;
@@ -41,13 +42,22 @@ static GLCurveObject* initCurve()
     GLCSVertexGenerate(&p, &normal, &tex, &s, &area, 0);
     GLvboBuffer* texBuffer = new GLvboBuffer(&tex);
 
-    GLCurveObject* result = new GLCurveObject();
+    GLCurveObject* result = NULL;
+    if (cubic)
+    {
+        result = new GLBiCubicCurveObj();
+    }
+    else
+    {
+        result = new GLCurveObject();
+    }
     result->setTexture(texture);
     result->setVBO(texBuffer);
     result->setFormula(string("(1.0+v/2.0*cos(u/2.0))*cos(u)"), string("(1.0+v/2.0*cos(u/2.0))*sin(u)"), string("v/2.0*sin(u/2.0)"));
     //result->setFormula(string("1.0"), string("10*u"), string("-10.0*v"));
     result->setScale(2*PI,2);
     result->setOffset(0,-0.5);
+    result->onPrepare();
     return result;
 }
 
@@ -82,9 +92,9 @@ GLObject* initLight()
 
 static void init()
 {
-   // gObj = initCurve();
+    gObj = initCurve(true);
 	//gObj = initBezier();
-    gObj = initLight();
+    //gObj = initLight();
     glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
     glClearDepth(1.0);

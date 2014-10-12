@@ -182,6 +182,12 @@ CONTEXT_API void GLProgram::use()
     glUseProgram(mId);
     OPENGL_CHECK_ERROR;
 }
+
+CONTEXT_API void GLProgram::useSingle() const
+{
+    glUseProgram(mId);
+    OPENGL_CHECK_ERROR;
+}
 void GLProgram::setMatrix(const GLMatrix4& matrix, int id)
 {
     float tempMatrix[16];

@@ -20,6 +20,9 @@ class GLBitmapWork:public GLWork
         virtual void onFinish();
         virtual void onDestroy();
 
+        void GetShader(std::ostream& vert, std::ostream& frag) const;
+        inline void use(int id, int w, int h) const {mWork->onUse(id, w, h);}
+
     private:
         GPPtr<GLBmp> mSrc;
         GPPtr<GLBmp> mDst;

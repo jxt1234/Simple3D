@@ -9,13 +9,13 @@ const static string us_f("us");
 const static string vs_f("vs");
 const static string uf_f("uf");
 const static string vf_f("vf");
-const static string tex_v("tex");
+const static string tex_v("Tex");
+const static string vTex("vTex");
 const static string texture_s("texture");
 
-void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, const std::string& xf, const std::string& yf, const std::string& zf)
+void GLCurveObject::vGetVertex(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf) const
 {
     //Vertex shader
-    string vTex = "v_"+tex_v;
     vertex << "attribute vec2 "<<tex_v<<";\n";
     vertex << "varying vec2 "<<vTex<<";\n";
     vertex << "uniform mat4 "<<trans_m <<";\n";
@@ -39,7 +39,10 @@ void GLCurveObject::GenerateShader(std::ostream& vertex, std::ostream& frag, con
     vertex << "gl_Position = temp;\n";
     vertex << vTex <<" = "<<tex_v<<";\n";
     vertex << "}\n";
+}
 
+void GLCurveObject::vGetFramgent(std::ostream& frag) const
+{
     //Fragment shader
     frag << "precision mediump float;\n";
     frag << "uniform sampler2D "<<texture_s<<";\n";
@@ -70,14 +73,15 @@ GLCurveObject::~GLCurveObject()
 }
 void GLCurveObject::setTexture(GLTexture* tex)
 {
-    assert(NULL!=tex);
+    GLASSERT(NULL!=tex);
     tex->addRef();
     SAFE_UNREF(mTex);
     mTex = tex;
+    mTex->setFilter(true);
 }
 void GLCurveObject::setVBO(GLvboBuffer* vbo)
 {
-    assert(NULL!=vbo);
+    GLASSERT(NULL!=vbo);
     vbo->addRef();
     SAFE_UNREF(mVbo);
     mVbo = vbo;
@@ -86,7 +90,8 @@ void GLCurveObject::setVBO(GLvboBuffer* vbo)
 void GLCurveObject::setFormula(const std::string& formula_x, const std::string& formula_y, const std::string& formula_z)
 {
     ostringstream vertex, frag;
-    GenerateShader(vertex, frag, formula_x, formula_y, formula_z);
+    this->vGetVertex(vertex, formula_x, formula_y, formula_z);
+    this->vGetFramgent(frag);
     mPro.load(vertex.str(), frag.str());
 }
 void GLCurveObject::setColor(unsigned int argb)
@@ -95,9 +100,13 @@ void GLCurveObject::setColor(unsigned int argb)
     mTex = new GLTexture();
     mTex->upload(&argb, 1, 1);
 }
+void GLCurveObject::onPrepare()
+{
+    mPro.init();
+}
 void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
-    assert(NULL!=mVbo);
+    GLASSERT(NULL!=mVbo);
     mPro.use();
     if (NULL == mTex) setColor(0xFF00FF00);//Default green
     mTex->use();
