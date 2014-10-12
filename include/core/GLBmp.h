@@ -21,6 +21,8 @@ class GLBmp:public IBitmap
         virtual ~GLBmp();
         virtual GLColor getColor(int x, int y);
         virtual void setColor(const GLColor& c, int x, int y);
+
+        double psnr(const GLBmp& other);
     protected:
         FIBITMAP* mBitmap;
 };

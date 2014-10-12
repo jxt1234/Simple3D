@@ -13,7 +13,7 @@ class GLBitmapWorkTest:public GLTest
 void GLBitmapWorkTest::run()
 {
     GPPtr<GLBmp> src = new GLBmp("input2.jpg");
-    GPPtr<GLBmp> dst = new GLBmp(1024, 720);
+    GPPtr<GLBmp> dst = new GLBmp(src->width()*4, src->height()*4);
     {
         GPPtr<GLTextureWork> _w= new GLTextureWork(NULL, NULL);
         GPPtr<GLBitmapWork> w = new GLBitmapWork(_w);

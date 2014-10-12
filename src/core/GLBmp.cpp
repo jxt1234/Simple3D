@@ -1,6 +1,7 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
 #include <FreeImage.h>
+#include <math.h>
 static const int mBpp = 4;
 
 GLBmp::GLBmp(int w, int h)
@@ -83,4 +84,30 @@ void GLBmp::loadPicture(const char* pic)
     FreeImage_Unload(bitmap);
     mWidth  = FreeImage_GetWidth(mBitmap);
     mHeight = FreeImage_GetHeight(mBitmap);
+}
+
+double GLBmp::psnr(const GLBmp& other)
+{
+    double result = 0.0;
+    int w = other.width();
+    int h = other.height();
+    if (width()!=w || height()!=h)
+    {
+        return 0.0;
+    }
+    uint32_t* src = (uint32_t*)pixels();
+    uint32_t* dst = (uint32_t*)other.pixels();
+    for (int i=0; i<h; ++i)
+    {
+        for (int j=0; j<w; ++j)
+        {
+            double s = *src++;
+            double d = *dst++;
+            result+= (s-d)*(s-d);
+        }
+    }
+    uint32_t _max = 0xFFFFFFFF;
+    result = result/(double)(w*h);
+    result = -10.0*log(result/(double)_max/(double)_max)/log(10.0);
+    return result;
 }

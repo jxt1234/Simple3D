@@ -15,14 +15,14 @@ void GLCubicTest::run()
     GPPtr<GLBmp> src = new GLBmp("input2.jpg");
     int w = src->width();
     int h = src->height();
-    for (int i=2; i<=4; ++i)
+    int i = 4;
     {
         GPPtr<GLBmp> dst = new GLBmp(w*i, h*i);
         GPPtr<GLBitmapWork> w = GLBitmapWorkFactory::create("Bicubic");
         w->set(src, dst);
         w->runOnePass();
         std::ostringstream fileName;
-        fileName << "output/GLCubicTest_"<<i<<".png";
+        fileName << "output/GLCubicTest.png";
         dst->save(fileName.str().c_str());
     }
 }

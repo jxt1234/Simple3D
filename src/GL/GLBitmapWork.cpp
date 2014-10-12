@@ -21,6 +21,7 @@ bool GLBitmapWork::onPrepare()
     GLASSERT(NULL!=mSrc.get() && NULL!=mDst.get());
     GLAutoLock _l(mLock);
     mSrcT = new GLTexture;
+    mSrcT->setFilter(true);
     mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
     mDstT = new GLTexture;
     mDstT->upload(NULL, mDst->width(), mDst->height());

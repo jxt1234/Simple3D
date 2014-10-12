@@ -14,7 +14,7 @@ GLBiCubicCurveObj::~GLBiCubicCurveObj()
 void GLBiCubicCurveObj::onPrepare()
 {
     INHERIT::onPrepare();
-    mTex->setFilter(false);
+    //mTex->setFilter(false);
 }
 void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
 {
