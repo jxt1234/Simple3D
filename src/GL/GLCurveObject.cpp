@@ -77,7 +77,6 @@ void GLCurveObject::setTexture(GLTexture* tex)
     tex->addRef();
     SAFE_UNREF(mTex);
     mTex = tex;
-    mTex->setFilter(true);
 }
 void GLCurveObject::setVBO(GLvboBuffer* vbo)
 {
@@ -102,13 +101,14 @@ void GLCurveObject::setColor(unsigned int argb)
 }
 void GLCurveObject::onPrepare()
 {
+    if (NULL == mTex) setColor(0xFF00FF00);//Default green
     mPro.init();
+    mTex->setFilter(true);
 }
 void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
     GLASSERT(NULL!=mVbo);
     mPro.use();
-    if (NULL == mTex) setColor(0xFF00FF00);//Default green
     mTex->use();
     GLProgram::setMatrix(projection, mPro.uniform(proj_m.c_str()));
     GLProgram::setMatrix(transform, mPro.uniform(trans_m.c_str()));

@@ -8,9 +8,11 @@ class GLBiCubicCurveObj:public GLCurveObject
         GLBiCubicCurveObj();
         virtual ~GLBiCubicCurveObj();
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
+        virtual void onPrepare();
     private:
         virtual void vGetFramgent(std::ostream& frag) const;
 
         GPPtr<GLBitmapWork> mWork;
+        typedef GLCurveObject INHERIT;
 };
 #endif

@@ -10,6 +10,12 @@ GLBiCubicCurveObj::~GLBiCubicCurveObj()
 {
     mWork = NULL;
 }
+
+void GLBiCubicCurveObj::onPrepare()
+{
+    INHERIT::onPrepare();
+    mTex->setFilter(false);
+}
 void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
 {
     std::ostringstream vert;//Not use
@@ -17,7 +23,7 @@ void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
 }
 void GLBiCubicCurveObj::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
-    program().useSingle();
-    mWork->use(program().id(), texture()->width(), texture()->height());
-    GLCurveObject::onDraw(M,V,P);
+    mPro.use();
+    mWork->use(mPro.id(), mTex->width(), mTex->height());
+    INHERIT::onDraw(M,V,P);
 }
