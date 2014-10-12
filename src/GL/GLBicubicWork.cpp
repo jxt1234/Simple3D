@@ -12,17 +12,17 @@ GLBicubicWork::~GLBicubicWork()
 
 float BiCubicPoly(float x, float a)
 {
-    float abs_x = abs(x);
-    if( abs_x <= 1.0 )
+    if (x<0) x = -x;
+    float res = 0.0;
+    if(x <= 1.0)
     {
-        return (a+2)*pow(abs_x,3) - (a+3)*pow(abs_x,2) + 1;
+        res = (a+2)*x*x*x - (a+3)*x*x + 1;
     }
-    else if( abs_x < 2.0 )
+    else if(x < 2.0)
     {
-        return a*pow(abs_x,3) - 5*a*pow(abs_x,2) + 8*a*abs_x - 4*a;
+        res = a*x*x*x - 5*a*x*x + 8*a*x - 4*a;
     }
-    else
-        return 0.0;
+    return res;
 }
 void GLBicubicWork::onUse(int proId, int srcW, int srcH)
 {
@@ -57,10 +57,10 @@ void GLBicubicWork::_genShader(std::ostream& os) const
     {
         for (int j=0; j<n; ++j)
         {
-            float uOff = (i+1-n/2);
-            float vOff = (j+1-n/2);
+            float uOff = (i-n/2)+0.5;
+            float vOff = (j-n/2)+0.5;
             float p = BiCubicPoly(uOff, mA)*BiCubicPoly(vOff, mA);
-            os <<"+ "<<p<<"*texture2D(buffer, vTex + vec2("<<uOff<<"*uUnit, "<<vOff<<"*vUnit))\n";
+            os <<"+ float("<<p<<")*texture2D(buffer, vTex + vec2(float("<<uOff<<")*uUnit, float("<<vOff<<")*vUnit))\n";
         }
     }
     os <<";\n"<<"}\n";
@@ -72,7 +72,7 @@ class GLBicubicWorkCreater:public GLBitmapWorkCreater
     public:
         virtual GLBitmapWork* vCreate(std::istream* input) const
         {
-            float a = 0.5;
+            float a = -0.5;
             if (NULL!=input)
             {
                 (*input)>>a;

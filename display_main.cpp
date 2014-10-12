@@ -117,7 +117,7 @@ static void display(void)
 	a+=0.0005;
     int angle = (a/PI*180);
     angle = angle%360;
-    printf("angle = %d\n", angle);
+    //printf("angle = %d\n", angle);
     gObj->onDraw(transform, view, projection);
     glutSwapBuffers(); 
 }
