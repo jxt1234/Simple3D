@@ -1,6 +1,7 @@
 #include "test/GLTest.h"
 #include "GL/GLBitmapWorkFactory.h"
 #include "GL/GLContext.h"
+#include "utils/GP_Clock.h"
 #include <sstream>
 int main()
 {
@@ -13,7 +14,10 @@ int main()
         GPPtr<GLBmp> dst = new GLBmp(w*i, h*i);
         GPPtr<GLBitmapWork> w = GLBitmapWorkFactory::create("Bicubic");
         w->set(src, dst);
-        w->runOnePass();
+        {
+            GPCLOCK;
+            w->runOnePass();
+        }
         std::ostringstream fileName;
         fileName << "output/ScaleExample.png";
         dst->save(fileName.str().c_str());

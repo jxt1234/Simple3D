@@ -11,7 +11,7 @@
 class GLBitmapWork:public GLWork
 {
     public:
-        GLBitmapWork(GPPtr<GLTextureWork> work);
+        GLBitmapWork(GPPtr<GLTextureWork> work, bool filter = true);
         virtual ~GLBitmapWork();
         void set(GPPtr<GLBmp> src, GPPtr<GLBmp> dst);
         //Must in GL Thread
@@ -23,6 +23,8 @@ class GLBitmapWork:public GLWork
         void GetShader(std::ostream& vert, std::ostream& frag) const;
         inline void use(int id, int w, int h) const {mWork->onUse(id, w, h);}
 
+        inline GPPtr<GLTextureWork> work() const{return mWork;}
+
     private:
         GPPtr<GLBmp> mSrc;
         GPPtr<GLBmp> mDst;
@@ -30,6 +32,7 @@ class GLBitmapWork:public GLWork
         GPPtr<GLTexture> mDstT;
 
         GPPtr<GLTextureWork> mWork;
+        bool mFilter;
 
         GLLock mLock;
 };

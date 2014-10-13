@@ -5,7 +5,6 @@
 #include "test/GLTest.h"
 int main()
 {
-    int p=1;
     srand(time(NULL));
     FreeImage_Initialise(TRUE);
     GLContext::init();

@@ -12,7 +12,7 @@ class GLScalePSNRTest:public GLTest
 
 void GLScalePSNRTest::run()
 {
-    const int scale = 5;
+    const int scale = 2;
     GPPtr<GLBmp> origin = new GLBmp("input2.jpg");
     int w = origin->width();
     int h = origin->height();

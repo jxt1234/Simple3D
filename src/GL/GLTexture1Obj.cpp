@@ -2,7 +2,7 @@
 
 void GLTexture1Obj::set(GPPtr<GLTexture> t, GPPtr<GLvboBuffer> ver, GPPtr<GLvboBuffer> tex, GPPtr<GLvboBuffer> normal, int verId, int texId, int normaliId)
 {
-    assert(NULL!=t.get() && NULL!=ver.get() && NULL!=tex.get());
+    GLASSERT(NULL!=t.get() && NULL!=ver.get() && NULL!=tex.get());
 
     mTexture = t;
 
@@ -16,7 +16,7 @@ void GLTexture1Obj::set(GPPtr<GLTexture> t, GPPtr<GLvboBuffer> ver, GPPtr<GLvboB
 }
 GLTexture1Obj::GLTexture1Obj(GPPtr<GLObject> basic)
 {
-    assert(NULL!=basic.get());
+    GLASSERT(NULL!=basic.get());
     mBasic = basic;
 }
 GLTexture1Obj::~GLTexture1Obj()
