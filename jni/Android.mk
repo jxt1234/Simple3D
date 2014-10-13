@@ -28,7 +28,7 @@ LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/\
     $(LOCAL_PATH)/../third_party/FreeImage/Source
 
 LOCAL_STATIC_LIBRARIES+= FreeImage
-LOCAL_LDLIBS    := -lz -lm -llog -lGLESv2
+LOCAL_LDLIBS    := -lz -lm -llog -lGLESv2 -lEGL
 LOCAL_CPP_FEATURES := rtti exceptions
 
 include $(BUILD_SHARED_LIBRARY)
