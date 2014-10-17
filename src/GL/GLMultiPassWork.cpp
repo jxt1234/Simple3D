@@ -9,73 +9,46 @@ GLMultiPassWork::~GLMultiPassWork()
 {
 }
 
-bool GLMultiPassWork::onPrepare()
-{
-    while(!this->vFinish())
-    {
-        std::ostringstream vertex, frag;
-        this->onGenerateShader(vertex, frag);
-        mShaders.push_back(new GLProgram(vertex.str(), frag.str()));
-        this->vNext();
-    }
-    bool res = true;
-    for (ITER i = mShaders.begin(); i!=mShaders.end(); i++)
-    {
-        res &= (*i)->init();
-        if (!res)
-        {
-            FUNC_PRINT(res);
-            return false;
-        }
-    }
-    mTempBuffer = new GLTexture;
-    mTempBuffer->upload(NULL, src_()->width(), src_()->height());
-    return res;
-}
-
 /*FIXME Only the last time can we draw to the dst*/
-void GLMultiPassWork::onProcess()
+void GLMultiPassWork::run(GLTexture* dst, std::vector<GLTexture*> sources)
 {
-    int odd = mShaders.size()%2;
-    GPPtr<GLTexture> current, next;
-    GPPtr<GLTexture> src = src_();
+    GLASSERT(NULL!=dst);
+    GLASSERT(!sources.empty());
+    GLASSERT(NULL!=sources.at(0));
+    int odd = this->vGetStep()%2;
+    GLTexture* current;
+    GLTexture* next;
+    GLTexture* src = sources.at(0);
+    GPPtr<GLTexture> tempBuffer = new GLTexture;
+    tempBuffer->upload(NULL, dst->width(), dst->height());
     if (odd)
     {
-        current = dst_();
-        next = mTempBuffer;
+        current = dst;
+        next = tempBuffer.get();
     }
     else
     {
-        current = mTempBuffer;
-        next = dst_();
+        current = tempBuffer.get();
+        next = dst;
     }
-    for (ITER i = mShaders.begin(); i!=mShaders.end(); i++)
+    this->vRewind();
+    GLProgram* program = NULL;
+    while (this->vCurrent(&program))
     {
-        setTexture(src, current);
-        setProgram(*i);
-        INHERIT::onProcess();
+        if (NULL!=program)
+        {
+            GPPtr<GLProgram> warp = program;
+            program->addRef();//Spectial GPPtr
+            setProgram(program);
+        }
+        std::vector<GLTexture*> _source(1, src);
+        INHERIT::run(current, _source);
         /*Ping-Pong*/
         src = current;
         current = next;
         next = src;
+        this->vNext();
+        program = NULL;
     }
 }
 
-void GLMultiPassWork::addShader(GPPtr<GLProgram> s)
-{
-    mShaders.push_back(s);
-}
-
-void GLMultiPassWork::clearShaders()
-{
-    mShaders.clear();
-}
-
-void GLMultiPassWork::onDestroy()
-{
-    for (ITER i=mShaders.begin(); i!=mShaders.end(); i++)
-    {
-        (*i)->destroy();
-    }
-    INHERIT::onDestroy();
-}

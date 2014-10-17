@@ -19,11 +19,12 @@ void GLBiCubicCurveObj::onPrepare()
 void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
 {
     std::ostringstream vert;//Not use
-    mWork->GetShader(vert, frag);
+    mWork->work()->onGenerateShader(vert, frag);
 }
 void GLBiCubicCurveObj::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
     mPro.use();
-    mWork->use(mPro.id(), mTex->width(), mTex->height());
+    std::vector<GLTexture*> _s(1, mTex);
+    mWork->work()->onUse(NULL, _s, &mPro);
     INHERIT::onDraw(M,V,P);
 }

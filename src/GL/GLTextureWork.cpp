@@ -26,7 +26,6 @@ static const char gDefaultFrag[] =
 GLTextureWork::GLTextureWork()
 {
 }
-
 GLTextureWork::GLTextureWork(const char* vertex, const char* frag)
 {
     if (NULL == vertex)
@@ -44,20 +43,16 @@ GLTextureWork::~GLTextureWork()
 {
 }
 
-void GLTextureWork::DefaultVertex(std::ostream& vertex) const
+void GLTextureWork::DefaultVertex(std::ostream& vertex)
 {
     vertex << gVertex;
 }
-void GLTextureWork::setTexture(GPPtr<GLTexture> src, GPPtr<GLTexture> dst)
-{
-    mSrcT = src;
-    mDstT = dst;
-}
 bool GLTextureWork::onPrepare()
 {
-    std::ostringstream vert, frag;
-    if (this->onGenerateShader(vert, frag))
+    if (NULL == mShader.get())
     {
+        std::ostringstream vert, frag;
+        if (!this->onGenerateShader(vert, frag)) return false;
         mShader = new GLProgram(vert.str(), frag.str());
     }
     GLASSERT(NULL!=mShader.get());
@@ -66,24 +61,22 @@ bool GLTextureWork::onPrepare()
 
 void GLTextureWork::onDestroy()
 {
-    mSrcT = NULL;
-    mDstT = NULL;
     if (NULL!=mShader.get())
     {
         mShader->destroy();
     }
 }
 
-void GLTextureWork::onProcess()
+void GLTextureWork::run(GLTexture* dst, std::vector<GLTexture*> sources)
 {
-    assert(NULL!=mSrcT.get());
-    assert(NULL!=mDstT.get());
-    GLAutoFbo __f(*mDstT);
+    GLASSERT(!sources.empty());
+    GLTexture* src = sources.at(0);
+    GLASSERT(NULL!=src);
+    GLASSERT(NULL!=dst);
+    GLAutoFbo __F(*dst);
     mShader->use();
-    int id = mShader->id();
-    this->onUse(id, mSrcT->width(), mSrcT->height());
-    mSrcT->use();
-    /*TODO Use globle vbo buffer Optimize this*/
+    this->onUse(dst, sources, mShader.get());
+    src->use();
     const float points[] = {
         -1.0, -1.0,
         -1.0, 1.0,
@@ -94,8 +87,4 @@ void GLTextureWork::onProcess()
     GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
     temp.use(mShader->attr("aPos"));
     temp.draw();
-}
-
-void GLTextureWork::onFinish()
-{
 }

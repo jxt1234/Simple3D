@@ -25,22 +25,11 @@ static const char* BiCubicPoly2 =
 "    return res;\n"
 "}\n"
 ;
-float BiCubicPoly(float x, float a)
+void GLBicubicWork::onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader)
 {
-    if (x<0) x = -x;
-    float res = 0.0;
-    if(x <= 1.0)
-    {
-        res = (a+2)*x*x*x - (a+3)*x*x + 1;
-    }
-    else if(x < 2.0)
-    {
-        res = a*x*x*x - 5*a*x*x + 8*a*x - 4*a;
-    }
-    return res;
-}
-void GLBicubicWork::onUse(int proId, int srcW, int srcH)
-{
+    int proId = shader->id();
+    int srcW = (sources.at(0))->width();
+    int srcH = (sources.at(0))->height();
     float uUnit = (float)srcW;
     float vUnit = (float)srcH; 
     int uid = glGetUniformLocation(proId, "uUnit");

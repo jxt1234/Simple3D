@@ -13,10 +13,6 @@ GLBitmapWork::~GLBitmapWork()
 {
 }
 
-void GLBitmapWork::GetShader(std::ostream& vert, std::ostream& frag) const
-{
-    mWork->onGenerateShader(vert, frag);
-}
 bool GLBitmapWork::onPrepare()
 {
     GLASSERT(NULL!=mSrc.get() && NULL!=mDst.get());
@@ -26,7 +22,6 @@ bool GLBitmapWork::onPrepare()
     mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
     mDstT = new GLTexture;
     mDstT->upload(NULL, mDst->width(), mDst->height());
-    mWork->setTexture(mSrcT, mDstT);
     return mWork->onPrepare();;
 }
 
@@ -44,7 +39,8 @@ void GLBitmapWork::onFinish()
 
 void GLBitmapWork::onProcess()
 {
-    mWork->onProcess();
+    std::vector<GLTexture*> source(1, mSrcT.get());
+    mWork->run(mDstT.get(), source);
 }
 
 void GLBitmapWork::onDestroy()

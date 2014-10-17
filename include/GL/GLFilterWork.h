@@ -8,10 +8,14 @@ class GLFilterWork:public GLMultiPassWork
         virtual ~GLFilterWork();
 
         virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
+    protected:
+        virtual void onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader);
     private:
-        virtual bool vFinish() const;
+        int vGetStep() const {return 2;}
+        bool vCurrent(GLProgram** program) const;
         virtual void vNext();
-        static void _genShader(std::ostream& os, const float* p, int n, float xOffset, float yOffset);
+        virtual void vRewind();
+        static void _genShader(std::ostream& os, const float* p, int n);
 
         float* mP;
         int mN;

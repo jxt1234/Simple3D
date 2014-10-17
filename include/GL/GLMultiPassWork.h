@@ -6,18 +6,12 @@ class GLMultiPassWork:public GLTextureWork
     public:
         GLMultiPassWork();
         virtual ~GLMultiPassWork();
-        virtual bool onPrepare();
-        virtual void onProcess();
-        virtual void onDestroy();
+        virtual void run(GLTexture* dst, std::vector<GLTexture*> sources);
     private:
-        /*FIXME delete this two api*/
-        void addShader(GPPtr<GLProgram> program);
-        void clearShaders();
-
-        virtual bool vFinish() const {return true;}
-        virtual void vNext() {}
-        std::vector<GPPtr<GLProgram> > mShaders;
-        GPPtr<GLTexture> mTempBuffer;
+        virtual int vGetStep() const = 0;
+        virtual bool vCurrent(GLProgram** program) const = 0;//If return NULL, means reach end
+        virtual void vNext() = 0;
+        virtual void vRewind() = 0;
         typedef GLTextureWork INHERIT;
 };
 #endif

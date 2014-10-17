@@ -6,8 +6,8 @@ class GLBicubicWork:public GLTextureWork
     public:
         GLBicubicWork(float a);
         virtual ~GLBicubicWork();
-        virtual void onUse(int proId, int srcW, int srcH);
         virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
+        virtual void onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader);
     private:
         void _genShader(std::ostream& frag) const;
         float mA;

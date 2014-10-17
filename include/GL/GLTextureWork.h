@@ -5,7 +5,8 @@
 #include "GLProgram.h"
 #include "GLTexture.h"
 #include "GLvboBuffer.h"
-class GLTextureWork:public GLWork
+#include <vector>
+class GLTextureWork:public RefCount
 {
     public:
         GLTextureWork();
@@ -13,20 +14,14 @@ class GLTextureWork:public GLWork
         virtual ~GLTextureWork();
         //Must in GL Thread
         virtual bool onPrepare();
-        virtual void onProcess();
-        virtual void onFinish();
         virtual void onDestroy();
-        virtual void onUse(int proId, int srcW, int srcH) {}
+        virtual void run(GLTexture* dst, std::vector<GLTexture*> sources);
         virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const {return false;}
-        void setTexture(GPPtr<GLTexture> src, GPPtr<GLTexture> dst);
+
         void setProgram(GPPtr<GLProgram> pro) {mShader = pro;}
-        void DefaultVertex(std::ostream& vertex) const;
-    protected:
-        inline GPPtr<GLTexture> src_() const {return mSrcT;}
-        inline GPPtr<GLTexture> dst_() const {return mDstT;}
+        static void DefaultVertex(std::ostream& vertex);
+        virtual void onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader) {}
     private:
-        GPPtr<GLTexture> mSrcT;
-        GPPtr<GLTexture> mDstT;
         GPPtr<GLProgram> mShader;
 };
 #endif

@@ -22,40 +22,61 @@ bool GLFilterWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) co
 {
     GLASSERT(mPass<=1);
     DefaultVertex(vertex);
-    float x=0.0,y=0.0;
-    if (0==mPass)
-    {
-        x = 1.0/(float)(src_()->width());
-    }
-    else if (1==mPass)
-    {
-        y = 1.0/(float)(src_()->height());
-    }
-    _genShader(frag, mP, mN, x, y);
+    _genShader(frag, mP, mN);
     return true;
 }
+void GLFilterWork::onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader)
+{
+    float offset[2] = {0.0f,0.0f};
+    if (mPass == 0)
+    {
+        int w = (sources.at(0))->width();
+        offset[0] = 1.0f/(float)w;
+    }
+    else
+    {
+        int h = (sources.at(0))->height();
+        offset[1] = 1.0f/(float)h;
+    }
+    int id = shader->id();
+    int uid = glGetUniformLocation(id, "offset");
+    OPENGL_CHECK_ERROR;
+    glUniform2fv(uid, 1, offset);
+    OPENGL_CHECK_ERROR;
+}
 
-void GLFilterWork::_genShader(std::ostream& os, const float* p, int n, float x, float y)
+void GLFilterWork::_genShader(std::ostream& os, const float* p, int n)
 {
     os <<"precision mediump float;\n";
     os <<"varying vec2 vTex;\n";
+    os <<"uniform vec2 offset;\n";
     os <<"uniform sampler2D buffer;\n";
     os <<"void main()\n{\n";
     os <<"gl_FragColor = vec4(0.0,0.0,0.0,0.0)\n";
     for (int i=0; i<n; ++i)
     {
-        os <<"+ "<<p[i]<<"*texture2D(buffer, vTex + vec2("<<(i-n/2)*x<<", "<<(i-n/2)*y<<"))\n";
+        int pos = i-n/2;
+        os <<"+ "<<p[i]<<"*texture2D(buffer, vTex + float("<<pos<<")*offset)\n";
     }
     os <<";\n";
     os <<"}\n";
 }
-bool GLFilterWork::vFinish() const
+bool GLFilterWork::vCurrent(GLProgram** program) const
 {
-    return mPass>=gTotolPass;
+    if (mPass>=gTotolPass)
+    {
+        return false;
+    }
+    return true;
 }
 void GLFilterWork::vNext()
 {
     mPass++;
+}
+
+void GLFilterWork::vRewind()
+{
+    mPass = 0;
 }
 
 class GLFilterWork_Creater:public GLBitmapWorkCreater
