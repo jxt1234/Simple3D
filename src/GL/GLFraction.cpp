@@ -95,4 +95,6 @@ GLBitmapWork* GLFractionCreator::vCreate(std::istream* input) const
 void GLFractionCreator::vDetail(std::ostream& output) const
 {
 }
+
+
 static GLBitmapWorkCreatorRegister<GLFractionCreator> __T("Fraction");

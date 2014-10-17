@@ -13,7 +13,7 @@ class GLFractionByGLTest:public GLTest
 
 void GLFractionByGLTest::run()
 {
-    GPPtr<GLBmp> dst = new GLBmp(720,1280);
+    GPPtr<GLBmp> dst = new GLBmp(522,523);
     GPPtr<GLBitmapWork> work = GLBitmapWorkFactory::create("Fraction");
     assert(NULL!=work.get());
     work->set(dst, dst);

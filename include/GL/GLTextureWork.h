@@ -20,7 +20,7 @@ class GLTextureWork:public RefCount
 
         void setProgram(GPPtr<GLProgram> pro) {mShader = pro;}
         static void DefaultVertex(std::ostream& vertex);
-        virtual void onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader) {}
+        virtual void onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader);
     private:
         GPPtr<GLProgram> mShader;
 };

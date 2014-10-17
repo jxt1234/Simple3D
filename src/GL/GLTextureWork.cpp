@@ -66,6 +66,9 @@ void GLTextureWork::onDestroy()
         mShader->destroy();
     }
 }
+void GLTextureWork::onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader)
+{
+}
 
 void GLTextureWork::run(GLTexture* dst, std::vector<GLTexture*> sources)
 {
@@ -75,8 +78,8 @@ void GLTextureWork::run(GLTexture* dst, std::vector<GLTexture*> sources)
     GLASSERT(NULL!=dst);
     GLAutoFbo __F(*dst);
     mShader->use();
-    this->onUse(dst, sources, mShader.get());
     src->use();
+    this->onUse(dst, sources, mShader.get());
     const float points[] = {
         -1.0, -1.0,
         -1.0, 1.0,

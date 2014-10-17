@@ -84,7 +84,7 @@ void GLTexture::use()
 
 void GLTexture::use(int uniId, int texId)
 {
-    glActiveTexture(texId);
+    glActiveTexture(GL_TEXTURE0+texId);
     OPENGL_CHECK_ERROR;
     glUniform1i(uniId, texId);
     OPENGL_CHECK_ERROR;
