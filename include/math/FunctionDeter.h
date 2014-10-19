@@ -1,0 +1,3 @@
+#ifndef MATH_FUNCTIONDETER_H
+#define MATH_FUNCTIONDETER_H
+#endif

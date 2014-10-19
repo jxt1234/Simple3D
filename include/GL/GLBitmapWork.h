@@ -8,7 +8,7 @@
 #include "core/GLBmp.h"
 #include "utils/GLLock.h"
 /*This kind of work run glsl from src to dst, if dst is NULL, then it write result to src*/
-class GLBitmapWork:public GLWork
+CONTEXT_CLASS class GLBitmapWork:public GLWork
 {
     public:
         GLBitmapWork(GPPtr<GLTextureWork> work, bool filter = true);

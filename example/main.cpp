@@ -1,27 +1,14 @@
 #include "test/GLTest.h"
-#include "GL/GLBitmapWorkFactory.h"
-#include "GL/GLContext.h"
 #include "utils/GP_Clock.h"
 #include <sstream>
+#include <iostream>
+#include "math/FormulaTree.h"
+#include "math/BasicFunctionDeter.h"
 int main()
 {
-    GLContext::init();
-    GPPtr<GLBmp> src = new GLBmp("input2.jpg");
-    int w = src->width();
-    int h = src->height();
-    int i = 4;
-    {
-        GPPtr<GLBmp> dst = new GLBmp(w*i, h*i);
-        GPPtr<GLBitmapWork> w = GLBitmapWorkFactory::create("Bicubic");
-        w->set(src, dst);
-        {
-            GPCLOCK;
-            w->runOnePass();
-        }
-        std::ostringstream fileName;
-        fileName << "output/ScaleExample.png";
-        dst->save(fileName.str().c_str());
-    }
-    GLContext::destroy();
+    BasicFunctionDeter deter;
+    FormulaTree tree(&deter);
+    tree.setFormula("x*y+p-q*exp(u, v)");
+    tree.print(std::cout);
     return 1;
 }

@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 #define DEBUG_ON
 
@@ -34,6 +35,14 @@
 
 #define CHECK_POINTER(x) {if(NULL==x){FUNC_PRINT_ALL(x,p);break;}}
 
+#ifndef GL_BUILD_FOR_ANDROID
+#define GLASSERT(x) assert(x)
+#else
+#define GLASSERT(x) \
+    {bool result = (x);\
+        if (!(result))\
+        FUNC_PRINT((result));}
+#endif
 #else
 
 #define FUNC_PRINT(x)

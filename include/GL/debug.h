@@ -4,14 +4,6 @@
 #include <stdio.h>
 #include "utils/debug.h"
 #include <assert.h>
-#ifndef GL_BUILD_FOR_ANDROID
-#define GLASSERT(x) assert(x)
-#else
-#define GLASSERT(x) \
-    {bool result = (x);\
-        if (!(result))\
-        FUNC_PRINT((result));}
-#endif
 
 
 #define OPENGL_CHECK_ERROR \

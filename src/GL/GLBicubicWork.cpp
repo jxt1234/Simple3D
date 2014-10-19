@@ -47,6 +47,7 @@ bool GLBicubicWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) c
     DefaultVertex(vertex);
     //_genShader(std::cout);
     _genShader(frag);
+    return true;
 }
 
 void GLBicubicWork::_genShader(std::ostream& os) const
