@@ -1,53 +1,94 @@
 #include "math/BasicFunctionDeter.h"
-static const char* gOperator[] = {
-"+",
-"-",
-"*",
-"/",
-"exp",
-"cos",
-"sin",
-"tan",
-"pow"
-};
+#include "utils/debug.h"
 
-static int gSize = sizeof(gOperator)/sizeof(const char*);
-
-BasicFunctionDeter::BasicFunctionDeter()
+BasicFunctionDeter::BasicFunctionDeter(std::istream& data)
 {
+    bool next = true;
+    while(next)
+    {
+        function f;
+        data >> f.name;
+        data >> f.priorty;
+        data >> f.formula;
+        next = (data >> f.detformula);
+        mFunctions.insert(std::make_pair(f.name, f));
+    }
 }
 
 BasicFunctionDeter::~BasicFunctionDeter()
 {
 }
+void BasicFunctionDeter::vDivideFormula(const std::string& formula, std::vector<std::string>& results) const
+{
+    int sta = 0;
+    int fin = 0;
+    bool startWords = false;
+#define FINISHWORDS(i)\
+                if (startWords)\
+                {\
+                    fin = i;\
+                    startWords = false;\
+                    std::string _str;\
+                    _str.assign(formula, sta, fin-sta);\
+                    results.push_back(_str);\
+                }
+
+    for (int i=0;i<formula.size(); ++i)
+    {
+        char c = formula.at(i);
+        if ('['==c||'{'==c) c='(';
+        if (']'==c||'}'==c) c=')';
+        switch (c)
+        {
+            case ' ':
+            case '\t':
+            case '\n':
+            case ',':
+                FINISHWORDS(i);
+                break;
+            case '*':
+            case '+':
+            case '-':
+            case '/':
+            case '(':
+            case ')':
+                FINISHWORDS(i);
+                {
+                    std::string _str;
+                    _str.push_back(c);
+                    results.push_back(_str);
+                }
+                break;
+            default:
+                if (!startWords)
+                {
+                    startWords = true;
+                    sta = i;
+                }
+                break;
+        }
+    }
+    FINISHWORDS((formula.size()));
+#undef FINISHWORDS
+}
+
 bool BasicFunctionDeter::vIsFunction(const std::string& name) const
 {
-    if (_findPos(name) == -1)
+    if (mFunctions.find(name)!=mFunctions.end())
     {
-        return false;
+        return true;
     }
-    return true;
+    return false;
 }
 bool BasicFunctionDeter::vComparePriority(const std::string& o1, const std::string& o2) const
 {
-    int p1 = _findPos(o1);
-    int p2 = _findPos(o2);
-    return p1>p2;
-}
-int BasicFunctionDeter::_findPos(const std::string& name) const
-{
-    for (int i=0; i<gSize; ++i)
-    {
-        if (name == gOperator[i])
-        {
-            return i;
-        }
-    }
-    return -1;
+    std::map<std::string, function>::const_iterator p1, p2;
+    p1 = mFunctions.find(o1);
+    p2 = mFunctions.find(o2);
+    return (p1->second).priorty > (p2->second).priorty;
 }
 std::string BasicFunctionDeter::vDet(const std::string& name) const
 {
-    //TODO
-    std::string t;
-    return t;
+    std::map<std::string, function>::const_iterator p1 = mFunctions.find(name);
+    return (p1->second).detformula;
 }

@@ -18,7 +18,7 @@
 #include "utils/RefCount.h"
 #include "AbstractPoint.h"
 #include "IFunctionDeter.h"
-
+#include <map>
 
 class FormulaTreePoint:public AbstractPoint
 {
@@ -33,14 +33,20 @@ class FormulaTreePoint:public AbstractPoint
                 int sta, int mid, int fin,
                 std::vector<int>& starts, std::vector<int>& ends);
         void createFrom(const std::vector<std::string>& simbols, const std::vector<int>& types, const IFunctionDeter* basic);
+        void createFrom(const std::string& formula, const IFunctionDeter* basic);
+        /*Create FormulaTreePoint with its children*/
+        FormulaTreePoint* detByName(const std::string& name, const IFunctionDeter* basic) const;
     protected:
         virtual void printBefore(std::ostream& out);
         virtual void printAfter(std::ostream& out);
     private:
+        void _replaceByTable(const std::map<std::string, FormulaTreePoint*>& tables);
         void _createFrom(const std::vector<std::string>& simbols, const std::vector<int>& types,
                 int sta, int fin, const IFunctionDeter* basic);
+        void _expandUnit(std::ostream& output, const IFunctionDeter* basic) const;
         int mT;
         std::string mName;
+        friend class FormulaTreePointCopy;
 };
 class FormulaTree:public RefCount
 {
@@ -48,12 +54,14 @@ class FormulaTree:public RefCount
         FormulaTree(const IFunctionDeter* basic);
         virtual ~FormulaTree();
         void setFormula(const std::string& formula);
-        void expand(std::ostream& output);
+        void expand(std::ostream& output) const;
         inline FormulaTreePoint* root() {return mRoot;}
         void print(std::ostream& s);
         inline bool isvalid() const {return mValid;}
-        static void divideFormula(std::vector<std::string>& results, const std::string& formula);
         bool valid(const std::vector<int>& words) const;
+
+        /*Create a FormulaTree as det by the vary name*/
+        FormulaTree* detByName(const std::string& name) const;
     private:
         FormulaTreePoint* mRoot;
         const IFunctionDeter* mBasic;

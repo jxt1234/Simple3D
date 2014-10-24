@@ -4,11 +4,22 @@
 #include <iostream>
 #include "math/FormulaTree.h"
 #include "math/BasicFunctionDeter.h"
+#include <fstream>
+using namespace std;
 int main()
 {
-    BasicFunctionDeter deter;
+    std::ifstream is("function.txt");
+    BasicFunctionDeter deter(is);
+    FormulaTree _test(&deter);
+    _test.setFormula("d0+d1");
+    _test.expand(std::cout);
     FormulaTree tree(&deter);
     tree.setFormula("x*y+p-q*exp(u, v)");
-    tree.print(std::cout);
+    tree.expand(std::cout);
+
+    string s("u");
+    GPPtr<FormulaTree> detTree = tree.detByName(s);
+    detTree->print(std::cout);
+    detTree->expand(std::cout);
     return 1;
 }

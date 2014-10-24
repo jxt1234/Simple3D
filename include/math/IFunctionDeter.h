@@ -1,6 +1,7 @@
 #ifndef MATH_IFUNCTIONDETER_H
 #define MATH_IFUNCTIONDETER_H
 #include <string>
+#include <vector>
 class IFunctionDeter
 {
     public:
@@ -16,6 +17,7 @@ class IFunctionDeter
         /*Return true if o1's priority is larger than o2*/
         virtual bool vComparePriority(const std::string& o1, const std::string& o2) const = 0;
         virtual std::string vDet(const std::string& name) const = 0;
+        virtual void vDivideFormula(const std::string& formula, std::vector<std::string>& result) const = 0;
         int type(const std::string& word) const
         {
             if (word == "(")

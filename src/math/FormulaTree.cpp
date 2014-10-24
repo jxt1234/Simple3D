@@ -15,105 +15,19 @@
 ******************************************************************/
 #include <sstream>
 #include "math/FormulaTree.h"
-#include <iostream>
-#include <list>
 #include "utils/debug.h"
-
-bool FormulaTree::valid(const std::vector<int>& words) const
+class FormulaTreePointCopy:public AbstractPoint::IPointCopy
 {
-    GLASSERT(NULL!=mBasic);
-    int depth=0;
-    int preType = IFunctionDeter::UNKNOWN;
-    for (int i=0; i<words.size(); ++i)
-    {
-        int type = words[i];
-        switch (type)
+    public:
+        virtual AbstractPoint* copy(AbstractPoint* src)
         {
-            case IFunctionDeter::BRACEL_L:
-                if (preType!=IFunctionDeter::OPERATOR)
-                {
-                    GLASSERT(false);
-                    return false;
-                }
-                depth++;
-                break;
-            case IFunctionDeter::BRACEL_R:
-                if (preType == IFunctionDeter::OPERATOR)
-                {
-                    GLASSERT(false);
-                    return false;
-                }
-                depth--;
-                break;
-            case IFunctionDeter::OPERATOR:
-                /*Can't allow two OPERATOR adjacent*/
-                //if (preType == IFunctionDeter::OPERATOR)
-                //{
-                //    GLASSERT(false);
-                //    return false;
-                //}
-                break;
-            default:
-                break;
+            FormulaTreePoint* p = (FormulaTreePoint*)src;
+            FormulaTreePoint* _res = new FormulaTreePoint;
+            _res->mT = p->mT;
+            _res->mName = p->mName;
+            return _res;
         }
-        preType = type;
-    }
-    return (0 == depth);
-}
-
-
-void FormulaTree::divideFormula(std::vector<std::string>& results, const std::string& formula)
-{
-    int sta = 0;
-    int fin = 0;
-    bool startWords = false;
-#define FINISHWORDS\
-                if (startWords)\
-                {\
-                    fin = i;\
-                    startWords = false;\
-                    std::string _str;\
-                    _str.assign(formula, sta, fin-sta);\
-                    results.push_back(_str);\
-                }
-
-    for (int i=0;i<formula.size(); ++i)
-    {
-        char c = formula.at(i);
-        if ('['==c||'{'==c) c='(';
-        if (']'==c||'}'==c) c=')';
-        switch (c)
-        {
-            case ' ':
-            case '\t':
-            case '\n':
-            case ',':
-                FINISHWORDS;
-                break;
-            case '*':
-            case '+':
-            case '-':
-            case '/':
-            case '(':
-            case ')':
-                FINISHWORDS;
-                {
-                    std::string _str;
-                    _str.push_back(c);
-                    results.push_back(_str);
-                }
-                break;
-            default:
-                if (!startWords)
-                {
-                    startWords = true;
-                    sta = i;
-                }
-                break;
-        }
-    }
-#undef FINISHWORDS
-}
+};
 
 FormulaTreePoint::FormulaTreePoint()
 {
@@ -121,6 +35,110 @@ FormulaTreePoint::FormulaTreePoint()
 FormulaTreePoint::~FormulaTreePoint()
 {
 }
+void FormulaTreePoint::createFrom(const std::string& formula, const IFunctionDeter* basic)
+{
+    GLASSERT(NULL!=basic);
+    std::vector<std::string> simbols;
+    basic->vDivideFormula(formula, simbols);
+    std::vector<int> types;
+    types.reserve(simbols.size());
+    for (int i=0; i<simbols.size(); ++i)
+    {
+        types.push_back(basic->type(simbols.at(i)));
+    }
+    createFrom(simbols, types, basic);
+}
+void FormulaTreePoint::_replaceByTable(const std::map<std::string, FormulaTreePoint*>& tables)
+{
+    GLASSERT(mT == IFunctionDeter::OPERATOR);
+    typedef std::map<std::string, FormulaTreePoint*>::const_iterator ITER;
+    FormulaTreePointCopy copy;
+    for (int i=0; i<mChildren.size(); ++i)
+    {
+        FormulaTreePoint* cp = (FormulaTreePoint*)(mChildren.at(i));
+        if (cp->mT == IFunctionDeter::OPERATOR)
+        {
+            cp->_replaceByTable(tables);
+            continue;
+        }
+        GLASSERT(cp->mT == IFunctionDeter::NUM);
+        ITER it = tables.find(cp->mName);
+        GLASSERT(it!=tables.end());
+        FormulaTreePoint* rep = it->second;
+        AbstractPoint* rep_copy = AbstractPoint::deepCopy(rep, &copy);
+        GLASSERT(NULL!=rep_copy);
+        cp->decRef();
+        mChildren[i] = rep_copy;
+    }
+}
+FormulaTreePoint* FormulaTreePoint::detByName(const std::string& name, const IFunctionDeter* basic) const
+{
+    GLASSERT(NULL!=basic);
+    GLASSERT(mT == IFunctionDeter::NUM || mT == IFunctionDeter::OPERATOR);
+    FormulaTreePoint* res = new FormulaTreePoint;
+    res->mT = mT;
+    if (mT == IFunctionDeter::NUM)
+    {
+        if (mName == name)
+        {
+            res->mName = "1";
+        }
+        else
+        {
+            res->mName = "0";
+        }
+        return res;
+    }
+    std::string formula = basic->vDet(mName);
+    res->createFrom(formula, basic);
+
+    std::vector<AbstractPoint*> cleanPoints;//The points created by detByName() method must be cleaned
+    /*Create replace table*/
+    /*d0-det_points[0], d1-det_points[1], x0-mChildren[0], and so on*/
+    std::map<std::string, FormulaTreePoint*> replaceTable;
+    for (int i=0; i<mChildren.size(); ++i)
+    {
+        std::ostringstream raw_name;
+        std::ostringstream det_name;
+        raw_name << "x"<<i;
+        det_name << "d"<<i;
+        FormulaTreePoint* p = (FormulaTreePoint*)(mChildren.at(i));
+        FormulaTreePoint* dp = p->detByName(name, basic);
+        cleanPoints.push_back(dp);
+
+        replaceTable.insert(std::make_pair(raw_name.str(), p));
+        replaceTable.insert(std::make_pair(det_name.str(), dp));
+    }
+    res->_replaceByTable(replaceTable);
+    for (int i=0; i<cleanPoints.size(); ++i)
+    {
+        (cleanPoints.at(i))->decRef();
+    }
+    return res;
+}
+void FormulaTreePoint::_expandUnit(std::ostream& output, const IFunctionDeter* basic) const
+{
+    GLASSERT(NULL!=basic);
+    output<<mName;
+    if (!basic->vIsFunction(mName))
+    {
+        GLASSERT(mChildren.empty());
+        return;
+    }
+    output << "(";
+    for (int i=0; i<mChildren.size(); ++i)
+    {
+        FormulaTreePoint* p = (FormulaTreePoint*)(mChildren.at(i));
+        p->_expandUnit(output, basic);
+        if (i!=mChildren.size()-1)
+
+        {
+            output << ",";
+        }
+    }
+    output << ")";
+}
+
 void FormulaTreePoint::printBefore(std::ostream& out)
 {
     out << "<"<<mName<<">\n";
@@ -283,7 +301,7 @@ void FormulaTree::setFormula(const std::string& formula)
     GLASSERT(NULL!=mBasic);
     SAFE_UNREF(mRoot);
     std::vector<std::string> words;
-    divideFormula(words, formula);
+    mBasic->vDivideFormula(formula, words);
     GLASSERT(!words.empty());
     std::vector<int> types;
     types.reserve(words.size());
@@ -305,3 +323,52 @@ void FormulaTree::print(std::ostream& s)
     GLASSERT(NULL!=mRoot);
     mRoot->print(s);
 }
+
+FormulaTree* FormulaTree::detByName(const std::string& name) const
+{
+    FormulaTree* tree = new FormulaTree(mBasic);
+    tree->mValid = true;
+    tree->mRoot = mRoot->detByName(name, mBasic);
+    return tree;
+}
+void FormulaTree::expand(std::ostream& output) const
+{
+    GLASSERT(mRoot!=NULL);
+    mRoot->_expandUnit(output, mBasic);
+    output << "\n";
+}
+bool FormulaTree::valid(const std::vector<int>& words) const
+{
+    GLASSERT(NULL!=mBasic);
+    int depth=0;
+    int preType = IFunctionDeter::UNKNOWN;
+    for (int i=0; i<words.size(); ++i)
+    {
+        int type = words[i];
+        switch (type)
+        {
+            case IFunctionDeter::BRACEL_L:
+                if (preType!=IFunctionDeter::OPERATOR)
+                {
+                    GLASSERT(false);
+                    return false;
+                }
+                depth++;
+                break;
+            case IFunctionDeter::BRACEL_R:
+                if (preType == IFunctionDeter::OPERATOR)
+                {
+                    GLASSERT(false);
+                    return false;
+                }
+                depth--;
+                break;
+            default:
+                break;
+        }
+        preType = type;
+    }
+    return (0 == depth);
+}
+
+
