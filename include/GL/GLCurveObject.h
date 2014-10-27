@@ -19,7 +19,7 @@ class GLCurveObject:public GLObject
         virtual ~GLCurveObject();
         CONTEXT_FREE_API void setFormula(const std::string& formula_x, const std::string& formula_y, const std::string& formula_z);
         void setTexture(GLTexture* tex);
-        void setColor(unsigned int argb);
+        void setColor(uint32_t color);
         void setVBO(GLvboBuffer* vbo);
         inline void setScale(float us, float vs){mUs = us, mVs = vs;}
         inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
@@ -37,5 +37,7 @@ class GLCurveObject:public GLObject
         float mVs;
         float mUf;
         float mVf;
+
+        uint32_t mColor;
 };
 #endif

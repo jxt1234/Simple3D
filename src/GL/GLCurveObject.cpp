@@ -64,6 +64,7 @@ GLCurveObject::GLCurveObject()
     mVs = 1.0;
     mUf = 0.0;
     mVf = 0.0;
+    mColor = 0xFF00FFFF;
 }
 GLCurveObject::~GLCurveObject()
 {
@@ -93,15 +94,17 @@ void GLCurveObject::setFormula(const std::string& formula_x, const std::string& 
     this->vGetFramgent(frag);
     mPro.load(vertex.str(), frag.str());
 }
-void GLCurveObject::setColor(unsigned int argb)
+void GLCurveObject::setColor(uint32_t argb)
 {
-    SAFE_UNREF(mTex);
-    mTex = new GLTexture();
-    mTex->upload(&argb, 1, 1);
+    mColor = argb;
 }
 void GLCurveObject::onPrepare()
 {
-    if (NULL == mTex) setColor(0xFF00FF00);//Default green
+    if (NULL == mTex)
+    {
+        mTex = new GLTexture();
+        mTex->upload(&mColor, 1, 1);
+    }
     mPro.init();
     mTex->setFilter(true);
 }

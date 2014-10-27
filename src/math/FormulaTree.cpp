@@ -81,11 +81,11 @@ FormulaTreePoint* FormulaTreePoint::detByName(const std::string& name, const IFu
     {
         if (mName == name)
         {
-            res->mName = "1";
+            res->mName = "1.0f";
         }
         else
         {
-            res->mName = "0";
+            res->mName = "0.0f";
         }
         return res;
     }
@@ -119,12 +119,25 @@ FormulaTreePoint* FormulaTreePoint::detByName(const std::string& name, const IFu
 void FormulaTreePoint::_expandUnit(std::ostream& output, const IFunctionDeter* basic) const
 {
     GLASSERT(NULL!=basic);
-    output<<mName;
     if (!basic->vIsFunction(mName))
     {
+        output<<mName;
         GLASSERT(mChildren.empty());
         return;
     }
+    /*TODO use formula string*/
+    if (mName=="+" || mName == "-" || mName == "*" || mName=="/")
+    {
+        FormulaTreePoint* p1 = (FormulaTreePoint*)mChildren[0];
+        FormulaTreePoint* p2 = (FormulaTreePoint*)mChildren[1];
+        output <<"(";
+        p1->_expandUnit(output, basic);
+        output << mName;
+        p2->_expandUnit(output, basic);
+        output <<")";
+        return;
+    }
+    output<<mName;
     output << "(";
     for (int i=0; i<mChildren.size(); ++i)
     {
@@ -159,59 +172,43 @@ void FormulaTreePoint::divideWords(const std::vector<int>& types,
         starts.push_back(mid+1);ends.push_back(fin);
         return;
     }
-    int depth = 0;
     GLASSERT(types[mid+1] == IFunctionDeter::BRACEL_L);
     GLASSERT(types[fin] == IFunctionDeter::BRACEL_R);
     GLASSERT(mid+2<=fin-1);
+    int _sta = mid+2;
+    int _fin = fin-1;
+    //TODO Support multi cular Operator, currently we only support:f(x)
     //std::cout << mid+2 << ", " <<fin<<"\n";
-    for (int cur = mid+2; cur<=fin-1; ++cur)
+    for (; _sta<_fin; ++_sta, --_fin)
     {
-        switch (types[cur])
+        if (IFunctionDeter::BRACEL_L!=types[_sta])
         {
-            case IFunctionDeter::BRACEL_L:
-                depth++;
-                break;
-            case IFunctionDeter::BRACEL_R:
-                depth--;
-                if (depth == 0)
-                {
-                    ends.push_back(cur-1);
-                }
-                break;
-            case IFunctionDeter::NUM:
-                if (depth == 0)
-                {
-                    starts.push_back(cur);
-                    ends.push_back(cur);
-                }
-                break;
-            case IFunctionDeter::OPERATOR:
-                if (depth == 0)
-                {
-                    starts.push_back(cur);
-                }
-                break;
-            default:
-                break;
+            break;
         }
     }
-    GLASSERT(depth == 0);
+    starts.push_back(_sta);
+    ends.push_back(_fin);
 }
 
 int FormulaTreePoint::findRoot(const std::vector<std::string>& simbols, const std::vector<int>& types, int sta, int fin, const IFunctionDeter* basic)
 {
     GLASSERT(simbols.size() == types.size());
+    //for (int i=sta; i<=fin; ++i)
+    //{
+    //    printf("%s ", simbols[i].c_str());
+    //}
+    //printf("\n");
     /*The root operator is the latest one to compute*/
     int root = sta;
-    std::string rootOperator;
     int rootType = IFunctionDeter::UNKNOWN;
+    std::string rootOperator;
     for (int i=sta; i<=fin; ++i)
     {
-        rootType = types[i];
-        if (rootType < IFunctionDeter::BRACEL_L)
+        if (types[i] < IFunctionDeter::BRACEL_L)
         {
-            root = i;
+            rootType = types[i];
             rootOperator = simbols[i];
+            root = i;
         }
         if (rootType == IFunctionDeter::OPERATOR)
         {
@@ -223,8 +220,11 @@ int FormulaTreePoint::findRoot(const std::vector<std::string>& simbols, const st
     {
         return root;
     }
-    /*Find latest operator*/
     int depth = 0;
+    int rootDepth = 1000;//FIXME
+    root = sta;
+    rootType = IFunctionDeter::NUM;
+    /*Find latest operator*/
     for (int i=root; i<=fin; ++i)
     {
         switch (types[i])
@@ -236,12 +236,24 @@ int FormulaTreePoint::findRoot(const std::vector<std::string>& simbols, const st
                 depth--;
                 break;
             case IFunctionDeter::OPERATOR:
-                /*The root must in the 0 depth place*/
-                if (0==depth)
+                if (rootDepth>depth)
+                {
+                    root = i;
+                    rootOperator = simbols[i];
+                    rootDepth = depth;
+                    rootType = types[i];
+                }
+                else if (rootDepth == depth)
                 {
                     std::string current = simbols[i];
                     //root operator will be compute earlier than current, so set current be root
-                    if (basic->vComparePriority(rootOperator, current))
+                    if (rootType == IFunctionDeter::NUM)
+                    {
+                        rootType = IFunctionDeter::OPERATOR;
+                        root = i;
+                        rootOperator = current;
+                    }
+                    else if (!basic->vComparePriority(current, rootOperator))
                     {
                         rootOperator = current;
                         root = i;
@@ -348,8 +360,9 @@ bool FormulaTree::valid(const std::vector<int>& words) const
         switch (type)
         {
             case IFunctionDeter::BRACEL_L:
-                if (preType!=IFunctionDeter::OPERATOR)
+                if (preType!=IFunctionDeter::OPERATOR && preType!=IFunctionDeter::UNKNOWN)
                 {
+                    FUNC_PRINT(preType);
                     GLASSERT(false);
                     return false;
                 }
@@ -358,6 +371,7 @@ bool FormulaTree::valid(const std::vector<int>& words) const
             case IFunctionDeter::BRACEL_R:
                 if (preType == IFunctionDeter::OPERATOR)
                 {
+                    FUNC_PRINT(preType);
                     GLASSERT(false);
                     return false;
                 }

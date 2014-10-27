@@ -1,3 +1,5 @@
+#include <sstream>
+#include <fstream>
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <stdlib.h>
@@ -18,17 +20,36 @@
 #include "core/GLRasterization.h"
 #include "utils/debug.h"
 #include "core/GLBmp.h"
-#include <fstream>
 #include "utils/GP_Clock.h"
-#include <sstream>
 #define PI 3.141592654
 #include <math.h>
+#include "math/FormulaTree.h"
+#include "math/BasicFunctionDeter.h"
 
 
 using namespace std;
 
 static GLCurveObject* initCurve(bool cubic)
 {
+    string x;
+    string y;
+    string z;
+    x = string("(1.0+v/2.0*cos(u/2.0))*cos(u)");
+    y = string("(1.0+v/2.0*cos(u/2.0))*sin(u)");
+    z = string("v/2.0*sin(u/2.0)");
+
+    std::ifstream is("function.txt");
+    BasicFunctionDeter basic(is);
+    FormulaTree _x(&basic), _y(&basic), _z(&basic);
+    _x.setFormula(x);
+    _y.setFormula(y);
+    _z.setFormula(z);
+
+    ostringstream __x, __y, __z;
+    _x.expand(__x);
+    _y.expand(__y);
+    _z.expand(__z);
+
     GLTexture* texture = new GLTexture();
     GLBmp b;
     b.loadPicture("input.jpg");
@@ -53,8 +74,8 @@ static GLCurveObject* initCurve(bool cubic)
     }
     result->setTexture(texture);
     result->setVBO(texBuffer);
-    result->setFormula(string("(1.0+v/2.0*cos(u/2.0))*cos(u)"), string("(1.0+v/2.0*cos(u/2.0))*sin(u)"), string("v/2.0*sin(u/2.0)"));
-    //result->setFormula(string("1.0"), string("10*u"), string("-10.0*v"));
+    //result->setFormula(x, y, z);
+    result->setFormula(__x.str(), __y.str(), __z.str());
     result->setScale(2*PI,2);
     result->setOffset(0,-0.5);
     result->onPrepare();
