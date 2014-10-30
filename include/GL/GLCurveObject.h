@@ -24,7 +24,7 @@ class GLCurveObject:public GLObject
         inline void setScale(float us, float vs){mUs = us, mVs = vs;}
         inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
-        virtual void onPrepare();
+        virtual bool onPrepare();
     protected:
         GLProgram mPro;
         GLTexture* mTex;

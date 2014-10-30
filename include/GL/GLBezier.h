@@ -19,7 +19,7 @@ class GLBezier:public GLObject
         void setColor(float a, float r, float g, float b);
         void clean();
         void reset(int precision);
-        virtual void onPrepare();
+        virtual bool onPrepare();
         virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection);
     private:
         void _sync();

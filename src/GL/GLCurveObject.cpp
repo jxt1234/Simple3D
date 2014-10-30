@@ -98,19 +98,21 @@ void GLCurveObject::setColor(uint32_t argb)
 {
     mColor = argb;
 }
-void GLCurveObject::onPrepare()
+bool GLCurveObject::onPrepare()
 {
     if (NULL == mTex)
     {
         mTex = new GLTexture();
         mTex->upload(&mColor, 1, 1);
     }
-    mPro.init();
+    bool res = mPro.init();
     mTex->setFilter(true);
+    return res;
 }
 void GLCurveObject::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
     GLASSERT(NULL!=mVbo);
+    if (!mPro.init()) return;
     mPro.use();
     mTex->use();
     GLProgram::setMatrix(projection, mPro.uniform(proj_m.c_str()));

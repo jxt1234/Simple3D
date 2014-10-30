@@ -10,7 +10,7 @@ class CONTEXT_CLASS GLObject:public RefCount
         GLObject(){}
         virtual ~GLObject(){}
         virtual void onGenerateShader(std::ostream& vertex, std::ostream& frag) const {}
-        virtual void onPrepare() {}
+        virtual bool onPrepare() {return true;}
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P) = 0;
 };
 

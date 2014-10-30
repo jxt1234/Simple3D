@@ -108,7 +108,7 @@ void GLBezier::_genShader(ostream& vertex, ostream& frag)
     frag << "gl_FragColor = "<<COLOR<<";\n";
     frag << "}\n";
 }
-void GLBezier::onPrepare()
+bool GLBezier::onPrepare()
 {
     _sync();
 #ifdef DEBUG
@@ -122,6 +122,7 @@ void GLBezier::onPrepare()
     _genShader(vertex, frag);
 
     mProgram.load(vertex.str(), frag.str());
+    return mProgram.init();
 }
 
 void GLBezier::addPoint(float x, float y, float z)

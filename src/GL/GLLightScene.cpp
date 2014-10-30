@@ -79,9 +79,9 @@ void GLLightScene::vRemoveObject(GPPtr<GLObject> obj)
     }
 }
 
-void GLLightScene::onPrepare()
+bool GLLightScene::onPrepare()
 {
-    mProgram->use();
+    return mProgram->init();
 }
 
 

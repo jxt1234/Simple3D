@@ -29,7 +29,7 @@ class GLLightScene:public GLScene, GLObjectCreator
         void setLightPos(int n, float x, float y, float z);
         //As GLObject
         virtual void onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
-        virtual void onPrepare();
+        virtual bool onPrepare();
         /*As GLObjectManager*/
         virtual void vAddObject(GPPtr<GLObject> obj);
         virtual void vRemoveObject(GPPtr<GLObject> obj);

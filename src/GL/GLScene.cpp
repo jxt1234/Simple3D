@@ -23,14 +23,16 @@ void GLScene::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
     }
 }
 
-void GLScene::onPrepare()
+bool GLScene::onPrepare()
 {
+    bool result = true;
     this->vRewind();
     while(!this->vEnd())
     {
         GPPtr<GLObject> o = this->vCurrent();
-        o->onPrepare();
+        result&=o->onPrepare();
         this->vNext();
     }
+    return result;
 }
 

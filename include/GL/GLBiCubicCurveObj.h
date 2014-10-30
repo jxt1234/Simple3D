@@ -8,7 +8,7 @@ class GLBiCubicCurveObj:public GLCurveObject
         GLBiCubicCurveObj();
         virtual ~GLBiCubicCurveObj();
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
-        virtual void onPrepare();
+        virtual bool onPrepare();
     private:
         virtual void vGetFramgent(std::ostream& frag) const;
 

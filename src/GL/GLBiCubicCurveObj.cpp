@@ -11,10 +11,11 @@ GLBiCubicCurveObj::~GLBiCubicCurveObj()
     mWork = NULL;
 }
 
-void GLBiCubicCurveObj::onPrepare()
+bool GLBiCubicCurveObj::onPrepare()
 {
-    INHERIT::onPrepare();
+    bool res = INHERIT::onPrepare();
     //mTex->setFilter(false);
+    return res;
 }
 void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
 {
