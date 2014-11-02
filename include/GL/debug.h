@@ -12,5 +12,7 @@
     FUNC_PRINT_ALL(error, 0x); \
     GLASSERT(GL_NO_ERROR == error);}
 
+#define OPENGL_HAS_ERROR \
+    GL_NO_ERROR!=glGetError()
 
 #endif

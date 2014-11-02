@@ -25,6 +25,7 @@ class GLCurveObject:public GLObject
         inline void setOffset(float uf, float vf) {mUf = uf, mVf = vf;}
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
         virtual bool onPrepare();
+        virtual int vGetProgramId() const {return mPro.id();}
     protected:
         GLProgram mPro;
         GLTexture* mTex;

@@ -8,7 +8,6 @@ class GLSquareObjectCreator:public GLObjectCreator
     public:
         struct SquarePara
         {
-            GLObject* basic;
             GLTexture* t;
             int verId;
             int texId;

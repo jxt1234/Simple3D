@@ -70,7 +70,7 @@ void GLSquareObjectCreator::_init()
 
 GLObject* GLSquareObjectCreator::vCreate(std::istream* parameter) const
 {
-    assert(NULL!=parameter);
+    GLASSERT(NULL!=parameter);
     //TODO Support multi Textures
     SquarePara p;
     std::istream& is = *parameter;
@@ -79,10 +79,7 @@ GLObject* GLSquareObjectCreator::vCreate(std::istream* parameter) const
     (p.t)->addRef();
     GPPtr<GLTexture> t = p.t;
 
-    (p.basic)->addRef();
-    GPPtr<GLObject> basic = p.basic;
-
-    GLTexture1Obj* obj = new GLTexture1Obj(basic);
+    GLTexture1Obj* obj = new GLTexture1Obj;
     obj->set(t, mVertex, mTexcord, mNormal, p.verId, p.texId, p.normaliId);
     return obj;
 }

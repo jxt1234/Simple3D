@@ -8,6 +8,7 @@
 class GLLightScene:public GLScene, GLObjectCreator
 {
     public:
+        static const std::string gSceneName;
         //TODO Divide scene attribute and object attribute
         struct GLLightAttr
         {
@@ -28,7 +29,7 @@ class GLLightScene:public GLScene, GLObjectCreator
         void setLightNumber(int n);
         void setLightPos(int n, float x, float y, float z);
         //As GLObject
-        virtual void onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
+        virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
         virtual bool onPrepare();
         /*As GLObjectManager*/
         virtual void vAddObject(GPPtr<GLObject> obj);
@@ -48,12 +49,30 @@ class GLLightScene:public GLScene, GLObjectCreator
         class GLLightObject:public GLObject
         {
             public:
-                GLLightObject(const GLProgram& pro, const GLLightAttr& attr);
+                GLLightObject(int proId, const GLLightAttr& attr, GPPtr<GLObject> basic);
                 virtual ~GLLightObject();
                 virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
             private:
-                const GLProgram& mProgram;
+                int mProId;
+                struct uniforms
+                {
+                    int M;
+                    int V;
+                    int P;
+                    int N;
+                    int lightColor;
+                    int ambientColor;
+                    int lightpos;
+                    int eyepos;
+                    int ka;
+                    int kd;
+                    int ks;
+                    int ns;
+                };
+                uniforms mAttrId;
+                bool mValid;
                 const GLLightAttr& mAttr;
+                GPPtr<GLObject> mBasic;
         };
         GPPtr<GLProgram> mProgram;
         GLLightAttr mAttr;

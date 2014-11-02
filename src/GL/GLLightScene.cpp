@@ -3,14 +3,14 @@
 #include <sstream>
 #include "GL/GLSquareObjectCreator.h"
 #include "utils/debug.h"
+#include "AllShader.h"
+
+/*TODO Avoid use opengl directly*/
+const std::string GLLightScene::gSceneName("LightScene");
 
 GLLightScene::GLLightScene(int n)
 {
-    mProgram = new GLProgram;
     initDefaultAttr(mAttr);
-    std::ostringstream vex, fra;
-    this->onGenerateShader(vex, fra);
-    mProgram->load(vex.str().c_str(), fra.str().c_str());
 }
 GLLightScene::~GLLightScene()
 {
@@ -44,20 +44,27 @@ void GLLightScene::setLightPos(int n, float x, float y, float z)
 }
 
 
-void GLLightScene::onGenerateShader(std::ostream& vertex, std::ostream& frag) const
+bool GLLightScene::onGenerateShader(std::ostream& vertex, std::ostream& frag) const
 {
-    /*FIXME For debug*/
-    std::ifstream vexf("light.vex");
-    vertex<<vexf.rdbuf();
-    vexf.close();
-    std::ifstream fragf("light.fra");
-    frag<<fragf.rdbuf();
-    fragf.close();
+    vertex<<glsl_light_vex;
+    frag<<glsl_light_fra;
+    return true;
 }
 
 void GLLightScene::vAddObject(GPPtr<GLObject> obj)
 {
-    mObjs.push_back(obj);
+    bool res = obj->onPrepare();
+    GLASSERT(true == res);
+    if (res)
+    {
+        int programid = obj->vGetProgramId();
+        if (0 == programid)
+        {
+            programid = mProgram->id();
+        }
+        GPPtr<GLObject> lobj = new GLLightObject(programid, mAttr, obj);
+        mObjs.push_back(lobj);
+    }
 }
 
 void GLLightScene::vRemoveAll()
@@ -81,6 +88,10 @@ void GLLightScene::vRemoveObject(GPPtr<GLObject> obj)
 
 bool GLLightScene::onPrepare()
 {
+    mProgram = new GLProgram;
+    std::ostringstream vex, fra;
+    this->onGenerateShader(vex, fra);
+    mProgram->load(vex.str().c_str(), fra.str().c_str());
     return mProgram->init();
 }
 
@@ -91,9 +102,7 @@ GLObject* GLLightScene::vCreate(std::istream* parameter) const
     //TODO Expand
     GLTexture* t;
     parameter->read((char*)(&t), sizeof(t));
-    GPPtr<GLLightObject> basic = new GLLightObject(*mProgram, mAttr);
     GLSquareObjectCreator::SquarePara para;
-    para.basic = basic.get();
     para.t = t;
     mProgram->use();
     para.verId = mProgram->attr("aPos");
@@ -112,38 +121,64 @@ void GLLightScene::vGetInfo(std::ostream& output) const
 }
 
 
-GLLightScene::GLLightObject::GLLightObject(const GLProgram& pro, const GLLightAttr& attr):mProgram(pro), mAttr(attr)
+GLLightScene::GLLightObject::GLLightObject(int proId, const GLLightAttr& attr, GPPtr<GLObject> basic):mProId(proId), mAttr(attr), mBasic(basic)
 {
+    OPENGL_CHECK_ERROR;
+    mValid = true;
+#define GET(x) mAttrId.x = glGetUniformLocation(proId, #x)
+    GET(M);
+    GET(V);
+    GET(P);
+    GET(N);
+    GET(lightColor);
+    GET(ambientColor);
+    GET(lightpos);
+    GET(eyepos);
+    GET(ka);
+    GET(kd);
+    GET(ks);
+    GET(ns);
+#undef GET
+    if (OPENGL_HAS_ERROR)
+    {
+        mValid = false;
+        GLASSERT(mValid);
+    }
 }
 
 GLLightScene::GLLightObject::~GLLightObject()
 {
 }
-/*TODO Optimize this*/
 void GLLightScene::GLLightObject::onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P)
 {
-    int id = mProgram.id();
+    GLAutoDrawObject _o(mBasic, M, V, P);
+    GLASSERT(mValid);
+    if (!mValid)
+    {
+        return;
+    }
+    glUseProgram(mProId);
+    OPENGL_CHECK_ERROR;
     GLMatrix4 N = M;
     N = N.transpose().inverse();
-    GLProgram::setMatrix(M, mProgram.uniform("M"));
-    GLProgram::setMatrix(V, mProgram.uniform("V"));
-    GLProgram::setMatrix(P, mProgram.uniform("P"));
-    GLProgram::setMatrix(N, mProgram.uniform("N"));
-    /*TODO Avoid use opengl directly*/
-    glUniform4fv(mProgram.uniform("lightColor"), 1, mAttr.lightColor);
+    GLProgram::setMatrix(M, mAttrId.M);
+    GLProgram::setMatrix(V, mAttrId.V);
+    GLProgram::setMatrix(P, mAttrId.P);
+    GLProgram::setMatrix(N, mAttrId.N);
+    glUniform4fv(mAttrId.lightColor, 1, mAttr.lightColor);
     OPENGL_CHECK_ERROR;
-    glUniform4fv(mProgram.uniform("ambientColor"), 1, mAttr.ambientColor);
+    glUniform4fv(mAttrId.ambientColor, 1, mAttr.ambientColor);
     OPENGL_CHECK_ERROR;
-    glUniform4fv(mProgram.uniform("lightpos"), 1, mAttr.lightpos);
+    glUniform4fv(mAttrId.lightpos, 1, mAttr.lightpos);
     OPENGL_CHECK_ERROR;
-    glUniform4fv(mProgram.uniform("eyepos"), 1, mAttr.eyepos);
+    glUniform4fv(mAttrId.eyepos, 1, mAttr.eyepos);
     OPENGL_CHECK_ERROR;
-    glUniform1f(mProgram.uniform("ka"), mAttr.ka);
+    glUniform1f(mAttrId.ka, mAttr.ka);
     OPENGL_CHECK_ERROR;
-    glUniform1f(mProgram.uniform("kd"), mAttr.kd);
+    glUniform1f(mAttrId.kd, mAttr.kd);
     OPENGL_CHECK_ERROR;
-    glUniform1f(mProgram.uniform("ks"), mAttr.ks);
+    glUniform1f(mAttrId.ks, mAttr.ks);
     OPENGL_CHECK_ERROR;
-    glUniform1f(mProgram.uniform("ns"), mAttr.ns);
+    glUniform1f(mAttrId.ns, mAttr.ns);
     OPENGL_CHECK_ERROR;
 }

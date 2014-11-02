@@ -6,7 +6,7 @@
 class CONTEXT_CLASS GLTexture1Obj:public GLObject
 {
     public:
-        GLTexture1Obj(GPPtr<GLObject> basic);
+        GLTexture1Obj();
         void set(GPPtr<GLTexture> t, GPPtr<GLvboBuffer> ver, GPPtr<GLvboBuffer> tex, GPPtr<GLvboBuffer> normal, int verId, int texId, int normaliId);
         virtual ~GLTexture1Obj();
         virtual void onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection);
@@ -15,7 +15,6 @@ class CONTEXT_CLASS GLTexture1Obj:public GLObject
         GPPtr<GLvboBuffer> mVertex;
         GPPtr<GLvboBuffer> mTexCord;
         GPPtr<GLvboBuffer> mNormal;
-        GPPtr<GLObject> mBasic;
         int mVerId;
         int mTexId;
         int mNormalId;

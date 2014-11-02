@@ -14,10 +14,8 @@ void GLTexture1Obj::set(GPPtr<GLTexture> t, GPPtr<GLvboBuffer> ver, GPPtr<GLvboB
     mTexId = texId;
     mNormalId = normaliId;
 }
-GLTexture1Obj::GLTexture1Obj(GPPtr<GLObject> basic)
+GLTexture1Obj::GLTexture1Obj()
 {
-    GLASSERT(NULL!=basic.get());
-    mBasic = basic;
 }
 GLTexture1Obj::~GLTexture1Obj()
 {
@@ -25,7 +23,6 @@ GLTexture1Obj::~GLTexture1Obj()
 
 void GLTexture1Obj::onDraw(const GLMatrix4& transform, const GLMatrix4& view, const GLMatrix4& projection)
 {
-    mBasic->onDraw(transform, view, projection);
     mTexture->use();
     mVertex->use(mVerId);
     mTexCord->use(mTexId);

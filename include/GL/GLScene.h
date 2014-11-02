@@ -10,11 +10,11 @@ class GLScene:public GLObject, GLObjectIterator
         GLScene(GPPtr<GLTransformer> t);
         inline GPPtr<GLTransformer> getTransformer(){return mTransformer;}
         virtual ~GLScene();
+        virtual bool onPrepare();
 
         virtual const GLObjectCreator* vGetCreator() const = 0;
 
         virtual void vAddObject(GPPtr<GLObject> obj) = 0;
-        virtual bool onPrepare();
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
         virtual void vRemoveObject(GPPtr<GLObject> obj) = 0;
         virtual void vRemoveAll() = 0;

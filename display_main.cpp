@@ -86,17 +86,18 @@ static GLObject* gObj = NULL;
 
 GLObject* initBezier()
 {
-	GLBezier* res = new GLBezier(100, 3.0);
-	res->addPoint(0.0,-1.0,1);
-	res->addPoint(-0.4,0.0,1);
-	res->addPoint(0.2,1.0,1);
-	res->onPrepare();
-	return res;
+    GLBezier* res = new GLBezier(100, 3.0);
+    res->addPoint(0.0,-1.0,1);
+    res->addPoint(-0.4,0.0,1);
+    res->addPoint(0.2,1.0,1);
+    res->onPrepare();
+    return res;
 }
 
 GLObject* initLight()
 {
     GLLightScene* scene = new GLLightScene;
+    scene->onPrepare();
     GLTexture* texture = new GLTexture();
     GLBmp b;
     b.loadPicture("input.jpg");
@@ -113,17 +114,17 @@ GLObject* initLight()
 
 static void init()
 {
-    gObj = initCurve(true);
-	//gObj = initBezier();
-    //gObj = initLight();
+    //gObj = initCurve(true);
+    //gObj = initBezier();
+    gObj = initLight();
     glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
     glClearDepth(1.0);
 }
 
 static void display(void)
 {
-   // GPCLOCK;
+    // GPCLOCK;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     GLMatrix4 projection = GLMatrix4::projection(-2, 2, 2, -2, 3, 400, 1);
     //GLMatrix4 projection;
@@ -131,11 +132,11 @@ static void display(void)
     GLMatrix4 view;
     float p = -10;
     view.setTranslate(0,0,p);
-	static float a = 0;
-	transform.setRotate(0,1,0,a);
+    static float a = 0;
+    transform.setRotate(0,1,0,a);
 
-	//transform.setTranslate(0,1.0, 0);
-	a+=0.0005;
+    //transform.setTranslate(0,1.0, 0);
+    a+=0.0005;
     int angle = (a/PI*180);
     angle = angle%360;
     //printf("angle = %d\n", angle);
@@ -154,7 +155,7 @@ int main(int argc, char* argv[])
     glewInit();
     init();
     glutDisplayFunc(display);                        // Send graphics to display window 
-	glutIdleFunc(display);
+    glutIdleFunc(display);
 
     glutMainLoop();                                    // Display everything and wait 
     return 1;
