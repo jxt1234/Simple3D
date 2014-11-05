@@ -1,0 +1,25 @@
+attribute vec2 Tex;
+
+varying vec2 vTex;
+varying vec3 vN;
+varying vec3 vL;
+varying vec3 vH;
+
+uniform vec4 lightpos;
+uniform vec4 eyepos;
+
+uniform mat4 M;
+uniform mat4 V;
+uniform mat4 P;
+uniform mat4 N;
+
+void main()
+{
+    vec4 pos = curve_transform(Tex);
+    vec3 aNormal = normal_curve_transform(Tex);
+    gl_Position = pos*M*V*P;
+    vL = vec3(lightpos/lightpos.w)-vec3(pos/pos.w);
+    vN = vec3(vec4(aNormal,1.0)*N);
+    vTex = Tex;
+    vH = vL+vec3(lightpos/lightpos.w)-vec3(eyepos/eyepos.w);
+}

@@ -15,7 +15,20 @@ int main()
     string y = string("(1.0+v/2.0*cos(u/2.0))*sin(u)");
     string z = string("v/2.0*sin(u/2.0)");
     _test.setFormula(y);
-    _test.expand(std::cout);
+    _test.expand(cout);
+    cout << endl;
+
+    GPPtr<FormulaTree> detu = _test.detByName("u");
+    detu->expand(std::cout);
+    cout << endl;
+
+    ostringstream tempOs;
+    _test.expand(tempOs);
+
+    _test.setFormula(tempOs.str());
+    _test.expand(cout);
+    cout << endl;
+
     //FormulaTree tree(&deter);
     //tree.setFormula("x*y+p-q*exp(u, v)");
     //tree.expand(std::cout);

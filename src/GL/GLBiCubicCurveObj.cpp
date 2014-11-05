@@ -17,7 +17,7 @@ bool GLBiCubicCurveObj::onPrepare()
     //mTex->setFilter(false);
     return res;
 }
-void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag) const
+void GLBiCubicCurveObj::vGetFramgent(std::ostream& frag, const std::string& x, const std::string& y, const std::string& z) const
 {
     std::ostringstream vert;//Not use
     mWork->work()->onGenerateShader(vert, frag);

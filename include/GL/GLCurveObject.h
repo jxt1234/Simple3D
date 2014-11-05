@@ -26,12 +26,13 @@ class GLCurveObject:public GLObject
         virtual void onDraw(const GLMatrix4& M, const GLMatrix4& V, const GLMatrix4& P);
         virtual bool onPrepare();
         virtual int vGetProgramId() const {return mPro.id();}
+        static void getVertexCurve(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf);
     protected:
         GLProgram mPro;
         GLTexture* mTex;
     private:
         virtual void vGetVertex(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf) const;
-        virtual void vGetFramgent(std::ostream& frag) const;
+        virtual void vGetFramgent(std::ostream& frag, const std::string& x, const std::string& y, const std::string& z) const;
         GLvboBuffer* mVbo;
         /*u = mUs*(u+mUf), y = mVs*(v+mVf)*/
         float mUs;

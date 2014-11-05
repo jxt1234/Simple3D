@@ -1,6 +1,7 @@
 #include "GL/GLCurveObject.h"
 #include <string>
 #include <sstream>
+#include <fstream>
 using namespace std;
 const static string trans_m("modle_m");
 const static string view_m("view_m");
@@ -13,35 +14,43 @@ const static string tex_v("Tex");
 const static string vTex("vTex");
 const static string texture_s("texture");
 
+const static bool DEBUG = false;
+
+void GLCurveObject::getVertexCurve(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf)
+{
+    vertex << "uniform float "<<us_f <<";\n";
+    vertex << "uniform float "<<vs_f <<";\n";
+    vertex << "uniform float "<<uf_f <<";\n";
+    vertex << "uniform float "<<vf_f <<";\n";
+    vertex << "vec4 curve_transform(vec2 tex){\n";
+    vertex << "vec4 temp = vec4(1.0);\n";
+    vertex << "float u,v;\n";
+    vertex << "u = (tex.x + "+uf_f+ ")* "<<us_f<<"; v = (tex.y +"+vf_f +")* "<<vs_f<<";\n";
+    vertex << "temp.x = " << xf << ";\n";
+    vertex << "temp.y = " << yf << ";\n";
+    vertex << "temp.z = " << zf << ";\n";
+    vertex << "return temp;\n}\n";
+}
 void GLCurveObject::vGetVertex(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf) const
 {
     //Vertex shader
+    getVertexCurve(vertex, xf, yf, zf);
     vertex << "attribute vec2 "<<tex_v<<";\n";
     vertex << "varying vec2 "<<vTex<<";\n";
     vertex << "uniform mat4 "<<trans_m <<";\n";
     vertex << "uniform mat4 "<<view_m <<";\n";
     vertex << "uniform mat4 "<<proj_m <<";\n";
-    vertex << "uniform float "<<us_f <<";\n";
-    vertex << "uniform float "<<vs_f <<";\n";
-    vertex << "uniform float "<<uf_f <<";\n";
-    vertex << "uniform float "<<vf_f <<";\n";
     vertex << "void main(void)\n{\n";
-    vertex << "vec4 temp = vec4(1.0);\n";
     //Compute Curve
-    vertex << "float u,v;\n";
-    vertex << "u = ("<<tex_v<<".x + "+uf_f+ ")* "<<us_f<<"; v = ("<<tex_v<<".y +"+vf_f +")* "<<vs_f<<";\n";
-    vertex << "temp.x = " << xf << ";\n";
-    vertex << "temp.y = " << yf << ";\n";
-    vertex << "temp.z = " << zf << ";\n";
+    vertex << "vec4 temp = curve_transform("<<tex_v<<");\n";
     //Compute MVP
-    //vertex << "temp = "<<trans_m <<"*"<<view_m<<" * "<<proj_m<<"*temp;\n";
     vertex << "temp = temp*"<<trans_m <<"*"<<view_m<<" * "<<proj_m<<";\n";
     vertex << "gl_Position = temp;\n";
     vertex << vTex <<" = "<<tex_v<<";\n";
     vertex << "}\n";
 }
 
-void GLCurveObject::vGetFramgent(std::ostream& frag) const
+void GLCurveObject::vGetFramgent(std::ostream& frag, const std::string& x, const std::string& y, const std::string& z) const
 {
     //Fragment shader
     frag << "precision mediump float;\n";
@@ -91,7 +100,17 @@ void GLCurveObject::setFormula(const std::string& formula_x, const std::string& 
 {
     ostringstream vertex, frag;
     this->vGetVertex(vertex, formula_x, formula_y, formula_z);
-    this->vGetFramgent(frag);
+    if (DEBUG)
+    {
+        ofstream os("curve.vex");
+        this->vGetVertex(os, formula_x, formula_y, formula_z);
+    }
+    this->vGetFramgent(frag, formula_x, formula_y, formula_z);
+    if (DEBUG)
+    {
+        ofstream os("curve.fra");
+        this->vGetFramgent(os, formula_x, formula_y, formula_z);
+    }
     mPro.load(vertex.str(), frag.str());
 }
 void GLCurveObject::setColor(uint32_t argb)

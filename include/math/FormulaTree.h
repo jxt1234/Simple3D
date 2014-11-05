@@ -52,6 +52,7 @@ class FormulaTree:public RefCount
 {
     public:
         FormulaTree(const IFunctionDeter* basic);
+        FormulaTree(const IFunctionDeter* deter, const std::string& formula);
         virtual ~FormulaTree();
         void setFormula(const std::string& formula);
         void expand(std::ostream& output) const;

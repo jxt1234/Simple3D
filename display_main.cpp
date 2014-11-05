@@ -9,7 +9,7 @@
 #include "GL/GLvboBuffer.h"
 #include "GL/GLTexture.h"
 #include "GL/GLCurveObject.h"
-#include "GL/GLBiCubicCurveObj.h"
+#include "GL/GLCurveObjectFactory.h"
 #include "GL/GLBezier.h"
 #include "GL/GLLightScene.h"
 #include "vertex/GL_position.h"
@@ -29,7 +29,7 @@
 
 using namespace std;
 
-static GLCurveObject* initCurve(bool cubic)
+static GLObject* initCurve(GLCurveObjectFactory::TYPE t)
 {
     string x;
     string y;
@@ -40,6 +40,7 @@ static GLCurveObject* initCurve(bool cubic)
 
     std::ifstream is("function.txt");
     BasicFunctionDeter basic(is);
+    is.close();
     FormulaTree _x(&basic), _y(&basic), _z(&basic);
     _x.setFormula(x);
     _y.setFormula(y);
@@ -64,22 +65,19 @@ static GLCurveObject* initCurve(bool cubic)
     GLvboBuffer* texBuffer = new GLvboBuffer(&tex);
 
     GLCurveObject* result = NULL;
-    if (cubic)
-    {
-        result = new GLBiCubicCurveObj();
-    }
-    else
-    {
-        result = new GLCurveObject();
-    }
+    result = GLCurveObjectFactory::create(t);
     result->setTexture(texture);
     result->setVBO(texBuffer);
     //result->setFormula(x, y, z);
     result->setFormula(__x.str(), __y.str(), __z.str());
     result->setScale(2*PI,2);
     result->setOffset(0,-0.5);
-    result->onPrepare();
-    return result;
+
+    GPPtr<GLObject> res = result;
+    GLLightScene* scene = new GLLightScene;
+    scene->onPrepare();
+    scene->vAddObject(res);
+    return scene;
 }
 
 static GLObject* gObj = NULL;
@@ -114,9 +112,9 @@ GLObject* initLight()
 
 static void init()
 {
-    //gObj = initCurve(true);
+    gObj = initCurve(GLCurveObjectFactory::LIGHT);
     //gObj = initBezier();
-    gObj = initLight();
+    //gObj = initLight();
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearDepth(1.0);

@@ -16,6 +16,7 @@
 #include <sstream>
 #include "math/FormulaTree.h"
 #include "utils/debug.h"
+#include <iostream>
 class FormulaTreePointCopy:public AbstractPoint::IPointCopy
 {
     public:
@@ -63,6 +64,10 @@ void FormulaTreePoint::_replaceByTable(const std::map<std::string, FormulaTreePo
         }
         GLASSERT(cp->mT == IFunctionDeter::NUM);
         ITER it = tables.find(cp->mName);
+        if (it==tables.end())
+        {
+            continue;
+        }
         GLASSERT(it!=tables.end());
         FormulaTreePoint* rep = it->second;
         AbstractPoint* rep_copy = AbstractPoint::deepCopy(rep, &copy);
@@ -81,11 +86,11 @@ FormulaTreePoint* FormulaTreePoint::detByName(const std::string& name, const IFu
     {
         if (mName == name)
         {
-            res->mName = "1.0f";
+            res->mName = "1.0";
         }
         else
         {
-            res->mName = "0.0f";
+            res->mName = "0.0";
         }
         return res;
     }
@@ -304,6 +309,14 @@ FormulaTree::FormulaTree(const IFunctionDeter* deter)
     mValid = false;
     mBasic = deter;
 }
+FormulaTree::FormulaTree(const IFunctionDeter* deter, const std::string& formula)
+{
+    mRoot = NULL;
+    mValid = false;
+    mBasic = deter;
+
+    this->setFormula(formula);
+}
 FormulaTree::~FormulaTree()
 {
     SAFE_UNREF(mRoot);
@@ -347,7 +360,6 @@ void FormulaTree::expand(std::ostream& output) const
 {
     GLASSERT(mRoot!=NULL);
     mRoot->_expandUnit(output, mBasic);
-    output << "\n";
 }
 bool FormulaTree::valid(const std::vector<int>& words) const
 {
@@ -360,12 +372,6 @@ bool FormulaTree::valid(const std::vector<int>& words) const
         switch (type)
         {
             case IFunctionDeter::BRACEL_L:
-                if (preType!=IFunctionDeter::OPERATOR && preType!=IFunctionDeter::UNKNOWN)
-                {
-                    FUNC_PRINT(preType);
-                    GLASSERT(false);
-                    return false;
-                }
                 depth++;
                 break;
             case IFunctionDeter::BRACEL_R:

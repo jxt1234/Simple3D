@@ -34,7 +34,7 @@ def generateFile(headfile, sourcefile, shaders):
             for l in lines:
                 if (len(l) < 1):
                     continue
-                cpp += "\""+l+"\"\n"
+                cpp += "\""+l+"\\n\"\n"
         cpp += ";\n"
     h+= "#endif"
     headfile = "include/" + headfile;
