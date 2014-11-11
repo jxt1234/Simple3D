@@ -31,12 +31,9 @@ using namespace std;
 
 static GLObject* initCurve(GLCurveObjectFactory::TYPE t)
 {
-    string x;
-    string y;
-    string z;
-    x = string("(1.0+v/2.0*cos(u/2.0))*cos(u)");
-    y = string("(1.0+v/2.0*cos(u/2.0))*sin(u)");
-    z = string("v/2.0*sin(u/2.0)");
+    string x = string("(1.0+v/2.0*cos(u/2.0))*cos(u)");
+    string y = string("(1.0+v/2.0*cos(u/2.0))*sin(u)");
+    string z = string("v/2.0*sin(u/2.0)");
 
     std::ifstream is("function.txt");
     BasicFunctionDeter basic(is);

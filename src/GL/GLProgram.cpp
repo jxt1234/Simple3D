@@ -29,8 +29,8 @@ void GLProgram::load(const std::string& vertex, const std::string& frag)
 
 void GLProgram::load(const char* vex, const char* frag)
 {
-    assert(NULL!=vex);
-    assert(NULL!=frag);
+    GLASSERT(NULL!=vex);
+    GLASSERT(NULL!=frag);
 #define COPYS(dst, src)\
     {\
         if (dst) delete [] dst;\
@@ -109,6 +109,7 @@ CONTEXT_API bool GLProgram::init()
 {
     if (mInit) return true;
     GLAutoLock _l(mLock);
+    GLASSERT(NULL!=mVertex && NULL!=mFragment);
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
     OPENGL_CHECK_ERROR;

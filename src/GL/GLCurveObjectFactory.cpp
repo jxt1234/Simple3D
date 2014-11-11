@@ -4,7 +4,8 @@
 #include "GL/GLCurveObjectFactory.h"
 #include "utils/GLLock.h"
 #include "math/BasicFunctionDeter.h"
-#include <fstream>
+#include "AllShader.h"
+#include <sstream>
 
 IFunctionDeter* GLCurveObjectFactory::gDeter = NULL;
 
@@ -15,9 +16,8 @@ GLCurveObject* GLCurveObjectFactory::create(TYPE t)
     GLAutoLock _l(gLock);
     if (NULL == gDeter)
     {
-        std::ifstream is("function.txt");//TODO
+        std::istringstream is(glsl_function_txt_vex);
         gDeter = new BasicFunctionDeter(is);
-        is.close();
     }
     GLCurveObject* res = NULL;
     switch (t)

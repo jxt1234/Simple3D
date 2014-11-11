@@ -15,12 +15,12 @@ void main()
 {
     float p, d;
     vec4 diffuceColor = texture2D(sam, vTex) * lightColor;
-    vH = normalize(vH);
-    vN = normalize(vN);
-    vL = normalize(vL);
-    p = ks*max(-dot(vN, vH), dot(vN, vH));
+    vec3 _vH = normalize(vH);
+    vec3 _vN = normalize(vN);
+    vec3 _vL = normalize(vL);
+    p = ks*max(-dot(_vN, _vH), dot(_vN, _vH));
     p = pow(p, ns);
-    d = kd*max(-dot(vN, vH), dot(vN, vL));
+    d = kd*max(-dot(_vN, _vH), dot(_vN, _vL));
     gl_FragColor = ka*ambientColor + p*lightColor + d*diffuceColor;
 }
 

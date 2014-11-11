@@ -17,6 +17,7 @@
 #include "math/FormulaTree.h"
 #include "utils/debug.h"
 #include <iostream>
+//#define F_DEBUG
 class FormulaTreePointCopy:public AbstractPoint::IPointCopy
 {
     public:
@@ -171,7 +172,9 @@ void FormulaTreePoint::divideWords(const std::vector<int>& types,
 {
     GLASSERT(sta<=mid && mid<fin && fin<types.size());
     GLASSERT(IFunctionDeter::OPERATOR == types[mid]);
-    if (sta != mid)//This means mid is binocular Operator
+    int ssta = sta;
+    for (;ssta <= mid && types[ssta]==IFunctionDeter::BRACEL_L; ssta++);
+    if (ssta != mid)//This means mid is binocular Operator
     {
         starts.push_back(sta);ends.push_back(mid-1);
         starts.push_back(mid+1);ends.push_back(fin);
@@ -323,6 +326,9 @@ FormulaTree::~FormulaTree()
 }
 void FormulaTree::setFormula(const std::string& formula)
 {
+#ifdef F_DEBUG
+    std::cout << formula <<"\n";
+#endif
     GLASSERT(NULL!=mBasic);
     SAFE_UNREF(mRoot);
     std::vector<std::string> words;
@@ -333,9 +339,13 @@ void FormulaTree::setFormula(const std::string& formula)
     for (int i=0; i<words.size(); ++i)
     {
         types.push_back(mBasic->type(words[i]));
-        //std::cout << types[i] << " ";
+#ifdef F_DEBUG
+        std::cout << types[i] << " ";
+#endif
     }
-    //std::cout << "\n";
+#ifdef F_DEBUG
+    std::cout << "\n";
+#endif
     mValid = valid(types);
     GLASSERT(true == mValid);
     if (!mValid) return;

@@ -31,6 +31,7 @@ class GLLightScene:public GLScene, GLObjectCreator
         //As GLObject
         virtual bool onGenerateShader(std::ostream& vertex, std::ostream& frag) const;
         virtual bool onPrepare();
+        virtual int size() const {return mObjs.size();}
         /*As GLObjectManager*/
         virtual void vAddObject(GPPtr<GLObject> obj);
         virtual void vRemoveObject(GPPtr<GLObject> obj);

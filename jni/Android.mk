@@ -24,6 +24,8 @@ LOCAL_CFLAGS    := -Werror
 LOCAL_CFLAGS    += -DGL_BUILD_FOR_ANDROID
 LOCAL_SRC_FILES := $(call all-cpp-files)
 
+LOCAL_SRC_FILES += ../glsl/AllShader.cpp
+
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/\
     $(LOCAL_PATH)/../third_party/FreeImage/Source
 

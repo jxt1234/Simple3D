@@ -11,10 +11,10 @@ int main()
     std::ifstream is("function.txt");
     BasicFunctionDeter deter(is);
     FormulaTree _test(&deter);
-    string x = string("(1.0+v/2.0*cos(u/2.0))*cos(u)");
-    string y = string("(1.0+v/2.0*cos(u/2.0))*sin(u)");
-    string z = string("v/2.0*sin(u/2.0)");
-    _test.setFormula(y);
+    string x = string("cos(u)*cos(v)");
+    string y = string("cos(u)*sin(v)");
+    string z = string("sin(u)");
+    _test.setFormula(z);
     _test.expand(cout);
     cout << endl;
 
