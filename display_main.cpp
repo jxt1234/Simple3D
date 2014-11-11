@@ -77,6 +77,8 @@ static GLObject* initCurve(GLCurveObjectFactory::TYPE t)
     GLLightScene* scene = new GLLightScene;
     scene->onPrepare();
     scene->vAddObject(res);
+    scene->setEyePos(0, 0, -10.0);
+    scene->setLightPos(0, 0, 0, 100);
     return scene;
 }
 

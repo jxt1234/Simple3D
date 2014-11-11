@@ -49,5 +49,5 @@ void GLLightCurveObj::vGetVertex(std::ostream& vertex, const std::string& xf, co
 }
 void GLLightCurveObj::vGetFramgent(std::ostream& frag, const std::string& x, const std::string& y, const std::string& z) const
 {
-    frag << glsl_light_fra;
+    frag << glsl_curve_light_fra;
 }

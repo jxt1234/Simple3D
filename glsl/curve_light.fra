@@ -1,0 +1,26 @@
+precision mediump float;
+uniform vec4 lightColor;
+uniform vec4 ambientColor;
+uniform float ka;
+uniform float kd;
+uniform float ks;
+uniform float ns;
+uniform sampler2D sam;
+varying vec2 vTex;
+varying vec3 vN;
+varying vec3 vL;
+varying vec3 vH;
+
+void main()
+{
+    float p, d;
+    vec4 diffuceColor = texture2D(sam, vTex) * lightColor;
+    vH = normalize(vH);
+    vN = normalize(vN);
+    vL = normalize(vL);
+    p = ks*max(-dot(vN, vH), dot(vN, vH));
+    p = pow(p, ns);
+    d = kd*max(-dot(vN, vH), dot(vN, vL));
+    gl_FragColor = ka*ambientColor + p*lightColor + d*diffuceColor;
+}
+
