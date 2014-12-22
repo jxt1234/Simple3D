@@ -133,7 +133,7 @@ static void display(void)
     transform.setRotate(0,1,0,a);
 
     //transform.setTranslate(0,1.0, 0);
-    a+=0.0005;
+    a+=0.05;
     int angle = (a/PI*180);
     angle = angle%360;
     //printf("angle = %d\n", angle);

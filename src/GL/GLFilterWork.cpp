@@ -47,7 +47,6 @@ void GLFilterWork::onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProg
 
 void GLFilterWork::_genShader(std::ostream& os, const float* p, int n)
 {
-    os <<"precision mediump float;\n";
     os <<"varying vec2 vTex;\n";
     os <<"uniform vec2 offset;\n";
     os <<"uniform sampler2D buffer;\n";

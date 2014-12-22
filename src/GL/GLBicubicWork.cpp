@@ -52,7 +52,6 @@ bool GLBicubicWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) c
 
 void GLBicubicWork::_genShader(std::ostream& os) const
 {
-    os <<"precision mediump float;\n";
     os <<"varying vec2 vTex;\n";
     os <<"uniform sampler2D buffer;\n";
     os <<"uniform float uUnit;\n";

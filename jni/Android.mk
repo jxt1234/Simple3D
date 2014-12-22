@@ -67,4 +67,5 @@ LOCAL_CPP_FEATURES := rtti exceptions
 LOCAL_SRC_FILES := \
                    $(SRCS)\
 
+LOCAL_CFLAGS    += -DGL_BUILD_FOR_ANDROID
 include $(BUILD_STATIC_LIBRARY)

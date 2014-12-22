@@ -5,7 +5,6 @@
 #include <sstream>
 #include <iostream>
 static const char head[] = 
-"precision mediump float;\n"
 "varying vec2 vTex;\n"
 "void main(void)\n"
 "{\n"

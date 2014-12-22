@@ -15,7 +15,6 @@ static const char gVertex[] =
 ;
 
 static const char gDefaultFrag[] = 
-"precision mediump float;\n"
 "varying vec2 vTex;\n"
 "uniform sampler2D buffer;\n"
 "void main(void)\n"

@@ -27,6 +27,7 @@ it under the terms of the one of three licenses as you choose:
 #include "internal/defines.h"
 #include "internal/var_defines.h"
 #line 274 "dcraw/dcraw.c"
+#ifdef GL_BUILD_FOR_ANDROID
 static void swab(const void *from, void *to, ssize_t n)  
 {  
     ssize_t i;  
@@ -40,6 +41,7 @@ static void swab(const void *from, void *to, ssize_t n)
         *((uint16_t*)to + i) = __arch__swab16(*((uint16_t*)from + i));  
     }  
 }  
+#endif
 
 #ifndef __GLIBC__
 char *my_memmem (char *haystack, size_t haystacklen,

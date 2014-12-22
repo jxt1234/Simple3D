@@ -1,5 +1,4 @@
 #include "GL/GLProgram.h"
-#include <assert.h>
 #include <sstream>
 #include <fstream>
 #include <string.h>
@@ -9,70 +8,44 @@ GLProgram::GLProgram()
 {
     mId = 0;
     mInit = false; 
-    mVertex = NULL;
-    mFragment = NULL;
 }
 
 void GLProgram::load(const std::string& vertex, const std::string& frag)
 {
     GLAutoLock _l(mLock);
     mInit = false;
-    if (mVertex) delete [] mVertex;
-    if (mFragment) delete [] mFragment;
-    mVertex = new char[vertex.size()+1];
-    vertex.copy(mVertex, vertex.size(), 0);
-    mVertex[vertex.size()] = 0;
-    mFragment = new char[frag.size()+1];
-    frag.copy(mFragment, frag.size(), 0);
-    mFragment[frag.size()] = 0;
+    mVertex = vertex;
+    mFragment = frag;
 }
 
 void GLProgram::load(const char* vex, const char* frag)
 {
     GLASSERT(NULL!=vex);
     GLASSERT(NULL!=frag);
-#define COPYS(dst, src)\
-    {\
-        if (dst) delete [] dst;\
-        int n = strlen(src);\
-        dst = new char[n+1];\
-        memcpy(dst, src, n);\
-        dst[n] = '\0';\
-    }
-
-    COPYS(mVertex, vex);
-    COPYS(mFragment, frag);
-#undef COPYS
+    mVertex = vex;
+    mFragment = frag;
     mInit = false;
 }
 
-static void loadAllContent(const char* file, char* &c)
+static string loadAllContent(const char* file)
 {
     ifstream is(file);
-    is.seekg(0, ios::end);
-    int length = is.tellg();
-    is.seekg(0, ios::beg);
-    c = new char[length+1];
-    is.read(c, length);
-    c[length] = '\0';
-    is.close();
+    ostringstream os;
+    os << is.rdbuf();
+    return os.str();
 }
 
 void GLProgram::loadFiles(const char* vertex, const char* frag)
 {
-    assert(NULL!=vertex);
-    assert(NULL!=frag);
-    if (mVertex) delete [] mVertex;
-    if (mFragment) delete [] mFragment;
+    GLASSERT(NULL!=vertex);
+    GLASSERT(NULL!=frag);
     mInit = false;
-    loadAllContent(vertex, mVertex);
-    loadAllContent(frag, mFragment);
+    mVertex = loadAllContent(vertex);
+    mFragment = loadAllContent(frag);
 }
 
 GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 {
-    mFragment = NULL;
-    mVertex = NULL;
     mInit = false;
     mId = 0;
     load(vertex, frag);
@@ -82,9 +55,7 @@ GLProgram::~GLProgram()
 {
     //destroy();
     ///*If the GLProgram is not destroy before, it shouldn't be freed*/
-    assert(!mInit);
-    if (mVertex) delete [] mVertex;
-    if (mFragment) delete [] mFragment;
+    GLASSERT(!mInit);
 }
 static bool compileShader(GLuint s)
 {
@@ -109,27 +80,32 @@ CONTEXT_API bool GLProgram::init()
 {
     if (mInit) return true;
     GLAutoLock _l(mLock);
-    GLASSERT(NULL!=mVertex && NULL!=mFragment);
     /*Create Shader*/
     GLint vert = glCreateShader(GL_VERTEX_SHADER);
     OPENGL_CHECK_ERROR;
     GLint frag = glCreateShader(GL_FRAGMENT_SHADER);
     OPENGL_CHECK_ERROR;
     const char* _ver[1];
-    const char* _frag[1];
-    _ver[0] = mVertex;
-    _frag[0] = mFragment;
+    const char* _fra[1];
+    _ver[0] = mVertex.c_str();
+#ifdef GL_BUILD_FOR_ANDROID
+    ostringstream newfra;
+    newfra << "precision mediump float;\n"<<mFragment;
+    _fra[0] = newfra.str().c_str();
+#else
+    _fra[0] = mFragment.c_str();
+#endif
     glShaderSource(vert, 1, _ver, NULL);
     OPENGL_CHECK_ERROR;
-    glShaderSource(frag, 1, _frag, NULL);
+    glShaderSource(frag, 1, _fra, NULL);
     OPENGL_CHECK_ERROR;
-    /*TODO move assert to be log*/
+    /*TODO move GLASSERT to be log*/
     bool res = compileShader(vert);
-    if (!res) FUNC_PRINT_ALL(mVertex, s);
+    if (!res) FUNC_PRINT_ALL(mVertex.c_str(), s);
     GLASSERT(true == res);
     if (false == res) return false;
     res = (compileShader(frag));
-    if (!res) FUNC_PRINT_ALL(mFragment, s);
+    if (!res) FUNC_PRINT_ALL(mFragment.c_str(), s);
     GLASSERT(true == res);
     if (false == res) return false;
     /*Create Program*/
@@ -156,12 +132,12 @@ CONTEXT_API bool GLProgram::init()
 
 CONTEXT_API int GLProgram::attr(const char* name) const
 {
-    assert(NULL!=name && 0!=mId);
+    GLASSERT(NULL!=name && 0!=mId);
     return glGetAttribLocation(mId, name);
 }
 CONTEXT_API int GLProgram::uniform(const char* name) const
 {
-    assert(NULL!=name && 0!=mId);
+    GLASSERT(NULL!=name && 0!=mId);
     return glGetUniformLocation(mId, name);
 }
 CONTEXT_API void GLProgram::destroy()

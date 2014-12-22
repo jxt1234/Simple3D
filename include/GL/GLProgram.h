@@ -1,12 +1,11 @@
 #ifndef DISPLAY_XMLSHADER_H
 #define DISPLAY_XMLSHADER_H
 
-#include <iostream>
-#include <vector>
 #include "math/GLMatrix4.h"
 #include "utils/GLLock.h"
 #include "utils/RefCount.h"
 #include "head.h"
+#include <string>
 
 class GLProgram:public RefCount
 {
@@ -35,8 +34,8 @@ class GLProgram:public RefCount
         unsigned int mId;
         bool mInit;
     private:
-        char* mVertex;
-        char* mFragment;
+        std::string mVertex;
+        std::string mFragment;
         unsigned int mVertId;
         unsigned int mFragId;
 

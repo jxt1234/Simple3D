@@ -53,7 +53,6 @@ void GLCurveObject::vGetVertex(std::ostream& vertex, const std::string& xf, cons
 void GLCurveObject::vGetFramgent(std::ostream& frag, const std::string& x, const std::string& y, const std::string& z) const
 {
     //Fragment shader
-    frag << "precision mediump float;\n";
     frag << "uniform sampler2D "<<texture_s<<";\n";
     frag << "varying vec2 "<<vTex<<";\n";
     frag << "void main(void)\n{\n";

@@ -1,7 +1,6 @@
 #include "GL/GLMixWork.h"
 #include "GL/GLBitmapWorkFactory.h"
 static const char* gFrag = 
-"precision mediump float;\n"
 "varying vec2 vTex;\n"
 "uniform sampler2D buffer1;\n"
 "uniform sampler2D buffer2;\n"
