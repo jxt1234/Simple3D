@@ -13,7 +13,11 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #else
+#ifdef GL_BUILD_FOR_UBUNTU
 #include <GL/glew.h>
+#else
+#include <OpenGL/gl.h>
+#endif
 #endif
 #include "debug.h"
 #define OPENGL_ASSERT(x) assert(x)

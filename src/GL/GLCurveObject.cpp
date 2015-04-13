@@ -14,7 +14,7 @@ const static string tex_v("Tex");
 const static string vTex("vTex");
 const static string texture_s("texture");
 
-const static bool DEBUG = false;
+#define CURVEDEBUG false
 
 void GLCurveObject::getVertexCurve(std::ostream& vertex, const std::string& xf, const std::string& yf, const std::string& zf)
 {
@@ -99,13 +99,13 @@ void GLCurveObject::setFormula(const std::string& formula_x, const std::string& 
 {
     ostringstream vertex, frag;
     this->vGetVertex(vertex, formula_x, formula_y, formula_z);
-    if (DEBUG)
+    if (CURVEDEBUG)
     {
         ofstream os("curve.vex");
         this->vGetVertex(os, formula_x, formula_y, formula_z);
     }
     this->vGetFramgent(frag, formula_x, formula_y, formula_z);
-    if (DEBUG)
+    if (CURVEDEBUG)
     {
         ofstream os("curve.fra");
         this->vGetFramgent(os, formula_x, formula_y, formula_z);
