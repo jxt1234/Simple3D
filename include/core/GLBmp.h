@@ -4,27 +4,28 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "interface/IBitmap.h"
-class FIBITMAP;
+#include "interface/GLColor.h"
 
 /*Only one color format ARGB*/
 class GLBmp:public IBitmap
 {
-    public:
-        GLBmp(){mBitmap = NULL, mWidth = 0, mHeight = 0;}
-        GLBmp(int w, int h);
-        GLBmp(const char* pic){mBitmap = NULL;loadPicture(pic);}
-        void loadPicture(const char* pic);
-        void loadPicture(unsigned char* data, int length);
-        void save(const char* path);
-        void* pixels() const;
-        //
-        virtual ~GLBmp();
-        virtual GLColor getColor(int x, int y);
-        virtual void setColor(const GLColor& c, int x, int y);
-
-        double psnr(const GLBmp& other);
-    protected:
-        FIBITMAP* mBitmap;
+public:
+    GLBmp(int w, int h);
+    virtual void* vGetAddr(int x, int y) const
+    {
+        return mPixels + mAttr.stride*y + x;
+    }
+    virtual const Attribute& vGetAttribute() const {return mAttr;}
+    
+    void loadPicture(const char* pic);
+    void loadPicture(unsigned char* data, int length);
+    void save(const char* path);
+    virtual ~GLBmp();
+    
+    double psnr(const GLBmp& other);
+private:
+    uint32_t* mPixels;
+    Attribute mAttr;
 };
 
 

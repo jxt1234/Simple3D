@@ -21,12 +21,12 @@ class GLTexture2DCompute:public IFragmentFunction
             if (x<0) x=0;
             if (y>mHeight-1) y = mHeight-1;
             if (y<0) y=0;
-            GLColor c = mPic->getColor(x, y);
+            unsigned char* c = (unsigned char*)mPic->vGetAddr(x,y);
             float* r = output[0];
-            r[0]=(c.r/255.0);
-            r[1]=(c.g/255.0);
-            r[2]=(c.b/255.0);
-            r[3]=(c.a/255.0);
+            r[0]=(c[0]/255.0);
+            r[1]=(c[1]/255.0);
+            r[2]=(c[2]/255.0);
+            r[3]=(c[3]/255.0);
         }
     private:
         IBitmap* mPic;

@@ -229,6 +229,7 @@ GLColor CSceneNewton::getColor(const double dL1,const double dL2,const double dL
 void CSceneNewton::DoDraw(IBitmap& dst)
 {
     GPCLOCK;
+    assert(dst.getBpp() == 4);
     int width = dst.getWidth();
     int height = dst.getHeight();
     const double rTop    =-1;
@@ -239,10 +240,10 @@ void CSceneNewton::DoDraw(IBitmap& dst)
     const double xJScale= ((rRight-rLeft)/width);
     const double yJScale= ((rBottom-rTop)/height);
 
-    for (long y=0;y<height;++y)
+    for (int y=0;y<height;++y)
     {
         double ry0=y*yJScale+rTop;
-        for (long x=0;x<width;++x)
+        for (int x=0;x<width;++x)
         {
             double rx0=x*xJScale+rLeft;
 
@@ -252,7 +253,8 @@ void CSceneNewton::DoDraw(IBitmap& dst)
             else
                 getExtractByNewton(rx0,ry0,m_ExtractNumber,m_iteratInc,m_isTanRev,dL1,dL2,dL3);
             GLColor c = getColor(dL1,dL2,dL3);
-            dst.setColor(c, x, y);
+            uint32_t* _dst = (uint32_t*)dst.vGetAddr(x, y);
+            *_dst = c.turnRGBA();
         }
     }
 }

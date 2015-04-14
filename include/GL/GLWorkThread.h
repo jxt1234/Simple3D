@@ -13,6 +13,7 @@ class GLWorkThread:public GLThread, GLWorkHandler
                 virtual bool wait(int timeout_ms)
                 {
                     mSem.wait();
+                    return true;
                 }
                 void post()
                 {

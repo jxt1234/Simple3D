@@ -30,6 +30,8 @@ static vector<float> _rotate(float x, float y, float rad, float sw=1.0, float sh
 void GLRotate(IBitmap& src, IBitmap& dst, float degree, bool scale)
 {
     //Change to radium
+    assert(4 == src.getBpp());
+    assert(4 == dst.getBpp());
     degree = degree * PI / 180.0;
     GL_texcord tex;
     tex.addPoint(0.0, 0.0);
@@ -82,7 +84,9 @@ void GLRotate(IBitmap& src, IBitmap& dst, float degree, bool scale)
         int y = pos[1];
         int u = texc[0];
         int v = texc[1];
-        dst.setColor(src.getColor(u, v), x, y);
+        uint32_t* _src = (uint32_t*)src.vGetAddr(u,v);
+        uint32_t* _dst = (uint32_t*)dst.vGetAddr(x,y);
+        *_dst = *_src;
     }
 }
 

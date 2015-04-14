@@ -3,16 +3,15 @@
 
 BasicFunctionDeter::BasicFunctionDeter(std::istream& data)
 {
-    bool next = true;
-    while(next)
+    function f;
+    data >> f.name;
+    do
     {
-        function f;
-        data >> f.name;
         data >> f.priorty;
         data >> f.formula;
-        next = (data >> f.detformula);
+        data >> f.detformula;
         mFunctions.insert(std::make_pair(f.name, f));
-    }
+    }while (data >> f.name);
 }
 
 BasicFunctionDeter::~BasicFunctionDeter()

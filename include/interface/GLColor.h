@@ -10,6 +10,7 @@ struct GLColor
     uchar r;
     uchar g;
     uchar b;
+    unsigned int turnRGBA() const {return a + (b<<8)+(g<<16)+(r<<24);}
 };
 
 struct GLFloatColor

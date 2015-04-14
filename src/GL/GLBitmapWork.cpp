@@ -19,9 +19,9 @@ bool GLBitmapWork::onPrepare()
     GLAutoLock _l(mLock);
     mSrcT = new GLTexture;
     mSrcT->setFilter(mFilter);
-    mSrcT->upload(mSrc->pixels(), mSrc->width(), mSrc->height());
+    mSrcT->upload(mSrc->vGetAddr(0, 0), mSrc->getWidth(), mSrc->getHeight());
     mDstT = new GLTexture;
-    mDstT->upload(NULL, mDst->width(), mDst->height());
+    mDstT->upload(NULL, mDst->getWidth(), mDst->getHeight());
     return mWork->onPrepare();;
 }
 
@@ -33,7 +33,7 @@ void GLBitmapWork::onFinish()
     if (NULL!=mDstT.get())
     {
         GLAutoFbo __f(*mDstT);
-        mDstT->download(mDst->pixels());
+        mDstT->download(mDst->vGetAddr(0, 0));
     }
 }
 

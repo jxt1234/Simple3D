@@ -1,59 +1,25 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
-#include "FreeImage.h"
 #include <math.h>
 static const int mBpp = 4;
 
 GLBmp::GLBmp(int w, int h)
 {
-    mBitmap = FreeImage_Allocate(w, h, mBpp*8);
-    mWidth = w;
-    mHeight = h;
+    GLASSERT(w>0 && h>0);
+    mAttr.width = w;
+    mAttr.height = h;
+    mAttr.bpp = mBpp;
+    mAttr.stride = w;
+    mPixels = new uint32_t[w*h];
 }
 
 GLBmp::~GLBmp()
 {
-    if (NULL!=mBitmap)
-    {
-        FreeImage_Unload(mBitmap);
-    }
+    delete [] mPixels;
 }
 
 
-
-
-void GLBmp::save(const char* path)
-{
-    assert(NULL!=mBitmap);
-    assert(NULL!=path);
-    FreeImage_Save(FIF_PNG, mBitmap, path, PNG_DEFAULT);
-}
-
-GLColor GLBmp::getColor(int x, int y)
-{
-    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + mBpp * x;
-    GLColor c;
-    c.r = bitsLine[FI_RGBA_RED];
-    c.g = bitsLine[FI_RGBA_GREEN];
-    c.b = bitsLine[FI_RGBA_BLUE];
-    c.a = bitsLine[FI_RGBA_ALPHA];
-    return c;
-}
-
-void* GLBmp::pixels() const
-{
-    return (void*)FreeImage_GetScanLine(mBitmap, 0);
-}
-
-void GLBmp::setColor(const GLColor& c, int x, int y)
-{
-    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + mBpp * x;
-    bitsLine[FI_RGBA_RED] = c.r;
-    bitsLine[FI_RGBA_GREEN] = c.g;
-    bitsLine[FI_RGBA_BLUE] = c.b;
-    bitsLine[FI_RGBA_ALPHA] = c.a;
-}
-
+/*
 void GLBmp::loadPicture(unsigned char* data, int length)
 {
     FIMEMORY* memory = FreeImage_OpenMemory(data, length);
@@ -85,20 +51,22 @@ void GLBmp::loadPicture(const char* pic)
     mWidth  = FreeImage_GetWidth(mBitmap);
     mHeight = FreeImage_GetHeight(mBitmap);
 }
-
+*/
 double GLBmp::psnr(const GLBmp& other)
 {
     double result = 0.0;
-    int w = other.width();
-    int h = other.height();
-    if (width()!=w || height()!=h)
+    auto attr = other.vGetAttribute();
+    int w = attr.width;
+    int h = attr.height;
+    if (mAttr.width!=w || mAttr.height!=h || mAttr.bpp != attr.bpp)
     {
+        /*TODO scale into same size for compare*/
         return 0.0;
     }
-    uint32_t* src = (uint32_t*)pixels();
-    uint32_t* dst = (uint32_t*)other.pixels();
     for (int i=0; i<h; ++i)
     {
+        uint32_t* src = mPixels + w*i;
+        uint32_t* dst = (uint32_t*)other.vGetAddr(0, i);
         for (int j=0; j<w; ++j)
         {
             double s = *src++;

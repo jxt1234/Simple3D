@@ -1,10 +1,12 @@
 #include "fragment/GLWritePixels.h"
+#include "interface/GLColor.h"
 #include <assert.h>
 void GLWritePixels(IBitmap* dst, IRasterizatedVarying* pos, IRasterizatedVarying* color)
 {
     assert(NULL!=dst);
     assert(NULL!=pos);
     assert(NULL!=color);
+    assert(dst->getBpp() == 4);
     assert(pos->size() == color->size());
     int w = dst->getWidth();
     int h = dst->getHeight();
@@ -21,6 +23,7 @@ void GLWritePixels(IBitmap* dst, IRasterizatedVarying* pos, IRasterizatedVarying
         color.g = c[1]*255;
         color.b = c[2]*255;
         color.a = c[3]*255;
-        dst->setColor(color, x, y);
+        uint32_t* _dst = (uint32_t*)dst->vGetAddr(x, y);
+        *_dst = color.turnRGBA();
     }
 }
