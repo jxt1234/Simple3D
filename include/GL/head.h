@@ -20,6 +20,7 @@
 #endif
 #endif
 #include "debug.h"
+#include "utils/RefCount.h"
 #define OPENGL_ASSERT(x) assert(x)
 
 #endif

@@ -45,7 +45,7 @@ bool GLContext::init(int version)
 void GLContext::destroy()
 {
 }
-#elifdef GL_BUILD_FOR_UBUNTU
+#else
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <X11/Xlib.h>
@@ -93,14 +93,5 @@ bool GLContext::init(int version)
 //TODO
 void GLContext::destroy()
 {
-}
-#else
-bool GLContext::init(int version)
-{
-    return true;
-}
-void GLContext::destroy()
-{
-    
 }
 #endif
