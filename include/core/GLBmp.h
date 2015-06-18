@@ -16,10 +16,6 @@ public:
         return mPixels + mAttr.stride*y + x;
     }
     virtual const Attribute& vGetAttribute() const {return mAttr;}
-    
-    void loadPicture(const char* pic);
-    void loadPicture(unsigned char* data, int length);
-    void save(const char* path);
     virtual ~GLBmp();
     
     double psnr(const GLBmp& other);

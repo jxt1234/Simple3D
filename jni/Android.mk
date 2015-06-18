@@ -22,50 +22,66 @@ endef
 LOCAL_MODULE    := libsimple3D
 LOCAL_CFLAGS    := -Werror
 LOCAL_CFLAGS    += -DGL_BUILD_FOR_ANDROID
-LOCAL_SRC_FILES := $(call all-cpp-files)
+LOCAL_SRC_FILES := \
+	$(LOCAL_PATH)/../src//core/GLBmp.cpp\
+	$(LOCAL_PATH)/../src//core/GLBmpFactory.cpp\
+	$(LOCAL_PATH)/../src//core/GLDepthBuffer.cpp\
+	$(LOCAL_PATH)/../src//core/GLRasterization.cpp\
+	$(LOCAL_PATH)/../src//core/weightTable.cpp\
+	$(LOCAL_PATH)/../src//fragment/GLAbstractRasterizatedVarying.cpp\
+	$(LOCAL_PATH)/../src//fragment/GLLightFunction.cpp\
+	$(LOCAL_PATH)/../src//fragment/GLWritePixels.cpp\
+	$(LOCAL_PATH)/../src//fragment/texture2D.cpp\
+	$(LOCAL_PATH)/../src//GL/GLAutoFbo.cpp\
+	$(LOCAL_PATH)/../src//GL/GLAutoProgram.cpp\
+	$(LOCAL_PATH)/../src//GL/GLBezier.cpp\
+	$(LOCAL_PATH)/../src//GL/GLBiCubicCurveObj.cpp\
+	$(LOCAL_PATH)/../src//GL/GLBicubicWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLBitmapWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLBitmapWorkFactory.cpp\
+	$(LOCAL_PATH)/../src//GL/GLCamera.cpp\
+	$(LOCAL_PATH)/../src//GL/GLCurveObject.cpp\
+	$(LOCAL_PATH)/../src//GL/GLCurveObjectFactory.cpp\
+	$(LOCAL_PATH)/../src//GL/GLFilterWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLFraction.cpp\
+	$(LOCAL_PATH)/../src//GL/GLLightCurveObject.cpp\
+	$(LOCAL_PATH)/../src//GL/GLLightScene.cpp\
+	$(LOCAL_PATH)/../src//GL/GLMixWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLMultiPassWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLProgram.cpp\
+	$(LOCAL_PATH)/../src//GL/GLScene.cpp\
+	$(LOCAL_PATH)/../src//GL/GLSquareObjectCreator.cpp\
+	$(LOCAL_PATH)/../src//GL/GLTexture.cpp\
+	$(LOCAL_PATH)/../src//GL/GLTexture1Obj.cpp\
+	$(LOCAL_PATH)/../src//GL/GLTextureWork.cpp\
+	$(LOCAL_PATH)/../src//GL/GLvboBuffer.cpp\
+	$(LOCAL_PATH)/../src//GL/GLWorkThread.cpp\
+	$(LOCAL_PATH)/../src//math/AbstractPoint.cpp\
+	$(LOCAL_PATH)/../src//math/BasicFunctionDeter.cpp\
+	$(LOCAL_PATH)/../src//math/FormulaTree.cpp\
+	$(LOCAL_PATH)/../src//math/GLMatrix.cpp\
+	$(LOCAL_PATH)/../src//math/GLSphere.cpp\
+	$(LOCAL_PATH)/../src//math/GLVector.cpp\
+	$(LOCAL_PATH)/../src//platform/GLContext.cpp\
+	$(LOCAL_PATH)/../src//platform/GLLock.cpp\
+	$(LOCAL_PATH)/../src//transform/ColorMover.cpp\
+	$(LOCAL_PATH)/../src//transform/GLBasicTransform.cpp\
+	$(LOCAL_PATH)/../src//transform/GLFragPicture.cpp\
+	$(LOCAL_PATH)/../src//transform/SceneNewton.cpp\
+	$(LOCAL_PATH)/../src//utils/GLThread.cpp\
+	$(LOCAL_PATH)/../src//utils/GP_Clock.cpp\
+	$(LOCAL_PATH)/../src//utils/GPRandom.cpp\
+	$(LOCAL_PATH)/../src//vertex/GL_Normal.cpp\
+	$(LOCAL_PATH)/../src//vertex/GL_position.cpp\
+	$(LOCAL_PATH)/../src//vertex/GLAbstractVarying.cpp\
+	$(LOCAL_PATH)/../src//vertex/GLVectorVarying.cpp
 
 LOCAL_SRC_FILES += ../glsl/AllShader.cpp
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/../include/\
-    $(LOCAL_PATH)/../third_party/FreeImage/Source
 
-LOCAL_STATIC_LIBRARIES+= FreeImage
 LOCAL_LDLIBS    := -lz -lm -llog -lGLESv2 -lEGL
 LOCAL_CPP_FEATURES := rtti exceptions
 
 include $(BUILD_SHARED_LIBRARY)
 
-include $(CLEAR_VARS)
-define jpeg-files
-$(shell find $(LOCAL_PATH)/Source/LibJPEG -name "j*.c")
-endef
-LOCAL_PATH:=$(LOCAL_PATH)/../third_party/FreeImage
-include $(LOCAL_PATH)/Makefile.srcs
-LOCAL_MODULE    := FreeImage
-LOCAL_C_INCLUDES +=\
-                   $(LOCAL_PATH)/Source/ \
-                   $(LOCAL_PATH)/Source/Metadata \
-                   $(LOCAL_PATH)/Source/FreeImageToolkit \
-                   $(LOCAL_PATH)/Source/LibJPEG \
-                   $(LOCAL_PATH)/Source/LibPNG \
-                   $(LOCAL_PATH)/Source/LibTIFF4 \
-                   $(LOCAL_PATH)/Source/ZLib \
-                   $(LOCAL_PATH)/Source/LibOpenJPEG \
-                   $(LOCAL_PATH)/Source/OpenEXR \
-                   $(LOCAL_PATH)/Source/OpenEXR/Half \
-                   $(LOCAL_PATH)/Source/OpenEXR/Iex \
-                   $(LOCAL_PATH)/Source/OpenEXR/IlmImf \
-                   $(LOCAL_PATH)/Source/OpenEXR/IlmThread \
-                   $(LOCAL_PATH)/Source/OpenEXR/Imath \
-                   $(LOCAL_PATH)/Source/LibRawLite \
-                   $(LOCAL_PATH)/Source/LibRawLite/dcraw \
-                   $(LOCAL_PATH)/Source/LibRawLite/internal \
-                   $(LOCAL_PATH)/Source/LibRawLite/libraw \
-                   $(LOCAL_PATH)/Source/LibRawLite/src
-
-LOCAL_CPP_FEATURES := rtti exceptions
-LOCAL_SRC_FILES := \
-                   $(SRCS)\
-
-LOCAL_CFLAGS    += -DGL_BUILD_FOR_ANDROID
-include $(BUILD_STATIC_LIBRARY)

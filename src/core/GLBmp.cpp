@@ -1,14 +1,14 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
 #include <math.h>
-static const int mBpp = 4;
+static const int gARGB_Bpp = 4;
 
 GLBmp::GLBmp(int w, int h)
 {
     GLASSERT(w>0 && h>0);
     mAttr.width = w;
     mAttr.height = h;
-    mAttr.bpp = mBpp;
+    mAttr.bpp = gARGB_Bpp;
     mAttr.stride = w;
     mPixels = new uint32_t[w*h];
 }

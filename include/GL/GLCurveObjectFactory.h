@@ -1,6 +1,7 @@
+#ifndef GL_GLCURVEOBJECTFACTORY_H
+#define GL_GLCURVEOBJECTFACTORY_H
 class GLCurveObject;
 class IFunctionDeter;
-
 class GLCurveObjectFactory
 {
     public:
@@ -14,3 +15,4 @@ class GLCurveObjectFactory
     private:
         static IFunctionDeter* gDeter;
 };
+#endif

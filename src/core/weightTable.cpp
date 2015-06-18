@@ -2,7 +2,6 @@
 #include <assert.h>
 #include <stdlib.h>
 #define TRIANGLE 3
-using namespace std;
 weightTable::weightTable(int w, int h, float* p1, float* p2, float* p3)
 {
     float x1 = p1[0];
