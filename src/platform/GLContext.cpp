@@ -1,4 +1,6 @@
 #include "GL/GLContext.h"
+#include "GL/head.h"
+
 #ifdef GL_BUILD_FOR_ANDROID
 #include <EGL/egl.h>
 static EGLContext fContext;
@@ -44,6 +46,26 @@ bool GLContext::init(int version)
 //TODO
 void GLContext::destroy()
 {
+}
+#else
+#ifdef __APPLE__
+#include <GLUT/GLUT.h>
+bool GLContext::init(int version)
+{
+    int argc = 1;
+    char* argv = "ForRun";
+    glutInit(&argc, &argv);                            // Initialize GLUT
+    glutInitDisplayMode(GLUT_HIDDEN|GLUT_RGB|GLUT_DEPTH);        // Set display mode
+    glutInitWindowPosition(50,100);                    // Set top-left display window position
+    glutInitWindowSize(500, 500);                    // set display window width and height
+    glutCreateWindow("An Example OpenGL Program");    // Create display window
+
+    return true;
+}
+
+void GLContext::destroy()
+{
+    //TODO
 }
 #else
 #include <GL/glew.h>
@@ -94,4 +116,5 @@ bool GLContext::init(int version)
 void GLContext::destroy()
 {
 }
+#endif
 #endif

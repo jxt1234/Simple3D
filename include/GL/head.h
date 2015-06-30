@@ -7,7 +7,7 @@
 #define CONTEXT_CLASS
 /*If defined this, means the method of a CONTEXT_CLASS can be called outside context*/
 #define CONTEXT_FREE_API
-
+#include <stdlib.h>
 #include <assert.h>
 #ifdef GL_BUILD_FOR_ANDROID
 #include <GLES2/gl2.h>

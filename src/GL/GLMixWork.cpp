@@ -20,6 +20,7 @@ bool GLMixWork::onGenerateShader(std::ostream& vertex, std::ostream& frag) const
 {
     DefaultVertex(vertex);
     frag << gFrag;
+    return true;
 }
 void GLMixWork::onUse(GLTexture* dst, std::vector<GLTexture*> sources, GLProgram* shader)
 {

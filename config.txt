@@ -1,0 +1,29 @@
+TARGET:libglsl.so
+DEPENDS:
+DIRS:src glsl
+SRCS:
+LINKS: ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
+##########
+
+TARGET:test.out
+DEPENDS:libglsl.so
+DIRS:test
+SRCS:
+LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
+##########
+
+TARGET:gputest.out
+DEPENDS:libglsl.so
+DIRS:gltest
+SRCS:
+LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
+##########
+
+TARGET:example.out
+DEPENDS:libglsl.so
+DIRS:example
+SRCS:
+LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT

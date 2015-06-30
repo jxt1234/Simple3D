@@ -3,14 +3,12 @@
 
 BasicFunctionDeter::BasicFunctionDeter(std::istream& data)
 {
-    bool next = true;
-    while(next)
+    function f;
+    while(data >> (f.detformula))
     {
-        function f;
         data >> f.name;
         data >> f.priorty;
         data >> f.formula;
-        next = (data >> f.detformula);
         mFunctions.insert(std::make_pair(f.name, f));
     }
 }

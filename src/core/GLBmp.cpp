@@ -1,6 +1,6 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
-#include "FreeImage.h"
+#include "../third_party/FreeImage/Source/FreeImage.h"
 #include <math.h>
 static const int mBpp = 4;
 
