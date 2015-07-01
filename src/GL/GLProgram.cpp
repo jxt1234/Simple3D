@@ -126,6 +126,20 @@ CONTEXT_API bool GLProgram::init()
     if (!linked)
     {
         FUNC_PRINT(linked);
+        GLsizei len;
+        glGetProgramiv(mId, GL_INFO_LOG_LENGTH, &len);
+        if (len <=0)
+        {
+            glGetProgramInfoLog(mId, 0, &len, NULL);
+        }
+        if (len > 0)
+        {
+            char* buffer = new char[len+1];
+            buffer[len] = '\0';
+            glGetProgramInfoLog(mId, len, NULL, buffer);
+            FUNC_PRINT_ALL(buffer, s);
+            delete [] buffer;
+        }
         return false;
     }
     mInit = true;

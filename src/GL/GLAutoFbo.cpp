@@ -1,7 +1,8 @@
 #include "GL/GLAutoFbo.h"
-//FIXME Store viewport and revert
 GLAutoFbo::GLAutoFbo(GLTexture& dst)
 {
+    glGetIntegerv(GL_VIEWPORT, mViewPort);
+    OPENGL_CHECK_ERROR;
     GLint previous;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previous);
     mPrevious = previous;
@@ -21,5 +22,7 @@ GLAutoFbo::~GLAutoFbo()
     glBindFramebuffer(GL_FRAMEBUFFER, mPrevious);
     OPENGL_CHECK_ERROR;
     glDeleteFramebuffers(1, &mId);
+    OPENGL_CHECK_ERROR;
+    glViewport(mViewPort[0], mViewPort[1], mViewPort[2], mViewPort[3]);
     OPENGL_CHECK_ERROR;
 }
