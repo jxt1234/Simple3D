@@ -53,7 +53,7 @@ GLProgram::GLProgram(const std::string& vertex, const std::string& frag)
 
 GLProgram::~GLProgram()
 {
-    //destroy();
+    destroy();
     ///*If the GLProgram is not destroy before, it shouldn't be freed*/
     GLASSERT(!mInit);
 }
@@ -66,6 +66,10 @@ static bool compileShader(GLuint s)
     {
         int len;
         glGetShaderiv(s, GL_INFO_LOG_LENGTH, &len);
+        if (0>=len)
+        {
+            glGetShaderInfoLog(s, 0, &len, NULL);
+        }
         char* buffer = new char[len+1];
         glGetShaderInfoLog(s, len, NULL, buffer);
         buffer[len] = 0;
@@ -101,11 +105,11 @@ CONTEXT_API bool GLProgram::init()
     OPENGL_CHECK_ERROR;
     /*TODO move GLASSERT to be log*/
     bool res = compileShader(vert);
-    if (!res) FUNC_PRINT_ALL(mVertex.c_str(), s);
+    //if (!res) FUNC_PRINT_ALL(mVertex.c_str(), s);
     GLASSERT(true == res);
     if (false == res) return false;
     res = (compileShader(frag));
-    if (!res) FUNC_PRINT_ALL(mFragment.c_str(), s);
+    //if (!res) FUNC_PRINT_ALL(mFragment.c_str(), s);
     GLASSERT(true == res);
     if (false == res) return false;
     /*Create Program*/
