@@ -46,6 +46,7 @@ static void init()
     gFirstProgram = new GLProgram(vertex_string.c_str(), frag_s2.str().c_str());
     gFirstProgram->init();
     GPPtr<GLBmp> src = new GLBmp;
+//    src->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     src->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
     gTexture = new GLTexture;
     gTexture->upload(src->pixels(), src->getWidth(), src->getHeight());
@@ -63,7 +64,6 @@ static void display(void)
         1.0, 1.0
     };
     GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-    temp.use(gDisplayProgram->attr("position"));
     {
         GLAutoFbo __f(*(gMidTexture.get()));
         gFirstProgram->use();
@@ -72,9 +72,11 @@ static void display(void)
         glUniform1f(glGetUniformLocation(gFirstProgram->id(), "texelHeight"), 0.0);
         glUniform1f(glGetUniformLocation(gFirstProgram->id(), "filterRatio"), 1.0);
         OPENGL_CHECK_ERROR;
+        temp.use(gFirstProgram->attr("position"));
         temp.draw();
     }
     gDisplayProgram->use();
+    temp.use(gDisplayProgram->attr("position"));
     gMidTexture->use();
     glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelWidth"), 0.0);
     glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelHeight"), 2.0/gTexture->height());
