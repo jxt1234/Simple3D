@@ -1,6 +1,8 @@
 #include "GL/GLAutoFbo.h"
 GLAutoFbo::GLAutoFbo(GLTexture& dst)
 {
+    mEnableClip = glIsEnabled(GL_SCISSOR_TEST);
+    OPENGL_CHECK_ERROR;
     glGetIntegerv(GL_VIEWPORT, mViewPort);
     OPENGL_CHECK_ERROR;
     GLint previous;
@@ -16,6 +18,7 @@ GLAutoFbo::GLAutoFbo(GLTexture& dst)
     OPENGL_CHECK_ERROR;
     glViewport(0,0,dst.width(), dst.height());
     OPENGL_CHECK_ERROR;
+    glDisable(GL_SCISSOR_TEST);
 }
 GLAutoFbo::~GLAutoFbo()
 {
@@ -25,4 +28,8 @@ GLAutoFbo::~GLAutoFbo()
     OPENGL_CHECK_ERROR;
     glViewport(mViewPort[0], mViewPort[1], mViewPort[2], mViewPort[3]);
     OPENGL_CHECK_ERROR;
+    if (mEnableClip)
+    {
+        glEnable(GL_SCISSOR_TEST);
+    }
 }

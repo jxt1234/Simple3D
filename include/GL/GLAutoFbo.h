@@ -12,6 +12,7 @@ private:
     unsigned int mId;
     unsigned int mPrevious;
     int mViewPort[4];
+    int mEnableClip;
     
 };
 #endif
