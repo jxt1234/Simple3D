@@ -17,48 +17,55 @@
 #include "utils/GP_Clock.h"
 #include "GL/GLTextureWork.h"
 #include "GL/GLAutoFbo.h"
+#include "GL/GLDrawWork.h"
+#include "GL/GLMultiPassDrawWork.h"
 #define PI 3.141592654
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <map>
 using namespace std;
 
+GPPtr<IGLDrawWork> gTreatWorks;
+GPPtr<IGLDrawWork> gOriginWorks;
 GPPtr<GLTexture> gTexture;
-GPPtr<GLTexture> gMidTexture;
-GPPtr<GLProgram> gDisplayProgram;
-GPPtr<GLProgram> gFirstProgram;
-GPPtr<GLProgram> gOriginProgram;
 GPPtr<GLBmp> gBmp;
 #define ENLARGE_P 2.03
 
-static void init_origin()
+static string loadFiles(const char* name)
 {
-    gOriginProgram = new GLProgram;
-    gOriginProgram->loadFiles("/Users/jiangxiaotang/Documents/shader/Shallow.vex", "/Users/jiangxiaotang/Documents/shader/basic.fra");
-    gOriginProgram->init();
+    ifstream vertex(name);
+    ostringstream vertex_s;
+    vertex_s << vertex.rdbuf();
+    return vertex_s.str();
 }
 
 static void init()
 {
-    init_origin();
-    ifstream vertex("/Users/jiangxiaotang/Documents/shader/Shallow.vex");
-    ifstream frag("/Users/jiangxiaotang/Documents/shader/Shallow.fra");
-    ifstream frag2("/Users/jiangxiaotang/Documents/shader/ShallowFirst.fra");
-    ostringstream vertex_s;
-    ostringstream frag_s;
-    ostringstream frag_s2;
-    vertex_s << vertex.rdbuf();
-    string vertex_string = vertex_s.str();
-    frag_s << frag.rdbuf();
-    gDisplayProgram = new GLProgram(vertex_s.str().c_str(), frag_s.str().c_str());
-    gDisplayProgram->init();
-    frag_s2 << frag2.rdbuf();
-    gFirstProgram = new GLProgram(vertex_string.c_str(), frag_s2.str().c_str());
-    gFirstProgram->init();
+    const char* vertex = "/Users/jiangxiaotang/Documents/shader/Shallow.vex";
+    const char* origin_frag = "/Users/jiangxiaotang/Documents/shader/basic.fra";
+    gOriginWorks = new GLDrawWork(loadFiles(vertex), loadFiles(origin_frag));
+    const char* frag = "/Users/jiangxiaotang/Documents/shader/Shallow.fra";
+    const char* frag2 = "/Users/jiangxiaotang/Documents/shader/ShallowFirst.fra";
+    
+    map<string, float> firstunifom;
+    firstunifom.insert(make_pair("texelWidth", 2.0/gBmp->getWidth()));
+    firstunifom.insert(make_pair("texelHeight", 0.0));
+    firstunifom.insert(make_pair("filterRatio", 1.0));
+    
+    map<string, float> secondunifom;
+
+    secondunifom.insert(make_pair("texelWidth", 0.0));
+    secondunifom.insert(make_pair("texelHeight", 2.0/gBmp->getHeight()));
+    secondunifom.insert(make_pair("filterRatio", 1.0));
+    
+    vector<GPPtr<IGLDrawWork> > works;
+    works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom));
+    works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag2), &secondunifom));
+    
+    gTreatWorks = new GLMultiPassDrawWork(works);
     gTexture = new GLTexture;
     gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
-    gMidTexture = new GLTexture;
-    gMidTexture->upload(NULL, gBmp->getWidth(), gBmp->getHeight());
 }
 static void display(void)
 {
@@ -71,25 +78,6 @@ static void display(void)
     };
     GLvboBuffer texcord(texpoints, 2, 4, GL_TRIANGLE_STRIP);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    {
-        float points[] = {
-            -1.0, -1.0,
-            -1.0, 1.0,
-            1.0, -1.0,
-            1.0, 1.0
-        };
-        GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        GLAutoFbo __f(*(gMidTexture.get()));
-        gFirstProgram->use();
-        gTexture->use();
-        glUniform1f(glGetUniformLocation(gFirstProgram->id(), "texelWidth"), 2.0/gTexture->width());
-        glUniform1f(glGetUniformLocation(gFirstProgram->id(), "texelHeight"), 0.0);
-        glUniform1f(glGetUniformLocation(gFirstProgram->id(), "filterRatio"), 1.0);
-        OPENGL_CHECK_ERROR;
-        temp.use(gFirstProgram->attr("position"));
-        texcord.use(gFirstProgram->attr("inputTextureCoordinate"));
-        temp.draw();
-    }
     /*Treated picture*/
     {
         float points[] = {
@@ -99,15 +87,7 @@ static void display(void)
             -1.0+2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gDisplayProgram->use();
-        temp.use(gDisplayProgram->attr("position"));
-        texcord.use(gDisplayProgram->attr("inputTextureCoordinate"));
-        gMidTexture->use();
-        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelWidth"), 0.0);
-        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelHeight"), 2.0/gTexture->height());
-        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "filterRatio"), 1.0);
-        OPENGL_CHECK_ERROR;
-        temp.draw();
+        gTreatWorks->onDraw(gTexture.get(), &temp, &texcord);
     }
     /*Origin picture*/
     {
@@ -118,12 +98,7 @@ static void display(void)
             2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gOriginProgram->use();
-        temp.use(gOriginProgram->attr("position"));
-        gTexture->use();
-        texcord.use(gOriginProgram->attr("inputTextureCoordinate"));
-        temp.draw();
-        
+        gOriginWorks->onDraw(gTexture.get(), &temp, &texcord);
     }
     glutSwapBuffers();
 }

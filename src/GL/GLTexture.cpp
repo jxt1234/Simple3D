@@ -8,6 +8,12 @@ GLTexture::GLTexture()
     mW = 0;
     mH = 0;
 }
+GLTexture::GLTexture(int id, int w, int h)
+{
+    mId = id;
+    mW = w;
+    mH = h;
+}
 
 GLTexture::~GLTexture()
 {
