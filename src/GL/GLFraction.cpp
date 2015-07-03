@@ -32,7 +32,7 @@ static void _genShaderFrac(std::ostream& os, int n, int iternumber, float kR, fl
         os <<"seta = atan(q.y, q.x);\n";\
         os << "r = length(q);\n";\
         os << "r = r*"<<(float)n-1/(float)n<<";\n";\
-        os << "sl = float(1.0)/pow(r, "<<n-1<<");\n";\
+        os << "sl = float(1.0)/pow(r, float("<<n-1<<"));\n";\
         os << "p.x = r*cos(seta) + sl*cos(seta*float("<<(1-n)<<"));\n";\
         os << "p.y = r*sin(seta) + sl*sin(seta*float("<<(1-n)<<"));\n";
 

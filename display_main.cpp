@@ -27,10 +27,20 @@ GPPtr<GLTexture> gTexture;
 GPPtr<GLTexture> gMidTexture;
 GPPtr<GLProgram> gDisplayProgram;
 GPPtr<GLProgram> gFirstProgram;
+GPPtr<GLProgram> gOriginProgram;
+GPPtr<GLBmp> gBmp;
+#define ENLARGE_P 2.03
 
+static void init_origin()
+{
+    gOriginProgram = new GLProgram;
+    gOriginProgram->loadFiles("/Users/jiangxiaotang/Documents/shader/Shallow.vex", "/Users/jiangxiaotang/Documents/shader/basic.fra");
+    gOriginProgram->init();
+}
 
 static void init()
 {
+    init_origin();
     ifstream vertex("/Users/jiangxiaotang/Documents/shader/Shallow.vex");
     ifstream frag("/Users/jiangxiaotang/Documents/shader/Shallow.fra");
     ifstream frag2("/Users/jiangxiaotang/Documents/shader/ShallowFirst.fra");
@@ -45,26 +55,30 @@ static void init()
     frag_s2 << frag2.rdbuf();
     gFirstProgram = new GLProgram(vertex_string.c_str(), frag_s2.str().c_str());
     gFirstProgram->init();
-    GPPtr<GLBmp> src = new GLBmp;
-//    src->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
-    src->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
     gTexture = new GLTexture;
-    gTexture->upload(src->pixels(), src->getWidth(), src->getHeight());
+    gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
     gMidTexture = new GLTexture;
-    gMidTexture->upload(NULL, src->getWidth(), src->getHeight());
+    gMidTexture->upload(NULL, gBmp->getWidth(), gBmp->getHeight());
 }
 static void display(void)
 {
     // GPCLOCK;
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    const float points[] = {
-        -1.0, -1.0,
-        -1.0, 1.0,
-        1.0, -1.0,
-        1.0, 1.0
+    float texpoints[] = {
+        0.0,0.0,
+        0.0,1.0,
+        1.0,0.0,
+        1.0,1.0
     };
-    GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
+    GLvboBuffer texcord(texpoints, 2, 4, GL_TRIANGLE_STRIP);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     {
+        float points[] = {
+            -1.0, -1.0,
+            -1.0, 1.0,
+            1.0, -1.0,
+            1.0, 1.0
+        };
+        GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
         GLAutoFbo __f(*(gMidTexture.get()));
         gFirstProgram->use();
         gTexture->use();
@@ -73,26 +87,56 @@ static void display(void)
         glUniform1f(glGetUniformLocation(gFirstProgram->id(), "filterRatio"), 1.0);
         OPENGL_CHECK_ERROR;
         temp.use(gFirstProgram->attr("position"));
+        texcord.use(gFirstProgram->attr("inputTextureCoordinate"));
         temp.draw();
     }
-    gDisplayProgram->use();
-    temp.use(gDisplayProgram->attr("position"));
-    gMidTexture->use();
-    glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelWidth"), 0.0);
-    glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelHeight"), 2.0/gTexture->height());
-    glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "filterRatio"), 1.0);
-    OPENGL_CHECK_ERROR;
-    temp.draw();
-    
+    /*Treated picture*/
+    {
+        float points[] = {
+            -1.0, -1.0,
+            -1.0, 1.0,
+            -1.0+2.0/ENLARGE_P, -1.0,
+            -1.0+2.0/ENLARGE_P, 1.0
+        };
+        GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
+        gDisplayProgram->use();
+        temp.use(gDisplayProgram->attr("position"));
+        texcord.use(gDisplayProgram->attr("inputTextureCoordinate"));
+        gMidTexture->use();
+        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelWidth"), 0.0);
+        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "texelHeight"), 2.0/gTexture->height());
+        glUniform1f(glGetUniformLocation(gDisplayProgram->id(), "filterRatio"), 1.0);
+        OPENGL_CHECK_ERROR;
+        temp.draw();
+    }
+    /*Origin picture*/
+    {
+        float points[] = {
+            0.0, -1.0,
+            0.0, 1.0,
+            2.0/ENLARGE_P, -1.0,
+            2.0/ENLARGE_P, 1.0
+        };
+        GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
+        gOriginProgram->use();
+        temp.use(gOriginProgram->attr("position"));
+        gTexture->use();
+        texcord.use(gOriginProgram->attr("inputTextureCoordinate"));
+        temp.draw();
+        
+    }
     glutSwapBuffers();
 }
 
 int main(int argc, char* argv[])
 {
+    gBmp = new GLBmp;
+    //    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
+    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
     glutInit(&argc, argv);                            // Initialize GLUT
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);        // Set display mode
     glutInitWindowPosition(50,100);                    // Set top-left display window position
-    glutInitWindowSize(500, 500);                    // set display window width and height
+    glutInitWindowSize(gBmp->width()*ENLARGE_P, gBmp->height());                    // set display window width and height
     glutCreateWindow("An Example OpenGL Program");    // Create display window
 #ifndef __APPLE__
     glewInit();
