@@ -29,7 +29,7 @@ def replaceMacro(fileName, macro):
 	#Find if the file has macro
 	hasmacro = False
 	for line in lines:
-		if line.find('_H')!=-1 and line.find('#ifndef')!=-1:
+		if (line.find('_H')!=-1 or line.find('_h')!=-1) and line.find('#ifndef')!=-1:
 			hasmacro = True
 			break
 	if hasmacro == False:
