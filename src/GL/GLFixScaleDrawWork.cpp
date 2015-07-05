@@ -71,7 +71,7 @@ void GLFixScaleDrawWork::onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts
         src->use();
         mVs->use(mProgram->attr("position"));
         mTs->use(mProgram->attr("inputTextureCoordinate"));
-        vs->draw();
+        mVs->draw();
     }
     mWork->onDraw(mTexture.get(), vs, ts);
 }
