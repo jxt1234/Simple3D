@@ -101,8 +101,8 @@ static IGLDrawWork* init_treat()
     works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &secondunifom));
     works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom));
 
-    //return new GLMultiPassDrawWork(works);
-    return new GLFixScaleDrawWork(new GLMultiPassDrawWork(works), 1280, 720);
+    return new GLMultiPassDrawWork(works);
+    //return new GLFixScaleDrawWork(new GLMultiPassDrawWork(works), 1280, 720);
 
 }
 
@@ -114,13 +114,44 @@ static IGLDrawWork* init_skin_detect()
     return new GLDrawWork(loadFiles(vertex), loadFiles(frag));
 }
 
+static IGLDrawWork* init_skin_detect_treat()
+{
+    const char* vertex = "/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex";
+    const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_filter_with_detect.fra";
+    
+    map<string, float> firstunifom;
+    firstunifom["texelWidth"] = 1.0/gBmp->width();
+    firstunifom["texelHeight"] = 0.0;
+    firstunifom["filterRatio"] = 1.0;
+    firstunifom["sigma_c"] = 30.0;
+    firstunifom["sigma_s"] = 0.1;
+    
+    map<string, float> secondunifom;
+    secondunifom["texelWidth"] = 0.0;
+    secondunifom["texelHeight"] = 1.0/gBmp->height();
+    secondunifom["filterRatio"] = 1.0;
+    secondunifom["sigma_c"] = 30.0;
+    secondunifom["sigma_s"] = 0.1;
+    
+    vector<GPPtr<IGLDrawWork> > works;
+    works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &secondunifom));
+    works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom));
+    
+    return new GLMultiPassDrawWork(works);
+    //return new GLFixScaleDrawWork(new GLMultiPassDrawWork(works), 1280, 720);
+    
+}
+
+
+
 static void init()
 {
     gOriginWorks = init_origin();
-    gTreatWorks = init_treat();
+    //gTreatWorks = init_treat();
     //gTreatWorks = init_shallow_origin();
-    //gTreatWorks = init_skin_detect();
+    gTreatWorks = init_skin_detect();
     //gTreatWorks = init_filter();
+    //gTreatWorks = init_skin_detect_treat();
     gTexture = new GLTexture;
     gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
 }
@@ -165,7 +196,7 @@ int main(int argc, char* argv[])
     gBmp = new GLBmp;
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/testpic1.jpg");
-    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
+    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic6.jpg");
     glutInit(&argc, argv);                            // Initialize GLUT
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);        // Set display mode
     glutInitWindowPosition(50,100);                    // Set top-left display window position

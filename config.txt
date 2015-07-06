@@ -27,3 +27,12 @@ DEPENDS:libglsl.so
 DIRS:example
 SRCS:
 LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
+##########
+
+TARGET:convert_data.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:convert_data.cpp
+LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
