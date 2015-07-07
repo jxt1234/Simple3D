@@ -142,11 +142,10 @@ static IGLDrawWork* init_skin_detect_treat()
     
 }
 
-
-
 static void init()
 {
     gOriginWorks = init_origin();
+    //gOriginWorks = init_skin_detect();
     //gTreatWorks = init_treat();
     //gTreatWorks = init_shallow_origin();
     gTreatWorks = init_skin_detect();
@@ -196,7 +195,7 @@ int main(int argc, char* argv[])
     gBmp = new GLBmp;
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/testpic1.jpg");
-    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic6.jpg");
+    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic3.jpg");
     glutInit(&argc, argv);                            // Initialize GLUT
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);        // Set display mode
     glutInitWindowPosition(50,100);                    // Set top-left display window position

@@ -2,7 +2,25 @@
 #include "utils/debug.h"
 #include <string>
 #include <fstream>
+#include <GL/GLContext.h>
+#include "GL/GLBitmapWork.h"
+#include "GL/GLFilterWork.h"
 using namespace std;
+GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
+{
+    return src;
+    GLContext::init();
+    GPPtr<GLBmp> dst = new GLBmp(src->width(), src->height());
+    {
+        const float p[] = {0.1,0.2,0.4,0.2,0.1};
+        int n = sizeof(p)/sizeof(float);
+        GPPtr<GLTextureWork> _w = new GLFilterWork(p, n);
+        GPPtr<GLBitmapWork> w = new GLBitmapWork(_w);
+        w->set(src, dst);
+        w->runOnePass();
+    }
+    return dst;
+}
 
 int main(int argc, char* argv[])
 {
@@ -10,25 +28,48 @@ int main(int argc, char* argv[])
     const char* rgbfile = argv[1];
     const char* blackfile = argv[2];
     const char* outputfile = argv[3];
-    GLBmp rgb;
-    GLBmp black;
-    rgb.loadPicture(rgbfile);
-    black.loadPicture(blackfile);
-    GLASSERT(rgb.getWidth() == black.getWidth());
-    GLASSERT(rgb.getHeight() == black.getHeight());
-    auto w = rgb.getWidth();
-    auto h = rgb.getHeight();
-    unsigned char* rgb_p = (unsigned char*)rgb.pixels();
-    unsigned char* black_p = (unsigned char*)black.pixels();
+    GPPtr<GLBmp> rgb_origin = new GLBmp;
+    GPPtr<GLBmp> black = new GLBmp;
+    rgb_origin->loadPicture(rgbfile);
+    black->loadPicture(blackfile);
+    GPPtr<GLBmp> rgb = pretreat(rgb_origin);
+    GLASSERT(rgb->getWidth() == black->getWidth());
+    GLASSERT(rgb->getHeight() == black->getHeight());
+    auto w = rgb->getWidth();
+    auto h = rgb->getHeight();
     ofstream output(outputfile);
     GLASSERT(!output.fail());
-    for (auto i=0; i<w; ++i)
+    /*Find bound*/
+    int t=h,b=0,l=w,r=0;
+    for (auto i=0; i<h; ++i)
     {
-        for (auto j=0; j<h; ++j)
+        auto black_p = (unsigned char*)(black->pixels()) + 4*i*w;
+        for (auto j=0; j<w; ++j)
+        {
+            if (black_p[j+1] == 255)
+            {
+                if (i<t) t=i;
+                if (i>b) b=i;
+                if (j<l) l=j;
+                if (j>r) r=j;
+            }
+            black_p+=4;
+        }
+    }
+    for (auto i=t; i<=b; ++i)
+    {
+        auto black_p = (unsigned char*)(black->pixels()) + 4*(i*w+l);
+        auto rgb_p = (unsigned char*)(rgb->pixels()) + 4*(i*w+l);
+        for (auto j=l; j<=r; ++j)
         {
             int bl = black_p[1] <100 ? 0 : 1;
+            float r = rgb_p[0]/255.0;
+            float g = rgb_p[1]/255.0;
+            float b = rgb_p[2]/255.0;
+            float cb = 0.5*r - 0.4187*g -0.0813*b;
+            float cr = -0.1687*r -0.3313*g + 0.5*b;
             output << bl << " "<<(float)rgb_p[0] <<" "<< (float)rgb_p[1] <<" "<< (float)rgb_p[2] << endl;
-            //output << bl << " "<<(float)rgb_p[0] <<" "<< (float)rgb_p[1] <<" "<< (float)rgb_p[2] << " "<< (float)rgb_p[3] << endl;
+            //output << bl << " "<<cb <<" "<< cr << endl;
             rgb_p+=4;
             black_p+=4;
         }

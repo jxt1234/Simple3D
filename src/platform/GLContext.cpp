@@ -50,22 +50,29 @@ void GLContext::destroy()
 #else
 #ifdef __APPLE__
 #include <GLUT/GLUT.h>
+#include <AGL/AGL.h>
+AGLContext gContext;
+AGLPixelFormat gPixelformat;
 bool GLContext::init(int version)
 {
-    int argc = 1;
-    char* argv = "ForRun";
-    glutInit(&argc, &argv);                            // Initialize GLUT
-    glutInitDisplayMode(GLUT_HIDDEN|GLUT_RGB|GLUT_DEPTH);        // Set display mode
-    glutInitWindowPosition(50,100);                    // Set top-left display window position
-    glutInitWindowSize(500, 500);                    // set display window width and height
-    glutCreateWindow("An Example OpenGL Program");    // Create display window
+    GLint attribs[] = {AGL_RGBA,AGL_NONE};
+    gPixelformat = aglCreatePixelFormat(attribs);
+    gContext = aglCreateContext(gPixelformat, NULL);
+    GLASSERT(NULL!=gPixelformat);
+    GLASSERT(NULL!=gContext);
+    aglSetCurrentContext(gContext);
+//    char* argv = "ForRun";
+//    glutInit(&argc, &argv);                            // Initialize GLUT
+//    glutInitDisplayMode(GLUT_HIDDEN|GLUT_RGB|GLUT_DEPTH);        // Set display mode
+//    gWin = glutCreateWindow("An Example OpenGL Program");    // Create display window
 
     return true;
 }
 
 void GLContext::destroy()
 {
-    //TODO
+    aglDestroyPixelFormat(gPixelformat);
+    aglDestroyContext(gContext);
 }
 #else
 #include <GL/glew.h>
