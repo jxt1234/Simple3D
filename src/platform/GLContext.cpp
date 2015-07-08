@@ -49,7 +49,6 @@ void GLContext::destroy()
 }
 #else
 #ifdef __APPLE__
-#include <GLUT/GLUT.h>
 #include <AGL/AGL.h>
 AGLContext gContext;
 AGLPixelFormat gPixelformat;
@@ -61,11 +60,6 @@ bool GLContext::init(int version)
     GLASSERT(NULL!=gPixelformat);
     GLASSERT(NULL!=gContext);
     aglSetCurrentContext(gContext);
-//    char* argv = "ForRun";
-//    glutInit(&argc, &argv);                            // Initialize GLUT
-//    glutInitDisplayMode(GLUT_HIDDEN|GLUT_RGB|GLUT_DEPTH);        // Set display mode
-//    gWin = glutCreateWindow("An Example OpenGL Program");    // Create display window
-
     return true;
 }
 

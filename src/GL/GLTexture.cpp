@@ -1,15 +1,17 @@
 #include "GL/GLTexture.h"
 #include "GL/debug.h"
 
-GLTexture::GLTexture()
+GLTexture::GLTexture(int target)
 {
+    mTarget = target;
     mId = 0;
-    init();
     mW = 0;
     mH = 0;
+    init();
 }
-GLTexture::GLTexture(int id, int w, int h)
+GLTexture::GLTexture(int id, int w, int h, int target)
 {
+    mTarget = target;
     mId = id;
     mW = w;
     mH = h;
@@ -24,43 +26,43 @@ void GLTexture::init()
 {
     glGenTextures(1, &mId);
     OPENGL_CHECK_ERROR;
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     OPENGL_CHECK_ERROR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     OPENGL_CHECK_ERROR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     OPENGL_CHECK_ERROR;
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     OPENGL_CHECK_ERROR;
 }
 
 void GLTexture::setFilter(bool filter)
 {
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
     if (filter)
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         OPENGL_CHECK_ERROR;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         OPENGL_CHECK_ERROR;
     }
     else
     {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         OPENGL_CHECK_ERROR;
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         OPENGL_CHECK_ERROR;
     }
 }
 
 void GLTexture::upload(void* pixels, int w, int h)
 {
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexImage2D(mTarget, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     OPENGL_CHECK_ERROR;
     mW = w;
     mH = h;
@@ -84,7 +86,7 @@ void GLTexture::use()
 {
     glActiveTexture(GL_TEXTURE0);
     OPENGL_CHECK_ERROR;
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
 }
 
@@ -94,6 +96,6 @@ void GLTexture::use(int uniId, int texId)
     OPENGL_CHECK_ERROR;
     glUniform1i(uniId, texId);
     OPENGL_CHECK_ERROR;
-    glBindTexture(GL_TEXTURE_2D, mId);
+    glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
 }

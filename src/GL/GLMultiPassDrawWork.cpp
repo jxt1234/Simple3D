@@ -75,7 +75,7 @@ void GLMultiPassDrawWork::onDraw(GLTexture* src__, GLvboBuffer* vs, GLvboBuffer*
     /*Last Pass, use the dst texture to draw*/
     lastWork->onDraw(src.get(), vs, ts);
 }
-int GLMultiPassDrawWork::vMap(double* parameters, int n)
+size_t GLMultiPassDrawWork::vMap(double* parameters, size_t n)
 {
     GLASSERT(mOffset.size() == mWorks.size()+1);
     if (NULL == parameters)

@@ -19,6 +19,7 @@ GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
         w->set(src, dst);
         w->runOnePass();
     }
+    GLContext::destroy();
     return dst;
 }
 

@@ -12,7 +12,7 @@ public:
     GLMultiPassDrawWork(const std::vector<GPPtr<IGLDrawWork> >& works);
     virtual ~GLMultiPassDrawWork();
     virtual void onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts);
-    virtual int vMap(double* parameters, int n);
+    virtual size_t vMap(double* parameters, size_t n);
 private:
     std::vector<GPPtr<IGLDrawWork> > mWorks;
     /*Two texture, for ping-pong*/

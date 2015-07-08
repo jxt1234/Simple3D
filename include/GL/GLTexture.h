@@ -6,8 +6,9 @@
 class CONTEXT_CLASS GLTexture:public RefCount
 {
 public:
-    GLTexture();
-    GLTexture(int id, int w, int h);//Already Has Texture, just wrap it
+    GLTexture(int target = GL_TEXTURE_2D);
+    //Already Has Texture, just wrap it
+    GLTexture(int id, int w, int h, int target = GL_TEXTURE_2D);
     virtual ~GLTexture();
     void use();
     void use(int uniId, int texId);
@@ -25,6 +26,7 @@ private:
     unsigned int mId;
     int mW;
     int mH;
+    int mTarget;
 };
 
 #endif

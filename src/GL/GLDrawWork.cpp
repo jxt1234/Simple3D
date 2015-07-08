@@ -34,14 +34,27 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
             }
         }
     }
+    mTextureCorderPos = mProgram->attr("inputTextureCoordinate");
+    mVertexPos = mProgram->attr("position");
+    GLASSERT(mTextureCorderPos >= 0);
+    GLASSERT(mVertexPos >= 0);
 }
 
 GLDrawWork::~GLDrawWork()
 {
 }
-int GLDrawWork::vMap(double* parameters, int n)
+size_t GLDrawWork::vMap(double* parameters, size_t n)
 {
-    return 0;
+    if (NULL==parameters)
+    {
+        return mUniforms.size();
+    }
+    for (auto iter:mUniforms)
+    {
+        iter.second = *parameters;
+        ++parameters;
+    }
+    return mUniforms.size();
 }
 
 void GLDrawWork::onSetupVertex()
@@ -66,9 +79,9 @@ void GLDrawWork::onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts)
     mProgram->use();
     this->onSetupVertex();
     this->onSetupFragment();
-    src->use(mProgram->uniform("inputImageTexture"),0);
-    vs->use(mProgram->attr("position"));
-    ts->use(mProgram->attr("inputTextureCoordinate"));
+    src->use();
+    vs->use(mVertexPos);
+    ts->use(mTextureCorderPos);
     for (auto iter:mUniforms)
     {
         GLProgram::setUniform(iter.second, iter.first);

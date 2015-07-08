@@ -19,14 +19,16 @@ public:
     virtual void onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts);
 
     /*All parameters is in [0,1), set self parameters by these, if parameters is NULL, don't do anything just return the number of parameters needed*/
-    virtual int vMap(double* parameters, int n);
+    virtual size_t vMap(double* parameters, size_t n);
     
-protected:
+private:
     virtual void onSetupVertex();
     virtual void onSetupFragment();
     std::vector<GPPtr<GLTexture> > mResources;
     std::vector<int> mResoucePos;
     GPPtr<GLProgram> mProgram;
     std::map<int, float> mUniforms;
+    int mTextureCorderPos;
+    int mVertexPos;
 };
 #endif

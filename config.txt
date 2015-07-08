@@ -36,3 +36,11 @@ DIRS:
 SRCS:convert_data.cpp
 LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
 
+##########
+
+TARGET:picture_treat.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:picture_treat.cpp
+LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+
