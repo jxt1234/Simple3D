@@ -1,17 +1,17 @@
 #include "GL/GLContext.h"
-#include "GL/head.h"
+#include <assert.h>
 
 #ifdef GL_BUILD_FOR_ANDROID
 #include <EGL/egl.h>
-static EGLContext fContext;
-static EGLDisplay fDisplay;
-static EGLSurface fSurface;
+static EGLContext gContext;
+static EGLDisplay gDisplay;
+static EGLSurface gSurface;
 bool GLContext::init(int version)
 {
-    fDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    gDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
     EGLint majorVersion;
     EGLint minorVersion;
-    eglInitialize(fDisplay, &majorVersion, &minorVersion);
+    eglInitialize(gDisplay, &majorVersion, &minorVersion);
     EGLint numConfigs;
     static const EGLint configAttribs[] = {
         EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
@@ -24,13 +24,13 @@ bool GLContext::init(int version)
     };
 
     EGLConfig surfaceConfig;
-    eglChooseConfig(fDisplay, configAttribs, &surfaceConfig, 1, &numConfigs);
+    eglChooseConfig(gDisplay, configAttribs, &surfaceConfig, 1, &numConfigs);
 
     static const EGLint contextAttribs[] = {
         EGL_CONTEXT_CLIENT_VERSION, version,
         EGL_NONE
     };
-    fContext = eglCreateContext(fDisplay, surfaceConfig, NULL, contextAttribs);
+    gContext = eglCreateContext(gDisplay, surfaceConfig, NULL, contextAttribs);
 
 
     static const EGLint surfaceAttribs[] = {
@@ -38,45 +38,54 @@ bool GLContext::init(int version)
             EGL_HEIGHT, 1,
             EGL_NONE
         };
-    fSurface = eglCreatePbufferSurface(fDisplay, surfaceConfig, surfaceAttribs);
-    eglMakeCurrent(fDisplay, fSurface, fSurface, fContext);
+    gSurface = eglCreatePbufferSurface(gDisplay, surfaceConfig, surfaceAttribs);
+    eglMakeCurrent(gDisplay, gSurface, gSurface, gContext);
     return true;
 }
 
-//TODO
 void GLContext::destroy()
 {
+    eglMakeCurrent(gDisplay, EGL_NO_SURFACE , EGL_NO_SURFACE , EGL_NO_CONTEXT);
+    eglDestroyContext(gDisplay, gContext);
+    eglDestroySurface(gDisplay, gSurface);
+    eglTerminate(gDisplay);
+    gDisplay = EGL_NO_DISPLAY;
 }
 #else
 #ifdef __APPLE__
-#include <AGL/AGL.h>
-AGLContext gContext;
-AGLPixelFormat gPixelformat;
+#include <OpenGL/OpenGL.h>
+CGLContextObj gContext;
 bool GLContext::init(int version)
 {
-    GLint attribs[] = {AGL_RGBA,AGL_NONE};
-    gPixelformat = aglCreatePixelFormat(attribs);
-    gContext = aglCreateContext(gPixelformat, NULL);
-    GLASSERT(NULL!=gPixelformat);
-    GLASSERT(NULL!=gContext);
-    aglSetCurrentContext(gContext);
+    CGLPixelFormatAttribute attributes[] = {
+        kCGLPFADoubleBuffer,
+        (CGLPixelFormatAttribute)0
+    };
+    CGLPixelFormatObj pixFormat;
+    GLint npix;
+
+    CGLChoosePixelFormat(attributes, &pixFormat, &npix);
+    assert(NULL!=pixFormat);
+
+    CGLCreateContext(pixFormat, NULL, &gContext);
+    CGLReleasePixelFormat(pixFormat);
+    assert(NULL!=gContext);
+    CGLSetCurrentContext(gContext);
     return true;
 }
-
 void GLContext::destroy()
 {
-    aglDestroyPixelFormat(gPixelformat);
-    aglDestroyContext(gContext);
+    CGLReleaseContext(gContext);
 }
 #else
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <X11/Xlib.h>
 #include <GL/glx.h>
-static GLXContext fContext;
-static Pixmap fPixmap;
-static GLXPixmap fGlxPixmap;
-static Display* fDisplay = XOpenDisplay(0);
+static GLXContext gContext;
+static Pixmap gPixmap;
+static GLXPixmap gGlxPixmap;
+static Display* gDisplay = XOpenDisplay(0);
 bool GLContext::init(int version)
 {
     int fbcount;
@@ -85,17 +94,17 @@ bool GLContext::init(int version)
         GLX_DRAWABLE_TYPE   , GLX_PIXMAP_BIT,
         None
     };
-    GLXFBConfig *fbc = glXChooseFBConfig(fDisplay, DefaultScreen(fDisplay),
+    GLXFBConfig *fbc = glXChooseFBConfig(gDisplay, DefaultScreen(gDisplay),
             visual_attribs, &fbcount);
     int best_fbc = -1, best_num_samp = -1;
 
     int i;
     for (i = 0; i < fbcount; ++i) {
-        XVisualInfo *vi = glXGetVisualFromFBConfig(fDisplay, fbc[i]);
+        XVisualInfo *vi = glXGetVisualFromFBConfig(gDisplay, fbc[i]);
         if (vi) {
             int samp_buf, samples;
-            glXGetFBConfigAttrib(fDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf);
-            glXGetFBConfigAttrib(fDisplay, fbc[i], GLX_SAMPLES, &samples);
+            glXGetFBConfigAttrib(gDisplay, fbc[i], GLX_SAMPLE_BUFFERS, &samp_buf);
+            glXGetFBConfigAttrib(gDisplay, fbc[i], GLX_SAMPLES, &samples);
             if (best_fbc < 0 || (samp_buf && samples > best_num_samp))
                 best_fbc = i, best_num_samp = samples;
         }
@@ -103,19 +112,24 @@ bool GLContext::init(int version)
     }
     GLXFBConfig bestFbc = fbc[best_fbc];
     XFree(fbc);
-    XVisualInfo *vi = glXGetVisualFromFBConfig(fDisplay, bestFbc);
-    fPixmap = XCreatePixmap(fDisplay, RootWindow(fDisplay, vi->screen), 10, 10, vi->depth);
-    fGlxPixmap = glXCreateGLXPixmap(fDisplay, vi, fPixmap);
+    XVisualInfo *vi = glXGetVisualFromFBConfig(gDisplay, bestFbc);
+    gPixmap = XCreatePixmap(gDisplay, RootWindow(gDisplay, vi->screen), 10, 10, vi->depth);
+    gGlxPixmap = glXCreateGLXPixmap(gDisplay, vi, gPixmap);
     XFree(vi);
-    fContext = glXCreateNewContext(fDisplay, bestFbc, GLX_RGBA_TYPE, 0, True);
-    glXMakeCurrent(fDisplay, fGlxPixmap, fContext);
+    gContext = glXCreateNewContext(gDisplay, bestFbc, GLX_RGBA_TYPE, 0, True);
+    glXMakeCurrent(gDisplay, gGlxPixmap, gContext);
     glewInit();
     return true;
 }
 
-//TODO
 void GLContext::destroy()
 {
+    glXMakeCurrent(gDisplay, 0,0);
+    glXDestroyContext(gDisplay, gContext);
+    glXDestroyGLXPixmap(gDisplay, gGlxPixmap);
+    XFreePixmap(gDisplay, gPixmap);
+    gDisplay = NULL;
+    XCloseDisplay(gDisplay);
 }
 #endif
 #endif

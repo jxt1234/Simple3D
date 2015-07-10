@@ -10,7 +10,7 @@ TARGET:test.out
 DEPENDS:
 DIRS:test
 SRCS:
-LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+LINKS: ./libglsl.so
 
 ##########
 
@@ -18,7 +18,7 @@ TARGET:gputest.out
 DEPENDS:
 DIRS:gltest
 SRCS:
-LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+LINKS: ./libglsl.so
 
 ##########
 
@@ -26,7 +26,7 @@ TARGET:example.out
 DEPENDS:libglsl.so
 DIRS:example
 SRCS:
-LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+LINKS: ./libglsl.so
 
 ##########
 
@@ -34,7 +34,7 @@ TARGET:convert_data.out
 DEPENDS:libglsl.so
 DIRS:
 SRCS:convert_data.cpp
-LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+LINKS: ./libglsl.so
 
 ##########
 
@@ -42,5 +42,5 @@ TARGET:picture_treat.out
 DEPENDS:libglsl.so
 DIRS:
 SRCS:picture_treat.cpp
-LINKS: ./libglsl.so ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT
+LINKS: ./libglsl.so
 

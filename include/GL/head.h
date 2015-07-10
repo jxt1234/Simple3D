@@ -13,10 +13,10 @@
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
 #else
-#ifdef GL_BUILD_FOR_UBUNTU
-#include <GL/glew.h>
-#else
+#ifdef __APPLE__
 #include <OpenGL/gl.h>
+#else
+#include <GL/glew.h>
 #endif
 #endif
 #include "debug.h"

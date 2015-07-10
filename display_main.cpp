@@ -59,7 +59,22 @@ static IGLDrawWork* init_shallow_origin()
     firstunifom.insert(make_pair("texelHeight", 1.0/gBmp->height()));
     firstunifom.insert(make_pair("filterRatio", 1.0));
     firstunifom.insert(make_pair("pixelNumAUnit", 1.0));
-    return new GLDrawWork(loadFiles(vertex), loadFiles(frag));
+    return new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom);
+}
+static IGLDrawWork* init_skin_nolocal()
+{
+    const char* vertex = "/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex";
+    const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_nonlocal.fra";
+    map<string, float> firstunifom;
+    firstunifom.insert(make_pair("texelWidth", 1.0/gBmp->width()));
+    firstunifom.insert(make_pair("texelHeight", 1.0/gBmp->height()));
+    map<string, float> secondunifom;
+    secondunifom.insert(make_pair("texelWidth", 1.0/gBmp->width()));
+    secondunifom.insert(make_pair("texelHeight", 0.0/gBmp->height()));
+    vector<GPPtr<IGLDrawWork> > works;
+    works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom));
+    //works.push_back(new GLDrawWork(loadFiles(vertex), loadFiles(frag), &secondunifom));
+    return new GLMultiPassDrawWork(works);
 }
 
 static IGLDrawWork* init_filter()
@@ -123,30 +138,45 @@ static IGLDrawWork* init_filter_minsquare_detect()
     return new GLDrawWork(loadFiles(vertex), loadFiles(frag), &secondunifom);
 }
 
+static IGLDrawWork* init_skin_onepass()
+{
+    const char* vertex = "/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex";
+    //const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_filter_with_detect.fra";
+    const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_lsd_onepass.fra";
+
+    map<string, float> firstunifom;
+    firstunifom["texelWidth"] = 1.0/gBmp->width();
+    firstunifom["texelHeight"] = 1.0/gBmp->height();
+    firstunifom["sigma_c"] = 30.0;
+    firstunifom["sigma_s"] = 0.1;
+    firstunifom["filterRatio"] = 1.0;
+    IGLDrawWork* verWork = new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom);
+    return verWork;
+}
+
 static IGLDrawWork* init_skin_detect_treat()
 {
     const char* vertex = "/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex";
     //const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_filter_with_detect.fra";
     const char* frag = "/Users/jiangxiaotang/Documents/shader/skin_with_lsd.fra";
     const char* frag2 = "/Users/jiangxiaotang/Documents/shader/skin_with_lsd_addbright.fra";
-    
-    
+
     map<string, float> firstunifom;
     firstunifom["texelWidth"] = 1.0/gBmp->width();
     firstunifom["texelHeight"] = 0.0;
     firstunifom["sigma_c"] = 30.0;
     firstunifom["sigma_s"] = 0.1;
     firstunifom["filterRatio"] = 1.0;
-    
+
     map<string, float> secondunifom;
     secondunifom["texelHeight"] = 1.0/gBmp->height();
     secondunifom["filterRatio"] = 1.0;
     secondunifom["sigma_c"] = 30.0;
     secondunifom["sigma_s"] = 0.1;
     secondunifom["texelWidth"] = 0.0;
-    
+
     vector<GPPtr<IGLDrawWork> > works;
-    const int repeat = 2;
+    const int repeat = 0;
     GPPtr<IGLDrawWork> verWork = new GLDrawWork(loadFiles(vertex), loadFiles(frag), &secondunifom);
     GPPtr<IGLDrawWork> horWork = new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom);
     GPPtr<IGLDrawWork> lastWork = new GLDrawWork(loadFiles(vertex), loadFiles(frag2), &firstunifom);
@@ -159,7 +189,6 @@ static IGLDrawWork* init_skin_detect_treat()
     works.push_back(lastWork);
     return new GLMultiPassDrawWork(works);
     //return new GLFixScaleDrawWork(new GLMultiPassDrawWork(works), 1280, 720);
-    
 }
 
 static void display(void)
@@ -207,7 +236,9 @@ static void init()
     //gTreatWorks = init_skin_detect();
     //gTreatWorks = init_filter_minsquare_detect();
     //gTreatWorks = init_filter();
-    gTreatWorks = init_skin_detect_treat();
+    //gTreatWorks = init_skin_detect_treat();
+    //gTreatWorks = init_skin_onepass();
+    gTreatWorks = init_skin_nolocal();
     gTexture = new GLTexture;
     gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
     gTreatedTexture = new GLTexture;
@@ -226,14 +257,13 @@ static void init()
         1.0, -1.0,
         1.0, 1.0
     };
-    auto sta = clock();
+    FUNC_PRINT(gBmp->getWidth());
+    FUNC_PRINT(gBmp->getHeight());
     {
         GLAutoFbo __fbo(*gTreatedTexture);
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
         gTreatWorks->onDraw(gTexture.get(), &temp, &texcord);
     }
-    auto fin = clock();
-    FUNC_PRINT_ALL((fin-sta), ld);
 }
 
 int main(int argc, char* argv[])
@@ -242,8 +272,8 @@ int main(int argc, char* argv[])
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic6.jpg");
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/skintest4.jpg");
-    //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
-    gBmp->loadPicture("/Users/jiangxiaotang/Data/Pictures/Pictures/7051ee7f0a4f504faaa6ca519b95d0f0.jpg");
+    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
+    //gBmp->loadPicture("/Users/jiangxiaotang/Data/Pictures/Pictures/7051ee7f0a4f504faaa6ca519b95d0f0.jpg");
     glutInit(&argc, argv);                            // Initialize GLUT
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);        // Set display mode
     glutInitWindowPosition(50,100);                    // Set top-left display window position
@@ -261,7 +291,10 @@ int main(int argc, char* argv[])
 #ifndef __APPLE__
     glewInit();
 #endif
+    auto sta = clock();
     init();
+    auto fin = clock();
+    printf("Cost Time = %ld / %d\n", (fin-sta), CLOCKS_PER_SEC);
     glutDisplayFunc(display);                        // Send graphics to display window
     glutIdleFunc(display);
     
