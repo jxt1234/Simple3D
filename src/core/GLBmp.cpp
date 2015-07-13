@@ -2,11 +2,11 @@
 #include "utils/debug.h"
 #include "../third_party/FreeImage/Source/FreeImage.h"
 #include <math.h>
-static const int mBpp = 4;
+static const int gBpp = 4;
 
 GLBmp::GLBmp(int w, int h)
 {
-    mBitmap = FreeImage_Allocate(w, h, mBpp*8);
+    mBitmap = FreeImage_Allocate(w, h, gBpp*8);
     mWidth = w;
     mHeight = h;
 }
@@ -31,7 +31,7 @@ void GLBmp::save(const char* path)
 
 GLColor GLBmp::getColor(int x, int y)
 {
-    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + mBpp * x;
+    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + gBpp * x;
     GLColor c;
     c.r = bitsLine[FI_RGBA_RED];
     c.g = bitsLine[FI_RGBA_GREEN];
@@ -47,7 +47,7 @@ void* GLBmp::pixels() const
 
 void GLBmp::setColor(const GLColor& c, int x, int y)
 {
-    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + mBpp * x;
+    BYTE *bitsLine = FreeImage_GetScanLine(mBitmap, y) + gBpp * x;
     bitsLine[FI_RGBA_RED] = c.r;
     bitsLine[FI_RGBA_GREEN] = c.g;
     bitsLine[FI_RGBA_BLUE] = c.b;
@@ -76,6 +76,7 @@ void GLBmp::loadPicture(const char* pic)
 {
     FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
     FIBITMAP* bitmap = FreeImage_Load(f, pic);
+    GLASSERT(NULL!=bitmap);
     if (NULL!=mBitmap)
     {
         FreeImage_Unload(mBitmap);

@@ -20,6 +20,7 @@
 #include "GL/GLDrawWork.h"
 #include "GL/GLMultiPassDrawWork.h"
 #include "GL/GLFixScaleDrawWork.h"
+#include "GL/GLTreeDrawWork.h"
 #define PI 3.141592654
 #include <fstream>
 #include <sstream>
@@ -47,7 +48,7 @@ static IGLDrawWork* init_origin()
 {
     const char* vertex = "/Users/jiangxiaotang/Documents/shader/Shallow.vex";
     const char* origin_frag = "/Users/jiangxiaotang/Documents/shader/basic.fra";
-    return new GLDrawWork(loadFiles(vertex), loadFiles(origin_frag));
+    return new GLDrawWork(loadFiles(vertex), loadFiles(origin_frag), NULL);
 }
 
 static IGLDrawWork* init_shallow_origin()
@@ -126,7 +127,7 @@ static IGLDrawWork* init_skin_detect()
 {
     const char* vertex = "/Users/jiangxiaotang/Documents/shader/Shallow.vex";
     const char* frag = "/Users/jiangxiaotang/Documents/shader/skindetect.fra";
-    return new GLDrawWork(loadFiles(vertex), loadFiles(frag));
+    return new GLDrawWork(loadFiles(vertex), loadFiles(frag), NULL);
 }
 static IGLDrawWork* init_filter_minsquare_detect()
 {
@@ -152,6 +153,25 @@ static IGLDrawWork* init_skin_onepass()
     firstunifom["filterRatio"] = 1.0;
     IGLDrawWork* verWork = new GLDrawWork(loadFiles(vertex), loadFiles(frag), &firstunifom);
     return verWork;
+}
+
+static IGLDrawWork* init_guild_filter()
+{
+    map<string, float> p_uniform;
+    p_uniform["texelWidth"] = 1.0/gBmp->width();
+    p_uniform["texelHeight"] = 1.0/gBmp->height();
+    map<string, float> c_uniform = p_uniform;
+    c_uniform["thetha"] = 0.005;
+    GPPtr<IGLDrawWork> p = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_second.fra"), &p_uniform, NULL, 3);
+    GPPtr<IGLDrawWork> l = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_a.fra"), &c_uniform);
+    GPPtr<IGLDrawWork> r = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_b.fra"), &c_uniform);
+    GLTreeDrawWork* tp = new GLTreeDrawWork(p);
+    GPPtr<GLTreeDrawWork> lp = new GLTreeDrawWork(l);
+    GPPtr<GLTreeDrawWork> rp = new GLTreeDrawWork(r);
+    tp->addNode(NULL);
+    tp->addNode(lp);
+    tp->addNode(rp);
+    return tp;
 }
 
 static IGLDrawWork* init_skin_detect_treat()
@@ -211,7 +231,7 @@ static void display(void)
             -1.0+2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gOriginWorks->onDraw(gTreatedTexture.get(), &temp, &texcord);
+        gOriginWorks->drawSingle(gTreatedTexture.get(), &temp, &texcord);
     }
     /*Origin picture*/
     {
@@ -222,7 +242,7 @@ static void display(void)
             2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gOriginWorks->onDraw(gTexture.get(), &temp, &texcord);
+        gOriginWorks->drawSingle(gTexture.get(), &temp, &texcord);
     }
     glutSwapBuffers();
 }
@@ -238,7 +258,8 @@ static void init()
     //gTreatWorks = init_filter();
     //gTreatWorks = init_skin_detect_treat();
     //gTreatWorks = init_skin_onepass();
-    gTreatWorks = init_skin_nolocal();
+    //gTreatWorks = init_skin_nolocal();
+    gTreatWorks = init_guild_filter();
     gTexture = new GLTexture;
     gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
     gTreatedTexture = new GLTexture;
@@ -262,7 +283,7 @@ static void init()
     {
         GLAutoFbo __fbo(*gTreatedTexture);
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gTreatWorks->onDraw(gTexture.get(), &temp, &texcord);
+        gTreatWorks->drawSingle(gTexture.get(), &temp, &texcord);
     }
 }
 
@@ -270,10 +291,10 @@ int main(int argc, char* argv[])
 {
     gBmp = new GLBmp;
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/forge.jpg");
-    //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic6.jpg");
+    //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/YuFamilyPhoto.jpg");
     //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/skintest4.jpg");
-    gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
-    //gBmp->loadPicture("/Users/jiangxiaotang/Data/Pictures/Pictures/7051ee7f0a4f504faaa6ca519b95d0f0.jpg");
+    //gBmp->loadPicture("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
+    gBmp->loadPicture("/Users/jiangxiaotang/Data/Pictures/Pictures/0019667873730ec8401648.jpg");
     glutInit(&argc, argv);                            // Initialize GLUT
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);        // Set display mode
     glutInitWindowPosition(50,100);                    // Set top-left display window position

@@ -18,7 +18,7 @@ class GLFixScaleDrawWork:public IGLDrawWork
 public:
     GLFixScaleDrawWork(GPPtr<IGLDrawWork> origin, int w, int h);
     virtual ~GLFixScaleDrawWork();
-    virtual void onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts);
+    virtual void onDraw(GLTexture** src, int num, GLvboBuffer* vs, GLvboBuffer* ts);
     virtual int vMap(double* parameters, int n);
 
 private:

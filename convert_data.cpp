@@ -47,32 +47,59 @@ int main(int argc, char* argv[])
         auto black_p = (unsigned char*)(black->pixels()) + 4*i*w;
         for (auto j=0; j<w; ++j)
         {
-            if (black_p[j+1] == 255)
+            if (black_p[4*j+1] > 100)
             {
                 if (i<t) t=i;
                 if (i>b) b=i;
                 if (j<l) l=j;
                 if (j>r) r=j;
             }
-            black_p+=4;
         }
     }
     for (auto i=t; i<=b; ++i)
     {
-        auto black_p = (unsigned char*)(black->pixels()) + 4*(i*w+l);
-        auto rgb_p = (unsigned char*)(rgb->pixels()) + 4*(i*w+l);
+        auto black_p = (unsigned char*)(black->pixels()) + 4*(i*w);
+        auto rgb_p = (unsigned char*)(rgb->pixels()) + 4*(i*w);
         for (auto j=l; j<=r; ++j)
         {
-            int bl = black_p[1] <100 ? 0 : 1;
-            float r = rgb_p[0]/255.0;
-            float g = rgb_p[1]/255.0;
-            float b = rgb_p[2]/255.0;
+            int bl = black_p[4*j+1] <100 ? 0 : 1;
+            float r = rgb_p[4*j+0]/255.0;
+            float g = rgb_p[4*j+1]/255.0;
+            float b = rgb_p[4*j+2]/255.0;
+            float y = 0.30*r+0.59*g+0.11*b;
             float cb = 0.5*r - 0.4187*g -0.0813*b;
             float cr = -0.1687*r -0.3313*g + 0.5*b;
-            output << bl << " "<<(float)rgb_p[0] <<" "<< (float)rgb_p[1] <<" "<< (float)rgb_p[2] << endl;
+            float maxc = r > g?r:g;
+            maxc = maxc > b ? maxc : b;
+            float minc = r < g?r:g;
+            minc = minc < b ? minc : b;
+            float h=-1000,s,v;
+            s = 1 - minc / maxc;
+            v = maxc;
+            if (maxc == r)
+            {
+                h = (g-b)/(maxc-minc);
+            }
+            else if (maxc == g)
+            {
+                h = 2 + (b-r)/(maxc-minc);
+            }
+            else if (b == maxc)
+            {
+                h = 4 + (r-g)/(maxc-minc);
+            }
+            if (maxc == minc)
+            {
+                h = 0.0;
+                s = 1.0;
+            }
+            //output << bl << " "<<(float)rgb_p[0] <<" "<< (float)rgb_p[1] <<" "<< (float)rgb_p[2] << endl;
             //output << bl << " "<<cb <<" "<< cr << endl;
-            rgb_p+=4;
-            black_p+=4;
+            output << bl;
+            //output << " "<< r << " "<<g <<" "<<b;
+            output <<" "<<cb <<" "<< cr<< " "<< y;
+            //output << " "<< h << " "<<s <<" "<<v;
+            output <<endl;
         }
     }
     return 1;

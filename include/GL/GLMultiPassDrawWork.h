@@ -11,7 +11,7 @@ CONTEXT_CLASS class GLMultiPassDrawWork:public IGLDrawWork
 public:
     GLMultiPassDrawWork(const std::vector<GPPtr<IGLDrawWork> >& works);
     virtual ~GLMultiPassDrawWork();
-    virtual void onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts);
+    virtual void onDraw(GLTexture** src, int num, GLvboBuffer* vs, GLvboBuffer* ts);
     virtual size_t vMap(double* parameters, size_t n);
 private:
     std::vector<GPPtr<IGLDrawWork> > mWorks;

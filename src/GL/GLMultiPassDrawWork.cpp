@@ -1,5 +1,6 @@
 #include "GL/GLMultiPassDrawWork.h"
 #include "GL/GLAutoFbo.h"
+#include "GL/GLvboBufferManager.h"
 
 GLMultiPassDrawWork::GLMultiPassDrawWork(const std::vector<GPPtr<IGLDrawWork> >& works)
 {
@@ -7,20 +8,8 @@ GLMultiPassDrawWork::GLMultiPassDrawWork(const std::vector<GPPtr<IGLDrawWork> >&
     mWorks = works;
     mFirstTexture = new GLTexture;
     mSecondTexture = new GLTexture;
-    const float defaultVex[] = {
-        -1.0, -1.0,
-        -1.0, 1.0,
-        1.0, -1.0,
-        1.0, 1.0
-    };
-    mVs = new GLvboBuffer(defaultVex, 2, 4, GL_TRIANGLE_STRIP);
-    const float defaultTex[] = {
-        0.0,0.0,
-        0.0,1.0,
-        1.0,0.0,
-        1.0,1.0
-    };
-    mTs = new GLvboBuffer(defaultTex, 2, 4, GL_TRIANGLE_STRIP);
+    mVs = GLvboBufferManager::createBasicPos();
+    mTs = GLvboBufferManager::createBasicTex();
     
     mOffset.push_back(0);
     for (int i=1; i<mWorks.size(); ++i)
@@ -32,17 +21,19 @@ GLMultiPassDrawWork::~GLMultiPassDrawWork()
 {
     
 }
-void GLMultiPassDrawWork::onDraw(GLTexture* src__, GLvboBuffer* vs, GLvboBuffer* ts)
+void GLMultiPassDrawWork::onDraw(GLTexture** src__, int num, GLvboBuffer* vs, GLvboBuffer* ts)
 {
     GLASSERT(NULL!=vs);
     GLASSERT(NULL!=ts);
     GLASSERT(NULL!=src__);
-    auto w = src__->width();
-    auto h = src__->height();
+    GLASSERT(1 == num);
+    GLASSERT(NULL!=src__[0]);
+    auto w = src__[0]->width();
+    auto h = src__[0]->height();
     auto lastWork = mWorks[mWorks.size()-1];
     if (mWorks.size()<=1)
     {
-        lastWork->onDraw(src__, vs, ts);
+        lastWork->onDraw(src__, 1, vs, ts);
         return;
     }
     GPPtr<GLTexture> dst = mSecondTexture;
@@ -54,7 +45,7 @@ void GLMultiPassDrawWork::onDraw(GLTexture* src__, GLvboBuffer* vs, GLvboBuffer*
     }
     {
         GLAutoFbo __fbo(*src);
-        mWorks[0]->onDraw(src__, mVs.get(), mTs.get());
+        mWorks[0]->onDraw(src__, num, mVs.get(), mTs.get());
     }
     GPPtr<GLTexture> temp;
     /*Mid passes, pingpong*/
@@ -66,14 +57,16 @@ void GLMultiPassDrawWork::onDraw(GLTexture* src__, GLvboBuffer* vs, GLvboBuffer*
         }
         {
             GLAutoFbo __fbo(*dst);
-            mWorks[i]->onDraw(src.get(), mVs.get(), mTs.get());
+            GLTexture* ssrc = src.get();
+            mWorks[i]->onDraw(&ssrc, 1, mVs.get(), mTs.get());
         }
         temp = dst;
         dst = src;
         src = temp;
     }
     /*Last Pass, use the dst texture to draw*/
-    lastWork->onDraw(src.get(), vs, ts);
+    GLTexture* ssrc = src.get();
+    lastWork->onDraw(&ssrc, 1, vs, ts);
 }
 size_t GLMultiPassDrawWork::vMap(double* parameters, size_t n)
 {

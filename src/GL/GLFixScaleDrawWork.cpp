@@ -60,20 +60,23 @@ GLFixScaleDrawWork::~GLFixScaleDrawWork()
 {
     
 }
-void GLFixScaleDrawWork::onDraw(GLTexture* src, GLvboBuffer* vs, GLvboBuffer* ts)
+void GLFixScaleDrawWork::onDraw(GLTexture** src, int num, GLvboBuffer* vs, GLvboBuffer* ts)
 {
     GLASSERT(NULL!=src);
     GLASSERT(NULL!=vs);
     GLASSERT(NULL!=ts);
+    GLASSERT(1 == num);
+    GLASSERT(NULL!=src[0]);
     {
         GLAutoFbo __fbo(*mTexture);
         mProgram->use();
-        src->use();
+        src[0]->use();
         mVs->use(mProgram->attr("position"));
         mTs->use(mProgram->attr("inputTextureCoordinate"));
         mVs->draw();
     }
-    mWork->onDraw(mTexture.get(), vs, ts);
+    GLTexture* mp = mTexture.get();
+    mWork->onDraw(&mp, 1, vs, ts);
 }
 int GLFixScaleDrawWork::vMap(double* parameters, int n)
 {
