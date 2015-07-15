@@ -7,7 +7,7 @@ LINKS: ./third_party/FreeImage/libfreeimage.a -framework OpenGL -framework GLUT 
 ##########
 
 TARGET:test.out
-DEPENDS:
+DEPENDS:libglsl.so
 DIRS:test
 SRCS:
 LINKS: ./libglsl.so
@@ -15,7 +15,7 @@ LINKS: ./libglsl.so
 ##########
 
 TARGET:gputest.out
-DEPENDS:
+DEPENDS:libglsl.so
 DIRS:gltest
 SRCS:
 LINKS: ./libglsl.so

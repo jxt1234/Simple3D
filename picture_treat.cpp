@@ -69,11 +69,12 @@ GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
         float points[] = {
             -1.0, -1.0,
             -1.0, 1.0,
-            -1.0+2.0/ENLARGE_P, -1.0,
-            -1.0+2.0/ENLARGE_P, 1.0
+            1.0, -1.0,
+            1.0, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        work->onDraw(srct.get(), &temp, &texcord);
+        auto tex = srct.get();
+        work->onDraw(&tex, 1, &temp, &texcord);
         dstt->download(dst->pixels());
     }
     return dst;
@@ -86,8 +87,7 @@ int main(int argc, char* argv[])
     const char* inputfile = argv[1];
     const char* outputfile = argv[2];
     const char* method = argv[3];//TODO
-    GPPtr<GLBmp> rgb_origin = new GLBmp;
-    rgb_origin->loadPicture(inputfile);
+    GPPtr<GLBmp> rgb_origin = new GLBmp(inputfile);
     GPPtr<GLBmp> rgb = pretreat(rgb_origin);
     rgb->save(outputfile);
     GLContext::destroy();

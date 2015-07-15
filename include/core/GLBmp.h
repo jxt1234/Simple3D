@@ -9,22 +9,20 @@ class FIBITMAP;
 /*Only one color format ARGB*/
 class GLBmp:public IBitmap
 {
-    public:
-        GLBmp(){mBitmap = NULL, mWidth = 0, mHeight = 0;}
-        GLBmp(int w, int h);
-        GLBmp(const char* pic){mBitmap = NULL;loadPicture(pic);}
-        void loadPicture(const char* pic);
-        void loadPicture(unsigned char* data, int length);
-        void save(const char* path);
-        void* pixels() const;
-        //
-        virtual ~GLBmp();
-        virtual GLColor getColor(int x, int y);
-        virtual void setColor(const GLColor& c, int x, int y);
-
-        double psnr(const GLBmp& other);
-    protected:
-        FIBITMAP* mBitmap;
+public:
+    GLBmp(int w, int h);
+    GLBmp(const char* pic);
+    GLBmp(unsigned char* data, int length);
+    void save(const char* path);
+    void* pixels() const;
+    //
+    virtual ~GLBmp();
+    virtual GLColor getColor(int x, int y);
+    virtual void setColor(const GLColor& c, int x, int y);
+    
+    double psnr(const GLBmp& other);
+protected:
+    FIBITMAP* mBitmap;
 };
 
 

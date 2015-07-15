@@ -29,10 +29,8 @@ int main(int argc, char* argv[])
     const char* rgbfile = argv[1];
     const char* blackfile = argv[2];
     const char* outputfile = argv[3];
-    GPPtr<GLBmp> rgb_origin = new GLBmp;
-    GPPtr<GLBmp> black = new GLBmp;
-    rgb_origin->loadPicture(rgbfile);
-    black->loadPicture(blackfile);
+    GPPtr<GLBmp> rgb_origin = new GLBmp(rgbfile);
+    GPPtr<GLBmp> black = new GLBmp(blackfile);
     GPPtr<GLBmp> rgb = pretreat(rgb_origin);
     GLASSERT(rgb->getWidth() == black->getWidth());
     GLASSERT(rgb->getHeight() == black->getHeight());

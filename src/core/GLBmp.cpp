@@ -13,12 +13,30 @@ GLBmp::GLBmp(int w, int h)
 
 GLBmp::~GLBmp()
 {
-    if (NULL!=mBitmap)
-    {
-        FreeImage_Unload(mBitmap);
-    }
+    GLASSERT(NULL!=mBitmap);
+    FreeImage_Unload(mBitmap);
 }
 
+GLBmp::GLBmp(const char* pic)
+{
+    FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
+    FIBITMAP* bitmap = FreeImage_Load(f, pic);
+    mBitmap = FreeImage_ConvertTo32Bits(bitmap);
+    FreeImage_Unload(bitmap);
+    mWidth  = FreeImage_GetWidth(mBitmap);
+    mHeight = FreeImage_GetHeight(mBitmap);
+}
+GLBmp::GLBmp(unsigned char* data, int length)
+{
+    FIMEMORY* memory = FreeImage_OpenMemory(data, length);
+    FREE_IMAGE_FORMAT f = FreeImage_GetFileTypeFromMemory(memory, length);
+    FIBITMAP* bitmap = FreeImage_LoadFromMemory(f, memory);
+    FreeImage_CloseMemory(memory);
+    mBitmap = FreeImage_ConvertTo32Bits(bitmap);
+    FreeImage_Unload(bitmap);
+    mWidth  = FreeImage_GetWidth(mBitmap);
+    mHeight = FreeImage_GetHeight(mBitmap);
+}
 
 
 
@@ -52,39 +70,6 @@ void GLBmp::setColor(const GLColor& c, int x, int y)
     bitsLine[FI_RGBA_GREEN] = c.g;
     bitsLine[FI_RGBA_BLUE] = c.b;
     bitsLine[FI_RGBA_ALPHA] = c.a;
-}
-
-void GLBmp::loadPicture(unsigned char* data, int length)
-{
-    FIMEMORY* memory = FreeImage_OpenMemory(data, length);
-    FREE_IMAGE_FORMAT f = FreeImage_GetFileTypeFromMemory(memory, length);
-    FIBITMAP* bitmap = FreeImage_LoadFromMemory(f, memory);
-    FreeImage_CloseMemory(memory);
-
-    if (NULL!=mBitmap)
-    {
-        FreeImage_Unload(mBitmap);
-    }
-    mBitmap = FreeImage_ConvertTo32Bits(bitmap);
-    FreeImage_Unload(bitmap);
-
-    mWidth  = FreeImage_GetWidth(mBitmap);
-    mHeight = FreeImage_GetHeight(mBitmap);
-}
-
-void GLBmp::loadPicture(const char* pic)
-{
-    FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
-    FIBITMAP* bitmap = FreeImage_Load(f, pic);
-    GLASSERT(NULL!=bitmap);
-    if (NULL!=mBitmap)
-    {
-        FreeImage_Unload(mBitmap);
-    }
-    mBitmap = FreeImage_ConvertTo32Bits(bitmap);
-    FreeImage_Unload(bitmap);
-    mWidth  = FreeImage_GetWidth(mBitmap);
-    mHeight = FreeImage_GetHeight(mBitmap);
 }
 
 double GLBmp::psnr(const GLBmp& other)
