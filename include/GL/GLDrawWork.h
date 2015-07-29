@@ -20,6 +20,8 @@ public:
 
     /*All parameters is in [0,1), set self parameters by these, if parameters is NULL, don't do anything just return the number of parameters needed*/
     virtual size_t vMap(double* parameters, size_t n);
+    void setUniform(const std::string& name, float value);
+    
     
 private:
     virtual void onSetupVertex();
@@ -29,6 +31,7 @@ private:
     std::vector<int> mInputPos;
     GPPtr<GLProgram> mProgram;
     std::map<int, float> mUniforms;
+    std::map<std::string, int> mUniformOrder;
     int mTextureCorderPos;
     int mVertexPos;
 };

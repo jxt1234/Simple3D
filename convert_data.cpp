@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
             //output << bl << " "<<(float)rgb_p[0] <<" "<< (float)rgb_p[1] <<" "<< (float)rgb_p[2] << endl;
             //output << bl << " "<<cb <<" "<< cr << endl;
             output << bl;
-            //output << " "<< r << " "<<g <<" "<<b;
+            output << " "<< r << " "<<g <<" "<<b;
             output <<" "<<cb <<" "<< cr<< " "<< y;
             //output << " "<< h << " "<<s <<" "<<v;
             output <<endl;

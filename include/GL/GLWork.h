@@ -1,5 +1,6 @@
 #ifndef GL_GLWORK_H
 #define GL_GLWORK_H
+#include <functional>
 #include "utils/RefCount.h"
 class GLWork:public RefCount
 {
@@ -21,5 +22,28 @@ class GLWork:public RefCount
         virtual ~GLWork(){}
 };
 
+class GLFunctionWork:public GLWork
+{
+public:
+    GLFunctionWork(std::function<void()> f):mFunc(f){}
+    virtual ~GLFunctionWork(){}
+    /*Run in GL Thread*/
+    virtual bool onPrepare()
+    {
+        return true;
+    }
+    virtual void onProcess()
+    {
+        mFunc();
+    }
+    virtual void onFinish()
+    {
+    }
+    virtual void onDestroy()
+    {
+    }
+private:
+    std::function<void()> mFunc;
+};
 
 #endif

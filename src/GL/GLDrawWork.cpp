@@ -1,6 +1,6 @@
 #include "GL/GLDrawWork.h"
 #include <sstream>
-
+static const char* gTextureVaryName = "inputImage";
 GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const std::map<std::string, float>* uniforms , const std::vector<GLBmp*>* resources, int inputnumber)
 {
     mProgram = new GLProgram(vertex, frag);
@@ -10,7 +10,7 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
     for (int i=0; i<inputnumber; ++i)
     {
         std::ostringstream os;
-        os << "inputImageTexture";
+        os << gTextureVaryName;
         if (i!=0)
         {
             os << i;
@@ -26,7 +26,7 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
             GLBmp* bmp = resouces[i];
             GPPtr<GLTexture> texture = new GLTexture;
             std::ostringstream os;
-            os << "inputImageTexture";
+            os << gTextureVaryName;
             os << i + inputnumber + 1;
             texture->upload(bmp->pixels(), bmp->getWidth(), bmp->getHeight());
             mResources.push_back(texture);
@@ -43,6 +43,7 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
             if (pos >= 0)
             {
                 mUniforms.insert(std::make_pair(pos, iter.second));
+                mUniformOrder.insert(std::make_pair(iter.first, pos));
             }
         }
     }
@@ -55,18 +56,19 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
 GLDrawWork::~GLDrawWork()
 {
 }
+
+void GLDrawWork::setUniform(const std::string& name, float value)
+{
+    auto iter = mUniformOrder.find(name);
+    if (iter != mUniformOrder.end())
+    {
+        int pos = iter->second;
+        mUniforms[pos] = value;
+    }
+}
 size_t GLDrawWork::vMap(double* parameters, size_t n)
 {
-    if (NULL==parameters)
-    {
-        return mUniforms.size();
-    }
-    for (auto iter:mUniforms)
-    {
-        iter.second = *parameters;
-        ++parameters;
-    }
-    return mUniforms.size();
+    return 0;
 }
 
 void GLDrawWork::onSetupVertex()

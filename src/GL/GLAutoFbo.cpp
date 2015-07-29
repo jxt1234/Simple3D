@@ -14,7 +14,7 @@ GLAutoFbo::GLAutoFbo(GLTexture& dst)
     glBindFramebuffer(GL_FRAMEBUFFER, mId);
     OPENGL_CHECK_ERROR;
     dst.use();
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, dst.id(), 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, dst.target(), dst.id(), 0);
     OPENGL_CHECK_ERROR;
     glViewport(0,0,dst.width(), dst.height());
     OPENGL_CHECK_ERROR;

@@ -8,6 +8,7 @@ GLTexture::GLTexture(int target)
     mW = 0;
     mH = 0;
     init();
+    mWarp = false;
 }
 GLTexture::GLTexture(int id, int w, int h, int target)
 {
@@ -15,11 +16,15 @@ GLTexture::GLTexture(int id, int w, int h, int target)
     mId = id;
     mW = w;
     mH = h;
+    mWarp = true;
 }
 
 GLTexture::~GLTexture()
 {
-    destory();
+    if (!mWarp)
+    {
+        destory();
+    }
 }
 
 void GLTexture::init()
@@ -60,6 +65,7 @@ void GLTexture::setFilter(bool filter)
 
 void GLTexture::upload(void* pixels, int w, int h)
 {
+    GLASSERT(!mWarp);
     glBindTexture(mTarget, mId);
     OPENGL_CHECK_ERROR;
     glTexImage2D(mTarget, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -67,11 +73,52 @@ void GLTexture::upload(void* pixels, int w, int h)
     mW = w;
     mH = h;
 }
+
+void GLTexture::uploadAllFormat(void* pixels, int w, int h, int stride, Format format)
+{
+    GLASSERT(!mWarp);
+    GLASSERT(stride==0 || stride>=w);
+    glBindTexture(mTarget, mId);
+    OPENGL_CHECK_ERROR;
+#ifndef GL_BUILD_FOR_ANDROID
+    if (0!=stride)
+    {
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+        OPENGL_CHECK_ERROR;
+    }
+#endif
+    switch (format)
+    {
+        case RGBA:
+            glTexImage2D(mTarget, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+            break;
+        case RGB_565:
+            glTexImage2D(mTarget, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_SHORT_5_6_5, pixels);
+            break;
+        case ALPHA:
+            glTexImage2D(mTarget, 0, GL_ALPHA, w, h, 0, GL_ALPHA, GL_UNSIGNED_BYTE, pixels);
+            break;
+    }
+#ifndef GL_BUILD_FOR_ANDROID
+    if (0!=stride)
+    {
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+        OPENGL_CHECK_ERROR;
+    }
+#endif
+}
+
+
 void GLTexture::download(void* pixels)
 {
-    assert(mW>0 && mH>0);
+    GLASSERT(mW>0 && mH>0);
     /*TODO Use glPixelStorei to determine align*/
     glReadPixels(0, 0, mW, mH, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    OPENGL_CHECK_ERROR;
+}
+void GLTexture::reset()
+{
+    glBindTexture(mTarget, 0);
     OPENGL_CHECK_ERROR;
 }
 

@@ -26,8 +26,8 @@
 #include <sstream>
 #include <vector>
 #include <map>
-#include "GLBoxFilter.h"
 #include "GLGuideFilter.h"
+#include "GLLargeGPUFilter.h"
 #include "GLAutoStorage.h"
 
 using namespace std;
@@ -166,6 +166,7 @@ static IGLDrawWork* init_guild_filter()
     p_uniform["texelHeight"] = 1.0/gBmp->height();
     map<string, float> c_uniform = p_uniform;
     c_uniform["thetha"] = 0.005;
+    p_uniform["filterRatio"] = 0.8f;
     GPPtr<IGLDrawWork> p = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_second.fra"), &p_uniform, NULL, 3);
     GPPtr<IGLDrawWork> l = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_a.fra"), &c_uniform);
     GPPtr<IGLDrawWork> r = new GLDrawWork(loadFiles("/Users/jiangxiaotang/Documents/shader/ShallowOnePass.vex"), loadFiles("/Users/jiangxiaotang/Documents/shader/guild_filter_slow_b.fra"), &c_uniform);
@@ -226,7 +227,7 @@ static void display(void)
     };
     GLvboBuffer texcord(texpoints, 2, 4, GL_TRIANGLE_STRIP);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    /*Treated picture*/
+    /*Origin picture*/
     {
         float points[] = {
             -1.0, -1.0,
@@ -235,9 +236,9 @@ static void display(void)
             -1.0+2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gOriginWorks->drawSingle(gTreatedTexture.get(), &temp, &texcord);
+        gOriginWorks->drawSingle(gTexture.get(), &temp, &texcord);
     }
-    /*Origin picture*/
+    /*Treated picture*/
     {
         float points[] = {
             0.0, -1.0,
@@ -246,19 +247,21 @@ static void display(void)
             2.0/ENLARGE_P, 1.0
         };
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
-        gOriginWorks->drawSingle(gTexture.get(), &temp, &texcord);
+        gOriginWorks->drawSingle(gTreatedTexture.get(), &temp, &texcord);
     }
     glutSwapBuffers();
 }
 static void gpuTreat();
+#include "utils/ALClock.h"
 static void pretreat(GPPtr<GLBmp> bitmap)
 {
+    ALAUTOTIME;
     if (0)
     {
         gpuTreat();
         return;
     }
-    GPPtr<GLGuideFilter> filter = new GLGuideFilter;
+    GPPtr<IGLFilter> filter = new GLLargeGPUFilter(new GLGuideFilter(31), 0, 0, 128);
     filter->vFilter(bitmap.get(), bitmap.get());
     gTreatedTexture->upload(bitmap->pixels(), bitmap->width(), bitmap->height());
 }
@@ -290,6 +293,7 @@ static void gpuTreat()
     };
     FUNC_PRINT(gBmp->getWidth());
     FUNC_PRINT(gBmp->getHeight());
+    ALAUTOTIME;
     {
         GLAutoFbo __fbo(*gTreatedTexture);
         GLvboBuffer temp(points, 2, 4, GL_TRIANGLE_STRIP);
@@ -309,8 +313,8 @@ int main(int argc, char* argv[])
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/YuFamilyPhoto.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/skintest4.jpg");
-    gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/pic1.jpg");
-    //gBmp = new GLBmp("/Users/jiangxiaotang/Data/Pictures/Pictures/0019667873730ec8401648.jpg");
+    gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/pic2.jpg");
+    //gBmp = new GLBmp("/Users/jiangxiaotang/Data/Pictures/Pictures/7051ee7f0a4f504faaa6ca519b95d0f0.jpg");
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);
     glutInitWindowPosition(50,100);
@@ -328,10 +332,7 @@ int main(int argc, char* argv[])
 #ifndef __APPLE__
     glewInit();
 #endif
-    auto sta = clock();
     init();
-    auto fin = clock();
-    printf("Cost Time = %ld / %d\n", (fin-sta), CLOCKS_PER_SEC);
     glutDisplayFunc(display);
     glutIdleFunc(display);
     glutMainLoop();
