@@ -4,7 +4,7 @@ void GLOnceWork::readyToRun()
 }
 bool GLOnceWork::threadLoop()
 {
-    mF();
+    (*mF)();
     return false;
 }
 void GLOnceWork::destroy()

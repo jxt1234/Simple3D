@@ -4,13 +4,13 @@
 #include <functional>
 class GLOnceWork:public GLThread
 {
-    public:
-        GLOnceWork(std::function<void(void)>& f):mF(f){}
-        virtual ~GLOnceWork(){}
-        virtual void readyToRun();
-        virtual bool threadLoop();
-        virtual void destroy();
-    private:
-        std::function<void(void)>& mF;
+public:
+    GLOnceWork(std::function<void(void)>* f):mF(f){}
+    virtual ~GLOnceWork(){delete mF;}
+    virtual void readyToRun();
+    virtual bool threadLoop();
+    virtual void destroy();
+private:
+    std::function<void(void)>* mF;
 };
 #endif

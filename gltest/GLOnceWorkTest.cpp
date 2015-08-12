@@ -15,20 +15,15 @@ class GLOnceWorkTest:public GLTest
 void GLOnceWorkTest::run()
 {
     int u = 0;
-    std::function<void(void)> f = [&](){
-        FUNC_PRINT(u);
-        u++;
-    };
     std::vector<GPPtr<GLOnceWork> > works;
     for (int i=0; i<10; ++i)
     {
+        auto f = new std::function<void(void)>([=](){
+            FUNC_PRINT(i);
+        });
         GPPtr<GLOnceWork> w = new GLOnceWork(f);
         w->start();
         works.push_back(w);
-    }
-    for (auto w : works)
-    {
-        w->stop();
     }
     works.clear();
 }
