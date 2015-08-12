@@ -27,7 +27,9 @@
 #include <vector>
 #include <map>
 #include "GLGuideFilter.h"
+#include "GLBrightFilter.h"
 #include "GLLargeGPUFilter.h"
+#include "GLSharpFilter.h"
 #include "GLAutoStorage.h"
 
 using namespace std;
@@ -261,9 +263,18 @@ static void pretreat(GPPtr<GLBmp> bitmap)
         gpuTreat();
         return;
     }
-    GPPtr<IGLFilter> filter = new GLLargeGPUFilter(new GLGuideFilter(31), 0, 0, 128);
-    filter->vFilter(bitmap.get(), bitmap.get());
-    gTreatedTexture->upload(bitmap->pixels(), bitmap->width(), bitmap->height());
+    GPPtr<GLBmp> bitmap2 = new GLBmp(bitmap->width(), bitmap->height());
+    //GPPtr<GLBmp> bitmap3 = new GLBmp(bitmap->width(), bitmap->height());
+    //GPPtr<GLBmp> bitmap2 = new GLBmp(bitmap->width()-100, bitmap->height()-100);
+    //GPPtr<GLBmp> bitmap2 = new GLBmp(bitmap->height()-300, bitmap->width()-400);
+    GPPtr<IGLFilter> filter = new GLGuideFilter(8);
+    GPPtr<IGLFilter> filter2 = new GLBrightFilter;
+//    GPPtr<IGLFilter> filter = new GLLargeGPUFilter(new GLGuideFilter(33), 300, 400, 500, 66, false, true, true);
+    filter->vFilter(bitmap2.get(), bitmap.get());
+    filter2->vFilter(bitmap2.get(), bitmap2.get());
+    //filter2->vFilter(bitmap3.get(), bitmap2.get());
+    gTreatedTexture->upload(bitmap2->pixels(), bitmap2->width(), bitmap2->height());
+    //gTreatedTexture->upload(bitmap3->pixels(), bitmap3->width(), bitmap3->height());
 }
 static void gpuTreat()
 {
@@ -313,8 +324,9 @@ int main(int argc, char* argv[])
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/YuFamilyPhoto.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/skintest4.jpg");
-    gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/pic2.jpg");
+    //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/pic2.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Data/Pictures/Pictures/7051ee7f0a4f504faaa6ca519b95d0f0.jpg");
+    gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/IMG_20150812111834.jpg");
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB|GLUT_DEPTH);
     glutInitWindowPosition(50,100);

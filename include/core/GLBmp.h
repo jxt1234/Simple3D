@@ -15,6 +15,7 @@ public:
     GLBmp(unsigned char* data, int length);
     void save(const char* path);
     void* pixels() const;
+    inline int bpp() const {return 4;}
     //
     virtual ~GLBmp();
     virtual GLColor getColor(int x, int y);

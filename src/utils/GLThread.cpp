@@ -15,10 +15,6 @@ GLThread::GLThread(bool _start)
     pthread_t* d = new pthread_t;
     mData = (void*)d;
     mRunning = false;
-    if (_start)
-    {
-        start();
-    }
 }
 GLThread::~GLThread()
 {
@@ -31,10 +27,10 @@ void GLThread::run()
 {
     this->readyToRun();
     bool rerun = true;
-    while(mRunning && rerun)
+    do
     {
         rerun = this->threadLoop();
-    }
+    }while(mRunning && rerun);
     this->destroy();
 }
 

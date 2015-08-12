@@ -1,7 +1,9 @@
 #ifndef UTILS_GLTHREAD_H
 #define UTILS_GLTHREAD_H
 #include "GLLock.h"
-class GLThread
+#include "RefCount.h"
+
+class GLThread:public RefCount
 {
     public:
         GLThread(bool _start = true);
