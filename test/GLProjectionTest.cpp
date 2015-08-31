@@ -29,7 +29,7 @@ class GLProjectionTest:public GLTest
             tex.addPoint(0.0, 0.0);
             GL_FragPosition f;
             GLBmp GLTexture("ori.png");
-            GL_FragTexcord ftex(GLTexture.getWidth(), GLTexture.getHeight());
+            GL_FragTexcord ftex(GLTexture.width(), GLTexture.height());
             vector<IVarying*> inputs;
             inputs.push_back(&p);
             inputs.push_back(&tex);

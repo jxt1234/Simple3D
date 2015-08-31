@@ -229,8 +229,8 @@ GLColor CSceneNewton::getColor(const double dL1,const double dL2,const double dL
 void CSceneNewton::DoDraw(IBitmap& dst)
 {
     GPCLOCK;
-    int width = dst.getWidth();
-    int height = dst.getHeight();
+    int width = dst.width();
+    int height = dst.height();
     const double rTop    =-1;
     const double rBottom =-rTop+0.000001;
     const double rLeft   =-(rBottom*width)/height;

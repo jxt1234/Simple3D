@@ -28,7 +28,7 @@ GLDrawWork::GLDrawWork(const std::string& vertex, const std::string& frag, const
             std::ostringstream os;
             os << gTextureVaryName;
             os << i + inputnumber + 1;
-            texture->upload(bmp->pixels(), bmp->getWidth(), bmp->getHeight());
+            texture->upload(bmp->pixels(), bmp->width(), bmp->height());
             mResources.push_back(texture);
             mResoucePos.push_back(glGetUniformLocation(mProgram->id(), os.str().c_str()));
             OPENGL_CHECK_ERROR;//Call opengl directly, must check error

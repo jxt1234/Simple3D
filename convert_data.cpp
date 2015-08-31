@@ -32,10 +32,10 @@ int main(int argc, char* argv[])
     GPPtr<GLBmp> rgb_origin = new GLBmp(rgbfile);
     GPPtr<GLBmp> black = new GLBmp(blackfile);
     GPPtr<GLBmp> rgb = pretreat(rgb_origin);
-    GLASSERT(rgb->getWidth() == black->getWidth());
-    GLASSERT(rgb->getHeight() == black->getHeight());
-    auto w = rgb->getWidth();
-    auto h = rgb->getHeight();
+    GLASSERT(rgb->width() == black->width());
+    GLASSERT(rgb->height() == black->height());
+    auto w = rgb->width();
+    auto h = rgb->height();
     ofstream output(outputfile);
     GLASSERT(!output.fail());
     /*Find bound*/

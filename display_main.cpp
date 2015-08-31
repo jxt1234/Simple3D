@@ -269,7 +269,7 @@ static void pretreat(GPPtr<GLBmp> bitmap)
     //GPPtr<GLBmp> bitmap2 = new GLBmp(bitmap->height()-300, bitmap->width()-400);
     GPPtr<IGLFilter> filter = new GLGuideFilter(8);
     GPPtr<IGLFilter> filter2 = new GLBrightFilter;
-//    GPPtr<IGLFilter> filter = new GLLargeGPUFilter(new GLGuideFilter(33), 300, 400, 500, 66, false, true, true);
+    //GPPtr<IGLFilter> filter = new GLLargeGPUFilter(new GLGuideFilter(33), 300, 400, 500, 66, false, true, true);
     filter->vFilter(bitmap2.get(), bitmap.get());
     filter2->vFilter(bitmap2.get(), bitmap2.get());
     //filter2->vFilter(bitmap3.get(), bitmap2.get());
@@ -287,7 +287,7 @@ static void gpuTreat()
     //gTreatWorks = init_skin_onepass();
     //gTreatWorks = init_skin_nolocal();
     gTreatWorks = init_guild_filter();
-    gTreatedTexture->upload(NULL, gBmp->getWidth(), gBmp->getHeight());
+    gTreatedTexture->upload(NULL, gBmp->width(), gBmp->height());
     // GPCLOCK;
     float texpoints[] = {
         0.0,0.0,
@@ -302,8 +302,8 @@ static void gpuTreat()
         1.0, -1.0,
         1.0, 1.0
     };
-    FUNC_PRINT(gBmp->getWidth());
-    FUNC_PRINT(gBmp->getHeight());
+    FUNC_PRINT(gBmp->width());
+    FUNC_PRINT(gBmp->height());
     ALAUTOTIME;
     {
         GLAutoFbo __fbo(*gTreatedTexture);
@@ -315,7 +315,7 @@ static void init()
 {
     gTexture = new GLTexture;
     gTreatedTexture = new GLTexture;
-    gTexture->upload(gBmp->pixels(), gBmp->getWidth(), gBmp->getHeight());
+    gTexture->upload(gBmp->pixels(), gBmp->width(), gBmp->height());
     gOriginWorks = init_origin();
     pretreat(gBmp);
 }

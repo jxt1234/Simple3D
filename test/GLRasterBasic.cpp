@@ -39,7 +39,7 @@ class GLRasterBasicTest:public GLTest
             tex->addPoint(1.0, 0.0);
             GL_FragPosition* f = new GL_FragPosition;
             GLBmp GLTexture("ori.png");
-            GL_FragTexcord* ftex = new GL_FragTexcord(GLTexture.getWidth(), GLTexture.getHeight());
+            GL_FragTexcord* ftex = new GL_FragTexcord(GLTexture.width(), GLTexture.height());
             //
             vector<IVarying*> inputs;
             inputs.push_back(p);

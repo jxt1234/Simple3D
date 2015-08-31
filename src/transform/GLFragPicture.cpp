@@ -13,8 +13,8 @@ void GLGenFragPicNewTon(IBitmap& bitmap)
     {
         colorlist[i] = rand();
     }
-    int width = bitmap.getWidth();
-    int height = bitmap.getHeight();
+    int width = bitmap.width();
+    int height = bitmap.height();
     CSceneNewton scene;
     scene.Scene_Inti(width, height);
     scene.Scene_Update(0, scenelist, colorlist);

@@ -71,7 +71,7 @@ class GLSingleLightTest:public GLTest
             p.transform(projection);
             p.normalize();
             GL_FragPosition f;
-            GL_FragTexcord ftex(GLTexture.getWidth(), GLTexture.getHeight());
+            GL_FragTexcord ftex(GLTexture.width(), GLTexture.height());
             GL_vPosition vPostion;
             GL_vPosition vNormal;
             //Arranging

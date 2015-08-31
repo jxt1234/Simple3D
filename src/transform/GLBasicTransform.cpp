@@ -51,12 +51,12 @@ void GLRotate(IBitmap& src, IBitmap& dst, float degree, bool scale)
     }
     else
     {
-        v1 = (_rotate(-1,  1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
-        v2 = (_rotate(-1, -1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
-        v3 = (_rotate( 1,  1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
-        v4 = (_rotate(-1, -1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
-        v5 = (_rotate( 1,  1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
-        v6 = (_rotate( 1, -1, degree,src.getWidth(), src.getHeight(), dst.getWidth(), dst.getHeight()));
+        v1 = (_rotate(-1,  1, degree,src.width(), src.height(), dst.width(), dst.height()));
+        v2 = (_rotate(-1, -1, degree,src.width(), src.height(), dst.width(), dst.height()));
+        v3 = (_rotate( 1,  1, degree,src.width(), src.height(), dst.width(), dst.height()));
+        v4 = (_rotate(-1, -1, degree,src.width(), src.height(), dst.width(), dst.height()));
+        v5 = (_rotate( 1,  1, degree,src.width(), src.height(), dst.width(), dst.height()));
+        v6 = (_rotate( 1, -1, degree,src.width(), src.height(), dst.width(), dst.height()));
     }
     pos.addVector(v1);
     pos.addVector(v2);
@@ -65,14 +65,14 @@ void GLRotate(IBitmap& src, IBitmap& dst, float degree, bool scale)
     pos.addVector(v5);
     pos.addVector(v6);
     GL_FragPosition f;
-    GL_FragTexcord ftex(src.getWidth(), src.getHeight());
+    GL_FragTexcord ftex(src.width(), src.height());
     vector<IVarying*> inputs;
     inputs.push_back(&pos);
     inputs.push_back(&tex);
     vector<IRasterizatedVarying*> outputs;
     outputs.push_back(&f);
     outputs.push_back(&ftex);
-    GLRasterization(inputs, outputs, dst.getWidth(), dst.getHeight());
+    GLRasterization(inputs, outputs, dst.width(), dst.height());
 
     for (int i=0; i<f.size(); ++i)
     {

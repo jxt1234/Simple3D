@@ -6,8 +6,8 @@ void GLWritePixels(IBitmap* dst, IRasterizatedVarying* pos, IRasterizatedVarying
     assert(NULL!=pos);
     assert(NULL!=color);
     assert(pos->size() == color->size());
-    int w = dst->getWidth();
-    int h = dst->getHeight();
+    int w = dst->width();
+    int h = dst->height();
     for (int i=0; i<pos->size(); ++i)
     {
         float* p = pos->load(i);

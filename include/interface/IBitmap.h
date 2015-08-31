@@ -12,8 +12,6 @@ class IBitmap:public RefCount
         virtual GLColor getColor(int x, int y)=0;
         virtual void setColor(const GLColor& c, int x, int y) = 0;
 
-        inline int getWidth() const{return mWidth;}
-        inline int getHeight() const{return mHeight;}
         inline int width() const{return mWidth;}
         inline int height() const{return mHeight;}
         /*Must Ensure there has enough memory for the dst*/

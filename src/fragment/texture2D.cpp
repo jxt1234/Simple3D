@@ -8,8 +8,8 @@ class GLTexture2DCompute:public IFragmentFunction
     public:
         GLTexture2DCompute(IBitmap* pic):mPic(pic)
         {
-            mHeight = pic->getHeight();
-            mWidth = pic->getWidth();
+            mHeight = pic->height();
+            mWidth = pic->width();
         }
         virtual ~GLTexture2DCompute(){}
         virtual void unitcompute(std::vector<float*> input, vector<float*> output)
