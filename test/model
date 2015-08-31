@@ -1,0 +1,14 @@
+#include "test/GLTest.h"
+
+class XXXXXXXXXXXXXX:public GLTest
+{
+    public:
+        virtual void run();
+        XXXXXXXXXXXXXX(){}
+        virtual ~XXXXXXXXXXXXXX(){}
+};
+
+void XXXXXXXXXXXXXX::run()
+{
+}
+static GLTestRegister<XXXXXXXXXXXXXX> a("XXXXXXXXXXXXXX");

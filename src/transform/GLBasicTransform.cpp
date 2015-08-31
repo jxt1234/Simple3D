@@ -82,6 +82,8 @@ void GLRotate(IBitmap& src, IBitmap& dst, float degree, bool scale)
         int y = pos[1];
         int u = texc[0];
         int v = texc[1];
+        if (u < 0) u = 0;
+        if (v < 0) v = 0;
         dst.setColor(src.getColor(u, v), x, y);
     }
 }
