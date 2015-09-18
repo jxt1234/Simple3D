@@ -97,3 +97,7 @@ double GLBmp::psnr(const GLBmp& other)
     result = -10.0*log(result/(double)_max/(double)_max)/log(10.0);
     return result;
 }
+unsigned char* GLBmp::getAddr(int x, int y) const
+{
+    return (unsigned char*)pixels() + (y*mWidth+x)*bpp();
+}
