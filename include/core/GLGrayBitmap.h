@@ -9,6 +9,8 @@ public:
     /*Create Gray Bitmap from outside pixels*/
     GLGrayBitmap(unsigned char* pixels, int w, int h);
     virtual ~GLGrayBitmap();
+    inline int bpp() const {return 1;}
+    inline int stride() const {return width()*bpp()*sizeof(unsigned char);}
     inline int width() const {return mW;}
     inline int height() const {return mH;}
     inline unsigned char* getAddr(int x, int y) const {return mPixels+y*mW+x;}

@@ -12,11 +12,13 @@ class GLBmp:public IBitmap
 public:
     GLBmp(int w, int h);
     GLBmp(const char* pic);
+    GLBmp(int w, int h, void* data);
     GLBmp(unsigned char* data, int length);
     void save(const char* path);
     void* pixels() const;
     unsigned char* getAddr(int x, int y) const;
     inline int bpp() const {return 4;}
+    inline int stride() const {return width()*bpp()*sizeof(unsigned char);}
     //
     virtual ~GLBmp();
     virtual GLColor getColor(int x, int y);

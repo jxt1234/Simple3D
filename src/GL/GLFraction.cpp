@@ -24,7 +24,7 @@ static void _genShaderFrac(std::ostream& os, int n, int iternumber, float kR, fl
     os << "float seta, r, sl;\n";
     os << "vec3 dl;\n";
     os << "vec4 color;\n";
-    float n_1 = n-1;
+    //float n_1 = n-1;
     for (int i=0; i<iternumber; ++i)
     {
 #define ITER \
@@ -80,8 +80,8 @@ GLBitmapWork* GLFractionCreator::vCreate(std::istream* input) const
         pR = GPRandom::rate();
         pG = GPRandom::rate();
         pB = GPRandom::rate();
-        double r=1.0/(1<<(n-3));
-        r=pow(r,0.095);
+//        double r=1.0/(1<<(n-3));
+//        r=pow(r,0.095);
     }
     int iternumber = GPRandom::mid(1, 6);
     std::ostringstream os;

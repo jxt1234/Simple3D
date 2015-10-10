@@ -35,6 +35,7 @@
 #include "GLTwoValueOperator.h"
 #include "GLGraphicCut.h"
 #include "GLGaussOperator.h"
+#include "GLLineraKernelFilter.h"
 
 using namespace std;
 
@@ -44,6 +45,60 @@ GPPtr<GLTexture> gTexture;
 GPPtr<GLTexture> gTreatedTexture;
 GPPtr<GLBmp> gBmp;
 #define ENLARGE_P 2.03
+template<class T>
+static GPPtr<T> _reduceBitmapCroped(const T* src, int l, int t, int r, int b, int scaled)
+{
+    GLASSERT(NULL!=src);
+    int w = r-l+1;
+    int h = b-t+1;
+    GLASSERT(scaled>=1);
+    GLASSERT(w % scaled == 0);
+    GLASSERT(h % scaled == 0);
+    int dw = w/scaled;
+    int dh = h/scaled;
+    GPPtr<T> res = new T(dw, dh);
+    int bpp = src->bpp();
+    for (int i=0; i<dh; ++i)
+    {
+        for (int j=0; j<dw; ++j)
+        {
+            auto dst_sta = res->getAddr(j, i);
+            auto src_sta = src->getAddr(l+j*scaled, t+i*scaled);
+            for (int k=0; k<bpp; ++k)
+            {
+                dst_sta[k] = src_sta[k];
+            }
+        }
+    }
+    return res;
+}
+
+template<class T>
+static GPPtr<T> _scaleBitmap(const T* src, int scale)
+{
+    GLASSERT(NULL!=src);
+    GLASSERT(scale>1);
+    int w = src->width();
+    int h = src->height();
+    GPPtr<T> res = new T(w*scale, h*scale);
+    int bpp = src->bpp();
+    for (int i=0; i<h; ++i)
+    {
+        for (int j=0; j<w; ++j)
+        {
+            auto dst_ = res->getAddr(j*scale, i*scale);
+            auto src_ = src->getAddr(j, i);
+            for (int q=0; q<scale; ++q)
+            {
+                for (int k=0; k<bpp; ++k)
+                {
+                    dst_[q*bpp+k] = src_[k];
+                }
+            }
+        }
+    }
+    return res;
+}
 
 static string loadFiles(const char* name)
 {
@@ -263,8 +318,6 @@ static void gpuTreat();
 #include "GLSobelOperator.h"
 
 
-#include "WSLazySnapping.h"
-#include "WSWatershed.h"
 
 static int skin_detect(unsigned char* pix)
 {
@@ -275,62 +328,41 @@ static int skin_detect(unsigned char* pix)
     float x4 = -0.1687*x0-0.3313*x1+0.5*x2;
     return (x4 <=-0.0615369 ? (x3 <=0.0678488 ? (x3 <=0.0352417 ? 0 : (x2 <=0.686631 ? 0 : 1)) : (x3 <=0.185183 ? 1 : 0)) : (x4 <=-0.029597 ? (x3 <=0.0434402 ? 0 : (x1 <=0.168271 ? 0 : 1)) : 0));
 }
-
-static void watershedTreat(GPPtr<GLBmp> bitmap)
+static void histogram(GPPtr<GLBmp> bitmap)
 {
-    GPPtr<GLGrayBitmap> presegimg = new GLGrayBitmap(bitmap->width(), bitmap->height());
-    GPPtr<GLGrayBitmap> bitmap_gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
-    GPPtr<GLGrayBitmap> seedImg = new GLGrayBitmap(bitmap->width(), bitmap->height());
-    GLGrayBitmap::turnGray(bitmap_gray.get(), bitmap.get());
-    vector<CvPoint> backPts;
-    vector<CvPoint> frontpts;
-    ::memset(seedImg->pixelsForWrite(), 0, seedImg->width()*seedImg->height()*sizeof(unsigned char));
-    const int unit = 15;
-    const int dividew = seedImg->width()/unit;
-    const int divideh = seedImg->height()/unit;
-    for (int i=0; i<unit; ++i)
-    {
-        int line = (i*divideh+divideh/2);
-        auto seed_line = seedImg->pixelsForWrite() + line*seedImg->width();
-        for (int j=0; j<unit; ++j)
-        {
-            ::memset(seed_line+j*dividew, 255, (dividew/2)*sizeof(unsigned char));
-        }
-    }
-//    GLGrayBitmap::turnRGB(seedImg.get(), bitmap.get());
-//    return;
-    for (int i=0; i<bitmap->height(); ++i)
-    {
-        backPts.push_back(cvPoint(0, i));
-        backPts.push_back(cvPoint(bitmap->width()-1, i));
-    }
-    for (int i=1; i<bitmap->width()-1; ++i)
-    {
-        backPts.push_back(cvPoint(i, 0));
-        backPts.push_back(cvPoint(i, bitmap->height()-1));
-    }
-    GPPtr<GLGrayBitmap> bitmap_grad = new GLGrayBitmap(bitmap_gray->width(), bitmap_gray->height());
-    GetGradImageNatural(bitmap_gray.get(), bitmap_grad.get(), 10.0f);
-    //DoWatershedPresegmentWS(seedImg.get(), bitmap_gray.get(), presegimg.get());
-    DoWatershedPresegmentWSWithGrad(seedImg.get(), bitmap_grad.get(), presegimg.get());
-    for (int i=0; i<presegimg->width()*presegimg->height(); ++i)
-    {
-        presegimg->pixelsForWrite()[i] *=30;
-    }
-    
-    unsigned char r_t[256];
-    unsigned char g_t[256];
-    unsigned char b_t[256];
-    for (int i=0; i<256; ++i)
-    {
-        r_t[i] = (255-i)*i;
-        b_t[i] = i;
-        g_t[i] = 255-i;
-    }
-    //GLGrayBitmap::turnRGB(presegimg.get(), bitmap.get());
-    GLGrayBitmap::mapRGB(presegimg.get(), bitmap.get(), r_t, g_t, b_t);
+    GPPtr<IGLFilter> filter = new GLHistogramEqualFilter;
+    filter->vFilter(bitmap.get(), bitmap.get());
 }
 
+#include "BigHeaderManager.h"
+static void grayDivide(GPPtr<GLBmp> bitmap)
+{
+    GPPtr<GLGrayBitmap> gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
+    GLGrayBitmap::turnGray(gray.get(), bitmap.get());
+    auto _gray = gray->getAddr(0, 0);
+    for (int i=0; i<gray->width()*gray->height(); ++i)
+    {
+        if (_gray[i] < 200)
+        {
+            _gray[i] = 0;
+        }
+        else
+        {
+            _gray[i] = 0xFF;
+        }
+    }
+    BigHeaderManager::reduceToOneRegion(gray.get());
+    GLGrayBitmap::turnRGB(gray.get(), bitmap.get());
+}
+
+static void linearBlurTreat(GPPtr<GLBmp> bitmap)
+{
+    GPPtr<GLGrayBitmap> bitmap_gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
+    GLGrayBitmap::turnGray(bitmap_gray.get(), bitmap.get());
+    GLLinearKernelFilter filter(50);
+    filter.vFilter(bitmap_gray.get(), bitmap_gray.get());
+    GLGrayBitmap::turnRGB(bitmap_gray.get(), bitmap.get());
+}
 static void graphicutTreat(GPPtr<GLBmp> bitmap)
 {
     int w = bitmap->width();
@@ -347,7 +379,7 @@ static void graphicutTreat(GPPtr<GLBmp> bitmap)
     GLGraphicCut cut(450,150.0);
     cut.initMaskRect(bitmap_gray.get());
     //cut.grabCut(bitmap.get(), bitmap_gray.get(), l, t, r, b);
-    cut.grabCutCrop(bitmap.get(), bitmap_gray.get(), l, t, r, b);
+    cut.grabCutCrop(bitmap.get(), bitmap_gray.get(), l, t);
     for (int i=t; i<=b; ++i)
     {
         auto mask_p = bitmap_gray->pixelsForRead() + (i-t)*bitmap_gray->width();
@@ -404,8 +436,11 @@ static void pretreat(GPPtr<GLBmp> bitmap)
         ::memcpy(bitmap->pixels(), newBmp->pixels(), bitmap->width()*bitmap->height()*4);
     }
 #endif
-    watershedTreat(bitmap);
+    //watershedTreat(bitmap);
     //graphicutTreat(bitmap);
+    //linearBlurTreat(bitmap);
+    //histogram(bitmap);
+    grayDivide(bitmap);
     gTreatedTexture->upload(bitmap->pixels(), bitmap->width(), bitmap->height());
 }
 static void gpuTreat()
@@ -491,7 +526,7 @@ int _main(int argc, char* argv[])
     {
         GPCLOCK;
         GLGraphicCut cut(100.0,450.0);
-        cut.grabCut(bitmap.get(), mask.get(), 100, 100, 200, 200);
+        cut.grabCut(bitmap.get(), mask.get(), 100, 100);
     }
     
     return 1;

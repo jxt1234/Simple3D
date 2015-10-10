@@ -12,6 +12,8 @@ GLGrayBitmap::GLGrayBitmap(int w, int h)
 }
 GLGrayBitmap::GLGrayBitmap(unsigned char* pixels, int w, int h)
 {
+    GLASSERT(0<w);
+    GLASSERT(0<h);
     mPixels = pixels;
     mW = w;
     mH = h;
