@@ -1,3 +1,6 @@
+INCLUDE:include ../Genetic-Program-Frame/include/
+**********
+
 TARGET:libglsl.so
 DEPENDS:
 DIRS:src glsl
@@ -44,3 +47,10 @@ DIRS:
 SRCS:picture_treat.cpp
 LINKS: ./libglsl.so
 
+##########
+
+TARGET:gp_color_table.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:gp_color_table.cpp
+LINKS: ./libglsl.so ./libGP.so

@@ -1,0 +1,14 @@
+<NULL>
+<GLBmp_Psnr_GPpackage>
+<output>double</output>
+<status></status>
+<input>GLBmp GLBmp </input>
+</GLBmp_Psnr_GPpackage>
+
+<GLColorMap_GPpackage>
+<output>GLBmp</output>
+<status>GLColorTable </status>
+<input>GLBmp </input>
+</GLColorMap_GPpackage>
+
+</NULL>

@@ -72,7 +72,7 @@ void GLBmp::setColor(const GLColor& c, int x, int y)
     bitsLine[FI_RGBA_ALPHA] = c.a;
 }
 
-double GLBmp::psnr(const GLBmp& other)
+double GLBmp::psnr(const GLBmp& other) const
 {
     double result = 0.0;
     int w = other.width();
@@ -101,3 +101,13 @@ unsigned char* GLBmp::getAddr(int x, int y) const
 {
     return (unsigned char*)pixels() + (y*mWidth+x)*bpp();
 }
+
+double GLBmp_Psnr(const GLBmp* src, const GLBmp* dst)
+{
+    GLASSERT(NULL!=src);
+    GLASSERT(NULL!=dst);
+    GLASSERT(src->width() == dst->width());
+    GLASSERT(src->height() == dst->height());
+    return src->psnr(*dst);
+}
+

@@ -13,8 +13,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************/
-#ifndef GENETIC_PROGRGAM_DEBUG_H
-#define GENETIC_PROGRGAM_DEBUG_H
+#ifndef SIMPLE3D_DEBUG_H
+#define SIMPLE3D_DEBUG_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -50,6 +50,8 @@
 #define CHECK_POINTER(x)
 
 #endif
+
+#define GPASSERT(x) GLASSERT(x)
 
 #ifdef __cplusplus
 extern "C"{

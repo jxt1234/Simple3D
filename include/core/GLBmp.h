@@ -24,10 +24,11 @@ public:
     virtual GLColor getColor(int x, int y);
     virtual void setColor(const GLColor& c, int x, int y);
     
-    double psnr(const GLBmp& other);
+    double psnr(const GLBmp& other) const;
 protected:
     FIBITMAP* mBitmap;
 };
 
+/*GP FUNCTION*/double GLBmp_Psnr(const GLBmp* src, const GLBmp* dst);
 
 #endif
