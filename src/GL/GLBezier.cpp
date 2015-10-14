@@ -61,14 +61,14 @@ void GLBezier::_sync()
         {
             mParameter[i+1] = mParameter[i]*(n-i)/(i+1);
         }
-    }
 #ifdef DEBUG
-    FUNC_PRINT(n);
-    for (int i=0; i<=n; ++i)
-    {
-        FUNC_PRINT_ALL(mParameter[i], f);
-    }
+        FUNC_PRINT(n);
+        for (int i=0; i<=n; ++i)
+        {
+            FUNC_PRINT_ALL(mParameter[i], f);
+        }
 #endif
+    }
 }
 
 const static string U("u");

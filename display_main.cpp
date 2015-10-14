@@ -335,25 +335,6 @@ static void histogram(GPPtr<GLBmp> bitmap)
 }
 
 #include "BigHeaderManager.h"
-static void grayDivide(GPPtr<GLBmp> bitmap)
-{
-    GPPtr<GLGrayBitmap> gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
-    GLGrayBitmap::turnGray(gray.get(), bitmap.get());
-    auto _gray = gray->getAddr(0, 0);
-    for (int i=0; i<gray->width()*gray->height(); ++i)
-    {
-        if (_gray[i] < 200)
-        {
-            _gray[i] = 0;
-        }
-        else
-        {
-            _gray[i] = 0xFF;
-        }
-    }
-    BigHeaderManager::reduceToOneRegion(gray.get());
-    GLGrayBitmap::turnRGB(gray.get(), bitmap.get());
-}
 
 static void linearBlurTreat(GPPtr<GLBmp> bitmap)
 {
@@ -397,6 +378,37 @@ static void graphicutTreat(GPPtr<GLBmp> bitmap)
     //::memcpy(bitmap->pixels(), sharp_bitmap->pixels(), w*h*4*sizeof(unsigned char));
 }
 
+static void grayDivide(GPPtr<GLBmp> bitmap)
+{
+    GPPtr<GLGrayBitmap> gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
+    GLGrayBitmap::turnGray(gray.get(), bitmap.get());
+    auto _gray = gray->getAddr(0, 0);
+    for (int i=0; i<gray->width()*gray->height(); ++i)
+    {
+        if (_gray[i] < 200)
+        {
+            _gray[i] = 0;
+        }
+        else
+        {
+            _gray[i] = 0xFF;
+        }
+    }
+    auto r = BigHeaderManager::reduceToOneRegion(gray.get());
+    for (int i=0; i<1; ++i)
+    {
+        GPPtr<GLMatrix<int>> points = BigHeaderManager::getBoundOffset(gray.get(), r, 50);
+    }
+//    auto _x = points->getAddr(0);
+//    auto _y = points->getAddr(1);
+//    auto _w = points->width();
+//    for (int i=0; i<_w; ++i)
+//    {
+//        FUNC_PRINT(_x[i]);
+//        FUNC_PRINT(_y[i]);
+//    }
+    GLGrayBitmap::turnRGB(gray.get(), bitmap.get());
+}
 
 static void pretreat(GPPtr<GLBmp> bitmap)
 {

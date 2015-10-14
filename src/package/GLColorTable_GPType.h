@@ -32,7 +32,10 @@ class GLColorTable_GPType:public IStatusType
                 auto _t = t->getAddr(i, 0);
                 for (int j=0; j<3; ++j)
                 {
-                    _t[j] = 256*value[i*3+j];
+                    int v = i + (50*value[i*3+j]-0.5);
+                    v = v>255?255:v;
+                    v = v<0?0:v;
+                    _t[j] = v;
                 }
             }
             return mapnumber;

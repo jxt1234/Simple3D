@@ -1,5 +1,6 @@
 #include "core/GLBmp.h"
 #include "utils/debug.h"
+#include "utils/GP_Clock.h"
 #include "../third_party/FreeImage/Source/FreeImage.h"
 #include <math.h>
 static const int gBpp = 4;
@@ -74,6 +75,7 @@ void GLBmp::setColor(const GLColor& c, int x, int y)
 
 double GLBmp::psnr(const GLBmp& other) const
 {
+    //GPCLOCK;
     double result = 0.0;
     int w = other.width();
     int h = other.height();
@@ -81,19 +83,24 @@ double GLBmp::psnr(const GLBmp& other) const
     {
         return 0.0;
     }
-    uint32_t* src = (uint32_t*)pixels();
-    uint32_t* dst = (uint32_t*)other.pixels();
+    unsigned char* src = (unsigned char*)pixels();
+    unsigned char* dst = (unsigned char*)other.pixels();
     for (int i=0; i<h; ++i)
     {
         for (int j=0; j<w; ++j)
         {
-            double s = *src++;
-            double d = *dst++;
-            result+= (s-d)*(s-d);
+            for (int k=0; k<3; ++k)
+            {
+                double s = src[k];
+                double d = dst[k];
+                result+= (s-d)*(s-d);
+            }
+            src+=4;
+            dst+=4;
         }
     }
-    uint32_t _max = 0xFFFFFFFF;
-    result = result/(double)(w*h);
+    unsigned char _max = 0xFF;
+    result = result/(double)(w*h*3);
     result = -10.0*log(result/(double)_max/(double)_max)/log(10.0);
     return result;
 }

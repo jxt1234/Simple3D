@@ -2,7 +2,9 @@
 #include "utils/debug.h"
 #include <assert.h>
 #include "package/DefaultFunctionTable.h"
-int test_main()
+#include "utils/GP_Clock.h"
+#include "core/GLBmp.h"
+int test_main(const char* input_bitmap, const char* target_bitmap)
 {
     DefaultFunctionTable table;
     IFunctionTable* tablelist[] = {&table};
@@ -12,10 +14,10 @@ int test_main()
     {
         auto bestf = GP_Function_Create_ByType(producer,  "GLBmp", "GLBmp");
         auto fitf = GP_Function_Create_ByType(producer,  "double", "GLBmp GLBmp");
-        auto inputs = GP_Stream_Create("input.jpg");
+        auto inputs = GP_Stream_Create(input_bitmap);
         auto contents = GP_Contents_Load(producer, &inputs, "GLBmp", 1);
         GP_Stream_Destroy(inputs);
-        auto target = GP_Stream_Create("test_saturation.jpg");
+        auto target = GP_Stream_Create(target_bitmap);
         auto targetBmp = GP_Contents_Load(producer, &target, "GLBmp", 1);
         GP_Stream_Destroy(target);
         auto fitfunction = [&](IGPAutoDefFunction* f){
@@ -29,7 +31,7 @@ int test_main()
             GP_Contents_Destroy(outputbmp);
             return result;
         };
-        GP_Function_Optimize(bestf, fitfunction, 0, "time=1000");
+        GP_Function_Optimize(bestf, fitfunction, 0, "time=100000");
         FUNC_PRINT_ALL(fitfunction(bestf), f);
         {
             auto output = GP_WStream_Create("output/GPTestBest.xml");
@@ -38,9 +40,8 @@ int test_main()
         }
         {
             auto outputbmp = GP_Function_Run(bestf, contents);
-            auto wstream = GP_WStream_Create("output/GPOutputBmp.png");
-            GP_Contents_Save(outputbmp, &wstream, 1);
-            GP_WStream_Destroy(wstream);
+            GLBmp* _outputbmp = (GLBmp*)(outputbmp->get(0));
+            _outputbmp->save("output/gp_result.png");
             GP_Contents_Destroy(outputbmp);
         }
         GP_Contents_Destroy(contents);
@@ -52,8 +53,9 @@ int test_main()
     return 1;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    GP_Set_Stream_Path("/Users/jiangxiaotang/Documents/Simple3D/");
-    return test_main();
+    GLASSERT(argc>=3);
+    //GP_Set_Stream_Path("/Users/jiangxiaotang/Documents/Simple3D/");
+    return test_main(argv[1],argv[2]);
 }

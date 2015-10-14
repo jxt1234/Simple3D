@@ -8,6 +8,7 @@
 
 #include "transform/GLColorMap.h"
 #include "utils/debug.h"
+#include "utils/GP_Clock.h"
 GLBmp* GLColorMap(GLBmp* src, GLColorTable* table)
 {
     GLASSERT(NULL!=src);
@@ -17,6 +18,7 @@ GLBmp* GLColorMap(GLBmp* src, GLColorTable* table)
 }
 void GLColorMapInner(GLBmp* dst, const GLBmp* src, const GLBmp* table)
 {
+    //GPCLOCK;
     GLASSERT(NULL!=dst);
     GLASSERT(NULL!=src);
     GLASSERT(NULL!=table);
@@ -30,10 +32,12 @@ void GLColorMapInner(GLBmp* dst, const GLBmp* src, const GLBmp* table)
     auto _table = table->getAddr(0, 0);
     for (int y=0; y<h; ++y)
     {
+        auto _dst_line = dst->getAddr(0, y);
+        auto _src_line = src->getAddr(0, y);
         for (int x=0; x<w; ++x)
         {
-            auto _dst = dst->getAddr(x, y);
-            auto _src = src->getAddr(x, y);
+            auto _dst = _dst_line + bpp*x;
+            auto _src = _src_line + bpp*x;
             _dst[0] = _table[bpp*_src[0]+0];
             _dst[1] = _table[bpp*_src[1]+1];
             _dst[2] = _table[bpp*_src[2]+2];
