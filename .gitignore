@@ -29,3 +29,4 @@ libs/*
 obj/*
 objs/*
 .*
+*.jpg

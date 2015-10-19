@@ -36,6 +36,7 @@
 #include "GLGraphicCut.h"
 #include "GLGaussOperator.h"
 #include "GLLineraKernelFilter.h"
+#include "GLFastBlurFilter.h"
 
 using namespace std;
 
@@ -348,10 +349,10 @@ static void graphicutTreat(GPPtr<GLBmp> bitmap)
 {
     int w = bitmap->width();
     int h = bitmap->height();
-    int l = 98;//1*w/5;
-    int t = 460;//(2.5)*h/5;
-    int r = 736;//2*w/5;
-    int b = 1322;//4*h/5;
+    int l = 1*w/5;
+    int t = (2.5)*h/5;
+    int r = 2*w/5;
+    int b = 4*h/5;
     int temp = t;
     t = h -b;
     b = h -temp;
@@ -360,7 +361,7 @@ static void graphicutTreat(GPPtr<GLBmp> bitmap)
     GLGraphicCut cut(450,150.0);
     cut.initMaskRect(bitmap_gray.get());
     //cut.grabCut(bitmap.get(), bitmap_gray.get(), l, t, r, b);
-    cut.grabCutCrop(bitmap.get(), bitmap_gray.get(), l, t);
+    cut.grabCutCrop(bitmap.get(), bitmap_gray.get(), l, t, 1, 0xFF);
     for (int i=t; i<=b; ++i)
     {
         auto mask_p = bitmap_gray->pixelsForRead() + (i-t)*bitmap_gray->width();
@@ -382,23 +383,23 @@ static void grayDivide(GPPtr<GLBmp> bitmap)
 {
     GPPtr<GLGrayBitmap> gray = new GLGrayBitmap(bitmap->width(), bitmap->height());
     GLGrayBitmap::turnGray(gray.get(), bitmap.get());
-    auto _gray = gray->getAddr(0, 0);
-    for (int i=0; i<gray->width()*gray->height(); ++i)
-    {
-        if (_gray[i] < 200)
-        {
-            _gray[i] = 0;
-        }
-        else
-        {
-            _gray[i] = 0xFF;
-        }
-    }
-    auto r = BigHeaderManager::reduceToOneRegion(gray.get());
-    for (int i=0; i<1; ++i)
-    {
-        GPPtr<GLMatrix<int>> points = BigHeaderManager::getBoundOffset(gray.get(), r, 50);
-    }
+//    auto _gray = gray->getAddr(0, 0);
+//    for (int i=0; i<gray->width()*gray->height(); ++i)
+//    {
+//        if (_gray[i] < 200)
+//        {
+//            _gray[i] = 0;
+//        }
+//        else
+//        {
+//            _gray[i] = 0xFF;
+//        }
+//    }
+//    auto r = BigHeaderManager::reduceToOneRegion(gray.get());
+//    for (int i=0; i<1; ++i)
+//    {
+//        GPPtr<GLMatrix<int>> points = BigHeaderManager::getBoundOffset(gray.get(), r, 50);
+//    }
 //    auto _x = points->getAddr(0);
 //    auto _y = points->getAddr(1);
 //    auto _w = points->width();
@@ -407,7 +408,10 @@ static void grayDivide(GPPtr<GLBmp> bitmap)
 //        FUNC_PRINT(_x[i]);
 //        FUNC_PRINT(_y[i]);
 //    }
-    GLGrayBitmap::turnRGB(gray.get(), bitmap.get());
+    GLFastBlurFilter filter(14);
+    GPPtr<GLGrayBitmap> gray_new = new GLGrayBitmap(bitmap->width(), bitmap->height());
+    filter.vFilter(gray_new.get(), gray.get());
+    GLGrayBitmap::turnRGB(gray_new.get(), bitmap.get());
 }
 
 static void pretreat(GPPtr<GLBmp> bitmap)

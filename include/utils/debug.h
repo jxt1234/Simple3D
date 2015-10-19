@@ -13,12 +13,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 ******************************************************************/
-#ifndef SIMPLE3D_DEBUG_H
-#define SIMPLE3D_DEBUG_H
+#ifndef SIMPLE3D_GLDEBUG_H
+#define SIMPLE3D_GLDEBUG_H
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #define DEBUG_ON
 
@@ -53,9 +57,6 @@
 
 #define GPASSERT(x) GLASSERT(x)
 
-#ifdef __cplusplus
-extern "C"{
-#endif
 void dump_stack();
 #ifdef __cplusplus
 }

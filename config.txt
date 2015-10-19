@@ -54,3 +54,19 @@ DEPENDS:libglsl.so
 DIRS:
 SRCS:gp_color_table.cpp
 LINKS: ./libglsl.so ./libGP.so
+
+##########
+
+TARGET:gp_color_table_data_make.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:gp_color_table_data_make.cpp
+LINKS: ./libglsl.so
+
+##########
+
+TARGET:color_extract.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:color_extract.cpp
+LINKS: ./libglsl.so
