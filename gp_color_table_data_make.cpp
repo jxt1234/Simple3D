@@ -41,6 +41,5 @@ int test_main(const char* input, const char* target, const char* outputfile)
 int main(int argc, char* argv[])
 {
     GLASSERT(argc>=4);
-    //GP_Set_Stream_Path("/Users/jiangxiaotang/Documents/Simple3D/");
     return test_main(argv[1],argv[2], argv[3]);
 }
