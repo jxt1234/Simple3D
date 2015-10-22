@@ -2,6 +2,9 @@
 #include "utils/debug.h"
 #include <fstream>
 #include <sstream>
+#include <math.h>
+//#define EXPAND(x) x << " "<<cos(x)<<" "<<exp(x)<<" "
+#define EXPAND(x) x
 
 int test_main(const char* input, const char* target, const char* outputfile)
 {
@@ -30,9 +33,9 @@ int test_main(const char* input, const char* target, const char* outputfile)
             float dr = _dst[0]/255.0;
             float dg = _dst[1]/255.0;
             float db = _dst[2]/255.0;
-            r_output << dr << " "<< r << " "<<g <<" "<<b<<"\n";
-            g_output << dg << " "<< r << " "<<g <<" "<<b<<"\n";
-            b_output << db << " "<< r << " "<<g <<" "<<b<<"\n";
+            r_output << dr << " "<<EXPAND(r) << " "<<EXPAND(g) <<" "<<EXPAND(b)<<"\n";
+            g_output << dg << " "<<EXPAND(r) << " "<<EXPAND(g) <<" "<<EXPAND(b)<<"\n";
+            b_output << db << " "<<EXPAND(r) << " "<<EXPAND(g) <<" "<<EXPAND(b)<<"\n";
         }
     }
     return 1;

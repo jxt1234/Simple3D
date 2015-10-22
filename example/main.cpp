@@ -2,39 +2,23 @@
 #include "utils/GP_Clock.h"
 #include <sstream>
 #include <iostream>
-#include "math/FormulaTree.h"
-#include "math/BasicFunctionDeter.h"
 #include <fstream>
+#include "core/GLBmp.h"
+#include "core/GLBitmapFactory.h"
 using namespace std;
 int main()
 {
-    std::ifstream is("function.txt");
-    BasicFunctionDeter deter(is);
-    FormulaTree _test(&deter);
-    string x = string("cos(u)*cos(v)");
-    string y = string("cos(u)*sin(v)");
-    string z = string("sin(u)");
-    _test.setFormula(z);
-    _test.expand(cout);
-    cout << endl;
-
-    GPPtr<FormulaTree> detu = _test.detByName("u");
-    detu->expand(std::cout);
-    cout << endl;
-
-    ostringstream tempOs;
-    _test.expand(tempOs);
-
-    _test.setFormula(tempOs.str());
-    _test.expand(cout);
-    cout << endl;
-
-    //FormulaTree tree(&deter);
-    //tree.setFormula("x*y+p-q*exp(u, v)");
-    //tree.expand(std::cout);
-
-    //string s("u");
-    //GPPtr<FormulaTree> detTree = tree.detByName(s);
-    //detTree->expand(std::cout);
-    return 1;
+    GPPtr<GLBmp> src = new GLBmp(512, 512);
+    for (int i=0; i<512; ++i)
+    {
+        for (int j=0; j<512; ++j)
+        {
+            auto _p = src->getAddr(j, 512-i-1);
+            _p[3] = 255;
+            _p[0] = (j%64)*4;
+            _p[1] = (i%64)*4;
+            _p[2] = (i/64)*32 + (j/64)*4;
+        }
+    }
+    GLBitmapFactory::dump(src.get(), "filter_standard.png");
 }

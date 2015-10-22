@@ -350,8 +350,8 @@ static void graphicutTreat(GPPtr<GLBmp> bitmap)
     int w = bitmap->width();
     int h = bitmap->height();
     int l = 1*w/5;
-    int t = (2.5)*h/5;
-    int r = 2*w/5;
+    int t = (1.5)*h/5;
+    int r = 2.5*w/5;
     int b = 4*h/5;
     int temp = t;
     t = h -b;
@@ -453,10 +453,10 @@ static void pretreat(GPPtr<GLBmp> bitmap)
     }
 #endif
     //watershedTreat(bitmap);
-    //graphicutTreat(bitmap);
+    graphicutTreat(bitmap);
     //linearBlurTreat(bitmap);
     //histogram(bitmap);
-    grayDivide(bitmap);
+    //grayDivide(bitmap);
     gTreatedTexture->upload(bitmap->pixels(), bitmap->width(), bitmap->height());
 }
 static void gpuTreat()
