@@ -1,4 +1,5 @@
 #include "utils/GLThread.h"
+#include "utils/debug.h"
 #include <semaphore.h>
 #include <pthread.h>
 #include <assert.h>
@@ -61,28 +62,25 @@ void GLThread::stop()
 
 GLSema::GLSema()
 {
-    sem_t* s = new sem_t;
-    sem_init(s, 0, 0);
+    sem_t* s = sem_open("GLSema", 0);
     mData = (void*)s;
 }
 GLSema::~GLSema()
 {
-    assert(NULL!=mData);
-    sem_t* s = (sem_t*)(mData);
-    sem_destroy(s);
-    delete s;
+    GLASSERT(NULL!=mData);
+    sem_close((sem_t*)mData);
 }
 
 void GLSema::wait()
 {
-    assert(NULL!=mData);
+    GLASSERT(NULL!=mData);
     sem_t* s = (sem_t*)(mData);
     sem_wait(s);
 }
 
 void GLSema::post()
 {
-    assert(NULL!=mData);
+    GLASSERT(NULL!=mData);
     sem_t* s = (sem_t*)(mData);
     sem_post(s);
 }

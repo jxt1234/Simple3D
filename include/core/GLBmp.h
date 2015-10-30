@@ -25,6 +25,9 @@ public:
     virtual void setColor(const GLColor& c, int x, int y);
     
     double psnr(const GLBmp& other) const;
+    
+    static void loadComponent(unsigned char* pix[], const GLBmp* src, size_t pix_stride, size_t offset);
+    static void writeComponent(unsigned char* pix[], GLBmp* dst, size_t pix_stride, size_t offset);
 protected:
     FIBITMAP* mBitmap;
 };

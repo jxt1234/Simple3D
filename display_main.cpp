@@ -37,6 +37,7 @@
 #include "GLGaussOperator.h"
 #include "GLLineraKernelFilter.h"
 #include "GLFastBlurFilter.h"
+#include "GLGifManager.h"
 
 using namespace std;
 
@@ -502,7 +503,7 @@ static void init()
     gOriginWorks = init_origin();
     pretreat(gBmp);
 }
-int main(int argc, char* argv[])
+int _main(int argc, char* argv[])
 {
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     //gBmp = new GLBmp("/Users/jiangxiaotang/Documents/shader/YuFamilyPhoto.jpg");
@@ -534,17 +535,13 @@ int main(int argc, char* argv[])
     return 1;
 }
 
-int _main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     GPPtr<GLBmp> bitmap = new GLBmp("/Users/jiangxiaotang/Documents/shader/forge.jpg");
-    GPPtr<GLGrayBitmap> mask = new GLGrayBitmap(bitmap->width(), bitmap->height());
-    ::memset(mask->pixelsForWrite(), 0, bitmap->width()*bitmap->height()*sizeof(unsigned char));
-    {
-        GPCLOCK;
-        GLGraphicCut cut(100.0,450.0);
-        cut.grabCut(bitmap.get(), mask.get(), 100, 100);
-    }
-    
+    GPPtr<GLGifEncoder> encoder = GLGifManager::encode("/Users/jiangxiaotang/Documents/test.gif");
+    encoder->start(bitmap.get());
+    encoder->add(bitmap.get(), 0, 0);
+    encoder =  NULL;
     return 1;
 }
 

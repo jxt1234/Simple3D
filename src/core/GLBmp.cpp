@@ -118,3 +118,95 @@ double GLBmp_Psnr(const GLBmp* src, const GLBmp* dst)
     return src->psnr(*dst);
 }
 
+void GLBmp::loadComponent(unsigned char* pix[], const GLBmp* src, size_t pix_stride, size_t offset)
+{
+    GLASSERT(NULL!=src);
+    GLASSERT(NULL!=pix);
+    auto w = src->width();
+    auto h = src->height();
+    unsigned char* source = (unsigned char*)(src->pixels());
+    for (int i=0; i<h; ++i)
+    {
+        int sta = 0;
+#ifdef HAS_NEON
+        unsigned char* r = pix[0]+i*pix_stride+offset;
+        unsigned char* g = pix[1]+i*pix_stride+offset;
+        unsigned char* b = pix[2]+i*pix_stride+offset;
+        int uw = w/8;
+        unsigned char* _src = source+i*w*4;
+        asm(
+            "movs r4, %[uw]\t\n"
+            "beq 2f\t\n"
+            "1:\t\n"
+            "pld [%[_src], #256]\t\n"
+            "vld4.8 {d0-d3}, [%[_src]]!\t\n"
+            "vst1.8 d0, [%[r]]!\t\n"
+            "vst1.8 d1, [%[g]]!\t\n"
+            "vst1.8 d2, [%[b]]!\t\n"
+            
+            "subs r4, r4, #1\t\n"
+            "bne 1b\t\n"
+            "2:\t\n"
+            : [r] "+r" (r), [g] "+r" (g), [b] "+r" (b), [uw] "+r" (uw), [_src] "+r" (_src)
+            :
+            : "r4", "cc","memory", "d0", "d1", "d2", "d3"
+            );
+        sta = uw*8;
+#endif
+        for (int j=sta; j<w; ++j)
+        {
+            for (int k=0; k<3; ++k)
+            {
+                pix[k][i*pix_stride+j+offset] = source[(i*w+j)*4+k];
+            }
+        }
+    }
+}
+
+void GLBmp::writeComponent(unsigned char* pix[], GLBmp* dst, size_t pix_stride, size_t offset)
+{
+    GLASSERT(NULL!=dst);
+    GLASSERT(NULL!=pix);
+    int w = dst->width();
+    int h = dst->height();
+    unsigned char* dest = (unsigned char*)(dst->pixels());
+    for (int i=0; i<h; ++i)
+    {
+        int sta = 0;
+#ifdef HAS_NEON
+        unsigned char* r = pix[0]+i*pix_stride+offset;
+        unsigned char* g = pix[1]+i*pix_stride+offset;
+        unsigned char* b = pix[2]+i*pix_stride+offset;
+        unsigned char* _dst = dest+i*w*4;
+        int uw = w/8;
+        asm volatile(
+                     "mov r4, #255\t\n"
+                     "vdup.8 d3, r4\t\n"
+                     "movs r4, %[uw]\t\n"
+                     "beq 2f\t\n"
+                     "1:\t\n"
+                     "vld1.8 d0, [%[r]]!\t\n"
+                     "vld1.8 d1, [%[g]]!\t\n"
+                     "vld1.8 d2, [%[b]]!\t\n"
+                     "vst4.8 {d0-d3}, [%[_dst]]!\t\n"
+                     
+                     "subs r4, r4, #1\t\n"
+                     "bne 1b\t\n"
+                     "2:\t\n"
+                     : [r] "+r" (r), [g] "+r" (g), [b] "+r" (b), [uw] "+r" (uw), [_dst] "+r" (_dst)
+                     :
+                     : "r4", "cc","memory", "d0", "d1", "d2", "d3"
+                     );
+        sta = uw*8;
+#endif
+        for (int j=sta; j<w; ++j)
+        {
+            for (int k=0; k<3; ++k)
+            {
+                dest[(i*w+j)*4+k] = pix[k][i*pix_stride+j+offset];
+            }
+        }
+    }
+}
+
+
