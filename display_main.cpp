@@ -540,7 +540,6 @@ int main(int argc, char* argv[])
     GPPtr<GLBmp> bitmap = new GLBmp("/Users/jiangxiaotang/Documents/shader/forge.jpg");
     GPPtr<GLGifEncoder> encoder = GLGifManager::encode("/Users/jiangxiaotang/Documents/test.gif");
     encoder->start(bitmap.get());
-    encoder->add(bitmap.get(), 0, 0);
     encoder =  NULL;
     return 1;
 }

@@ -1,4 +1,6 @@
 #include "core/GLBitmapFactory.h"
+#ifndef GL_BUILD_FOR_ANDROID
+
 #include "../third_party/FreeImage/Source/FreeImage.h"
 #include <string.h>
 
@@ -58,3 +60,4 @@ void GLBitmapFactory::dump(const GLBmp* bmp, const char* filename)
     FreeImage_Save(FIF_PNG, bitmap, filename, PNG_DEFAULT);
     FreeImage_Unload(bitmap);
 }
+#endif
