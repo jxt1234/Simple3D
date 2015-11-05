@@ -22,6 +22,7 @@ GLBmp::GLBmp(const char* pic)
 {
     FREE_IMAGE_FORMAT f = FreeImage_GetFileType(pic);
     FIBITMAP* bitmap = FreeImage_Load(f, pic);
+    GLASSERT(NULL!=bitmap);
     mBitmap = FreeImage_ConvertTo32Bits(bitmap);
     FreeImage_Unload(bitmap);
     mWidth  = FreeImage_GetWidth(mBitmap);
