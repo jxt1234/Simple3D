@@ -6,7 +6,9 @@
 #include "GL/GLvboBuffer.h"
 #include "GL/GLTexture.h"
 #include "GL/GLCurveObject.h"
+#include "GL/GLLightCurveObj.h"
 #include "GL/GLBezier.h"
+#include "BasicFunctionDeter.h"
 #include "vertex/GL_position.h"
 #include "vertex/GL_texcord.h"
 #include "vertex/GL_Normal.h"
@@ -35,7 +37,9 @@ static GLCurveObject* initCurve()
     GLCSVertexGenerate(&p, &normal, &tex, &s, &area, 0);
     GLvboBuffer* texBuffer = new GLvboBuffer(&tex);
 
-    GLCurveObject* result = new GLCurveObject();
+//    std::ifstream inputformula("/Users/jiangxiaotang/Documents/Simple3D/function.txt");
+//    BasicFunctionDeter* deter = new BasicFunctionDeter(inputformula);
+    GLCurveObject* result = new GLCurveObject;
     result->setTexture(texture);
     result->setVBO(texBuffer);
     result->setFormula(string("(1.0+v/2.0*cos(u/2.0))*cos(u)"), string("(1.0+v/2.0*cos(u/2.0))*sin(u)"), string("v/2.0*sin(u/2.0)"));

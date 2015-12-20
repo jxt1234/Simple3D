@@ -53,6 +53,4 @@ class GLBmp_GPType:public IStatusType
             }
             return mapnumber;
         }
-        virtual bool vCheckCompleted(void* content) const {return NULL!=content;}
-        virtual bool vMerge(void* dst, void* src) const {return false;}
 };

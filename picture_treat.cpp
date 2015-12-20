@@ -86,9 +86,17 @@ int main(int argc, char* argv[])
     GLContext::init();
     const char* inputfile = argv[1];
     const char* outputfile = argv[2];
-    const char* method = argv[3];//TODO
+    std::string method = argv[3];//TODO
     GPPtr<GLBmp> rgb_origin = new GLBmp(inputfile);
-    GPPtr<GLBmp> rgb = pretreat(rgb_origin);
+    GPPtr<GLBmp> rgb;
+    if (method == "origin")
+    {
+        rgb = rgb_origin;
+    }
+    else
+    {
+        rgb = pretreat(rgb_origin);
+    }
     rgb->save(outputfile);
     GLContext::destroy();
     return 1;
