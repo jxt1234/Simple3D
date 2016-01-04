@@ -3,8 +3,10 @@
 
 import os
 import sys
-CFLAGS="-O3 -fPIC"
-#CFLAGS="-g -fPIC"
+CFLAGS="-O3 -g -fPIC"
+gConfigFile = 'config.txt'
+if len(sys.argv)>1:
+    gConfigFile = sys.argv[1]
 
 #CPP="g++-4.8 -std=c++11 "
 #C="gcc-4.8 -std=c11 "
@@ -21,7 +23,7 @@ include_Flag = ''
 
 gHistoryFile = []
 
-with open('config.txt') as f:
+with open(gConfigFile) as f:
     filc_tt = f.read().split('**********')
     for s in filc_tt[0].split(':')[1].split(' '):
         include_Flag += '-I' + s + ' '
@@ -109,14 +111,15 @@ def Generate_Output(outName, srcDirs, srcFiles, CLINK, depend):
     fileContents+='\n'
     #Program
     target = ''
+    main_files = ""
+    for obj in objs:
+        main_files+=(' '+MIDPATH+obj)
     if (main.find('.so')>-1):
         target = ' --shared '
     if (main.find('.a')!=-1):
-        fileContents+=('\t' + 'ar rcs '  + main+' ')
+        fileContents+=('\t' + 'ar rcs '  + main+' '+main_files)
     else:
-        fileContents+=('\t' + CPP + " " + CFLAGS + ' ' + target  + ' ' + CLINK  +' -o ' + main+' ')
-    for obj in objs:
-        fileContents+=(' '+MIDPATH+obj)
+        fileContents+=('\t' + CPP + " " + main_files + " " + CFLAGS + ' ' + target  + ' ' + CLINK  + ' -o ' + main)
     fileContents+=(' ${SELF_VARIABLES}' + '\n')
     #All objs' make 
     for sequence in sequences:

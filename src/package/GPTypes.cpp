@@ -1,4 +1,5 @@
 #include "GPTypes.h"
+#include <string.h>
 #include "core/GLBmp.h"
 #include "transform/GLColorMap.h"
 #include "double_GPType.h"
