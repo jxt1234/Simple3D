@@ -16,6 +16,7 @@ GLBitmapWork::~GLBitmapWork()
 bool GLBitmapWork::onPrepare()
 {
     GLASSERT(NULL!=mSrc.get() && NULL!=mDst.get());
+    GLASSERT(NULL!=mSrc->pixels() && NULL!=mDst->pixels());
     GLAutoLock _l(mLock);
     mSrcT = new GLTexture;
     mSrcT->setFilter(mFilter);

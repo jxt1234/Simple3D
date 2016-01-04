@@ -128,8 +128,8 @@ void GLContext::destroy()
     glXDestroyContext(gDisplay, gContext);
     glXDestroyGLXPixmap(gDisplay, gGlxPixmap);
     XFreePixmap(gDisplay, gPixmap);
-    gDisplay = NULL;
     XCloseDisplay(gDisplay);
+    gDisplay = NULL;
 }
 #endif
 #endif

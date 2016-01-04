@@ -3,6 +3,8 @@
 #include <semaphore.h>
 #include <pthread.h>
 #include <assert.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 void* GLThread::threadFunc(void* arg)
 {
@@ -62,8 +64,9 @@ void GLThread::stop()
 
 GLSema::GLSema()
 {
-    sem_t* s = sem_open("GLSema", 0);
+    sem_t* s = sem_open("GLSema", O_CREAT);
     mData = (void*)s;
+    GLASSERT(NULL!=s);
 }
 GLSema::~GLSema()
 {
