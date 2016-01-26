@@ -18,6 +18,7 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
+    
     typedef struct IGPAutoDefFunction IGPAutoDefFunction;
     typedef struct AGPProducer AGPProducer;
     typedef struct GPStream GPStream;
@@ -155,6 +156,21 @@ extern "C"{
 
         /*The max time for pFitComputeFunction to call in optimization*/
         int nMaxRunTimes;
+        
+        /*If reached this value, the train of ADF will stop, if the value is zero, means run nMaxRunTimes*/
+        double fTargetBestValue;
+        
+        /*When trainning, it will write in pBestInfo for recording, can be NULL if no need*/
+        /*The info will be: formula, parameters, type and fitness*/
+        GPWStream* pBestInfo;
+        /*Output Value, Filled by evolution*/
+        double fOutputBest;
+#ifdef __cplusplus
+        GPOptimizorInfo();
+        GPOptimizorInfo(const GPOptimizorInfo& info);
+        ~GPOptimizorInfo();
+#endif
+        
     }GPOptimizorInfo;
     
     /*Create a IGPAutoDefFunction by inputTypes and outputTypes, the types must be divided by space*/
@@ -186,6 +202,7 @@ extern "C"{
     /*Save f to output, use xml format*/
     void GP_Function_Save(IGPAutoDefFunction* f, GPWStream* output);
     
+    
     /*Optimize IGPAutoDefFunction by adjust its parameters*/
     /*REMIND: the f's parameters will be changed after this api*/
     /*If fit_fun is not random, this api make sure that fit_fun(f) will at least not decrease*/
@@ -205,29 +222,59 @@ extern "C"{
      */
     void GP_Function_Optimize(IGPAutoDefFunction* f, GPOptimizorInfo* pInfo);
     
-    
     /*For the convenience of Python/Go API*/
     GPStream** GP_Streams_Malloc(int n);
     void GP_Streams_Free(GPStream** streams);
     GPStream* GP_Streams_Get(GPStream** streams, int n);
     void GP_Streams_Set(GPStream** streams,GPStream* contents, int n);
     
+    
     /*For Print*/
+    /*AGPStrings come from function must be free by GP_Strings_Free*/
     typedef struct AGPStrings AGPStrings;
     int GP_Strings_Number(AGPStrings* strings);
     const char* GP_Strings_Get(AGPStrings* strings, int n);
     void GP_Strings_Free(AGPStrings* strings);
     
-    /*AGPStrings come from function must be free by GP_Strings_Free*/
-    AGPStrings* GP_Function_GetFormula(IGPAutoDefFunction* f, const char* name);
+    /*Return the formula string of ADF with the name of adfName, if adfName == NULL, return the whole function name. The size of string is 1
+     *Example:
+     * IGPAutoDefFunction* adffunction = GP_Function_Create_ByFormula(p, "f(x0, ADF(filter, x1))", "Matrix Matrix", NULL);
+     * AGPStrings* formula = GP_Function_GetFormula(adffunction, NULL);
+     * printf("The whole function is: %s\n", GP_Strings_Get(formula, 0));
+     * GP_Strings_Free(formula);
+     * formula = GP_Function_GetFormula(adffunction, "filter");
+     * printf("The filter function is: %s\n", GP_Strings_Get(formula, 0));
+     * GP_Strings_Free(formula);
+     */
+    AGPStrings* GP_Function_GetFormula(IGPAutoDefFunction* f, const char* adfName);
+    /*Get Parameters like this: "0.1 0.5 0.3"*/
     AGPStrings* GP_Function_GetParameters(IGPAutoDefFunction* f);
+    
+    /*Map f by parameters, the parameters come from GP_Function_GetParameters or outsize file
+     *Example:
+     * const char* p = "0.5 0.3 0.77";
+     * GP_Function_MapParameters(f, p);
+     */
+    void GP_Function_MapParameters(IGPAutoDefFunction* f, const char* parameters);
+
+    /*Return All functions as a list
+     *Example:
+     * AGPStrings* functions = GP_Producer_ListFunctions(producer);
+     * int n = GP_Strings_Number(functions);
+     * for (int i=0; i<n; ++i)
+     * {
+     *     printf("%s\n", GP_Strings_Get(functions, i));
+     * }
+     * GP_Strings_Free(functions);
+     */
     AGPStrings* GP_Producer_ListFunctions(AGPProducer* producer);
+    
+    /*Return All Types name as a list*/
     AGPStrings* GP_Producer_ListTypes(AGPProducer* producer);
     
     /*Return all type name of contents*/
     AGPStrings* GP_Contents_Types(AGPContents* contents);
 
-    
     /*Default GPOptimizorInfo*/
     enum
     {
@@ -237,11 +284,16 @@ extern "C"{
     /*Create standard OptimizorInfo, Used by Python/Go
      *type: GP_OPTIMIZOR_VALUE/GP_OPTIMIZOR_TIME
      *depth, maxtimes: the value in GPOptimizorInfo
+     *bestCache:pBestInfo in GPOptimizorInfo
+     *pPostFunction: the post treat function that will act with the result of target function, can be NULL
+     *pPostExtraInput: the extra input to run pPostFunction, For example, P(x0, x1, x2), extra inputs is x1, x2
      */
-    GPOptimizorInfo* GP_OptimzorInfo_CreateTemplate(int depth, int maxtimes, int type, AGPContents* pInput);
+    GPOptimizorInfo* GP_OptimzorInfo_CreateTemplate(int depth, int maxtimes, int type, AGPContents* pInput, GPWStream* bestCache, IGPAutoDefFunction* pPostFunction, AGPContents* pPostExtraInput);
     
     /*The info be freed must be come from GP_OptimzorInfo_CreateTemplate and can't be modified*/
     void GP_OptimzorInfo_FreeTemplate(GPOptimizorInfo* pInfo);
+    
+    double GP_OptimzorInfo_TemplateGetBestValue(GPOptimizorInfo* pInfo);
 #ifdef __cplusplus
 }
 #endif

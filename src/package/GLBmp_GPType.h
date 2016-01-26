@@ -1,3 +1,4 @@
+#include <string.h>
 class GLBmp_GPType:public IStatusType
 {
     public:

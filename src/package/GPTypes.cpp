@@ -1,9 +1,7 @@
 #include "GPTypes.h"
-#include <string.h>
 #include "core/GLBmp.h"
 #include "transform/GLColorMap.h"
-#include "double_GPType.h"
-IStatusType* gdouble = new double_GPType();
+IStatusType* gdouble = new GPDoubleType();
 #include "GLColorTable_GPType.h"
 IStatusType* gGLColorTable = new GLColorTable_GPType();
 #include "GLBmp_GPType.h"
