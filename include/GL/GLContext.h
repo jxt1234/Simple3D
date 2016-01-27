@@ -3,7 +3,23 @@
 class GLContext
 {
 public:
-    static bool init(int version=2);
-    static void destroy();
+    class nativeContext;
+    static nativeContext* init(int version=2);
+    static void destroy(nativeContext* context);
+};
+
+class GLAutoContext
+{
+    public:
+        GLAutoContext()
+        {
+            mContext = GLContext::init();
+        }
+        ~GLAutoContext()
+        {
+            GLContext::destroy(mContext);
+        }
+    private:
+        GLContext::nativeContext* mContext;
 };
 #endif

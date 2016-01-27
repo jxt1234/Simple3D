@@ -83,7 +83,7 @@ GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
 int main(int argc, char* argv[])
 {
     GLASSERT(argc>=4);
-    GLContext::init();
+    GLAutoContext __c;
     const char* inputfile = argv[1];
     const char* outputfile = argv[2];
     std::string method = argv[3];//TODO
@@ -98,6 +98,5 @@ int main(int argc, char* argv[])
         rgb = pretreat(rgb_origin);
     }
     rgb->save(outputfile);
-    GLContext::destroy();
     return 1;
 }

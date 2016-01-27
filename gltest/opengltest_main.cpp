@@ -4,7 +4,6 @@
 int main()
 {
     srand(time(NULL));
-    GLContext::init();
+    GLAutoContext __c;
     GLTestSuit::run();
-    GLContext::destroy();
 }

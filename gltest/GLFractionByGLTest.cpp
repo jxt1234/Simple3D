@@ -25,4 +25,4 @@ void GLFractionByGLTest::run()
     }
     dst->save("output/Fraction.png");
 }
-static GLTestRegister<GLFractionByGLTest> a("GLFractionByGLTest");
+//static GLTestRegister<GLFractionByGLTest> a("GLFractionByGLTest");

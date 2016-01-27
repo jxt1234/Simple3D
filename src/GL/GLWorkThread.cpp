@@ -1,8 +1,7 @@
 #include "GL/GLWorkThread.h"
-GLWorkThread::GLWorkThread(func create, func dest):GLThread(false)
+GLWorkThread::GLWorkThread():GLThread(false)
 {
-    mInit = create;
-    mDestroy = dest;
+    mContext = NULL;
 }
 GLWorkThread::~GLWorkThread()
 {
@@ -44,15 +43,9 @@ bool GLWorkThread::threadLoop()
 
 void GLWorkThread::destroy()
 {
-    if (NULL!=mDestroy)
-    {
-        mDestroy();
-    }
+    GLContext::destroy(mContext);
 }
 void GLWorkThread::readyToRun()
 {
-    if (NULL!=mInit)
-    {
-        mInit();
-    }
+    mContext = GLContext::init();
 }

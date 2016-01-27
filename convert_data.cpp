@@ -9,7 +9,7 @@ using namespace std;
 GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
 {
     return src;
-    GLContext::init();
+    GLAutoContext __c;
     GPPtr<GLBmp> dst = new GLBmp(src->width(), src->height());
     {
         const float p[] = {0.1,0.2,0.4,0.2,0.1};
@@ -19,7 +19,6 @@ GPPtr<GLBmp> pretreat(GPPtr<GLBmp> src)
         w->set(src, dst);
         w->runOnePass();
     }
-    GLContext::destroy();
     return dst;
 }
 

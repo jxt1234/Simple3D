@@ -3,10 +3,10 @@
 #include <queue>
 #include "utils/GLThread.h"
 #include "GLWorkHandler.h"
+#include "GLContext.h"
 class GLWorkThread:public GLThread, GLWorkHandler
 {
     public:
-        typedef void (*func)();
         class Sema:public GLWorkSemore
         {
             public:
@@ -23,7 +23,7 @@ class GLWorkThread:public GLThread, GLWorkHandler
                 GLSema mSem;
         };
         virtual GPPtr<GLWorkSemore> queueWork(GPPtr<GLWork> work);
-        GLWorkThread(func create=NULL, func dest=NULL);
+        GLWorkThread();
         virtual ~GLWorkThread();
     protected:
         virtual void onStart();
@@ -36,7 +36,6 @@ class GLWorkThread:public GLThread, GLWorkHandler
         std::queue<WORK> mWorks;
         GLSema mWait4Work;
         GLLock mWorkLock;
-        func mInit;
-        func mDestroy;
+        GLContext::nativeContext* mContext;
 };
 #endif
