@@ -1,12 +1,19 @@
+#include "test/GLTest.h"
 #include "core/GLBmp.h"
-#include "GL/GLContext.h"
 #include "GL/GLBitmapWork.h"
 #include "GL/GLMultiBitmapWork.h"
 #include "GL/GLTextureMatrixWork.h"
 
-int main()
+class GLMultiBitmapTest:public GLTest
 {
-    GLAutoContext __c;
+    public:
+        virtual void run();
+        GLMultiBitmapTest(){}
+        virtual ~GLMultiBitmapTest(){}
+};
+
+void GLMultiBitmapTest::run()
+{
     GPPtr<GLBmp> origin = new GLBmp("input.jpg");
     GPPtr<GLBmp> dst = new GLBmp(origin->width(), origin->height());
     GPPtr<GLMultiBitmapWork> work = new GLMultiBitmapWork(dst);
@@ -27,6 +34,6 @@ int main()
         work->addWork(new GLTextureMatrixWork(current), src);
     }
     work->runOnePass();
-    dst->save("output/temp.png");
-    return 1;
+    dst->save("output/GLMultiBitmapTest.png");
 }
+static GLTestRegister<GLMultiBitmapTest> a("GLMultiBitmapTest");
