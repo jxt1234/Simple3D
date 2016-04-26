@@ -63,3 +63,11 @@ DIRS:
 SRCS:color_extract.cpp
 LINKS: ./libglsl.so
 
+##########
+
+TARGET:picture_scale.out
+DEPENDS:libglsl.so
+DIRS:
+SRCS:picture_scale.cpp
+LINKS: ./libglsl.so
+
