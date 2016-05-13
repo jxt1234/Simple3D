@@ -15,11 +15,11 @@ int main(int argc, char* argv[])
     GLASSERT(argc>=4);
     GLAutoContext __c;
     const char* inputfile = argv[1];
-    const char* outputfile = argv[1];
-    int dstW = atoi(argv[2]);
-    int dstH = atoi(argv[3]);
+    const char* outputfile = argv[2];
+    float scale = atof(argv[3]);
     GPPtr<GLBmp> src = new GLBmp(inputfile);
-    GPPtr<GLBmp> dst = new GLBmp(dstW, dstH);
+    printf("Origin Picture: %d X %d\n", src->width(), src->height());
+    GPPtr<GLBmp> dst = new GLBmp(src->width()*scale, src->height()*scale);
     {
         GPPtr<GLBitmapWork> w = GLBitmapWorkFactory::create("Bicubic");
         w->set(src, dst);
