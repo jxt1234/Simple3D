@@ -7,7 +7,7 @@
 //
 
 #include "transform/GLColorMap.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "utils/GP_Clock.h"
 GLBmp* GLColorMap(GLBmp* src, GLColorTable* table)
 {

@@ -2,7 +2,7 @@
 #define DISPLAY_DEBUG_H
 
 #include <stdio.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <assert.h>
 
 

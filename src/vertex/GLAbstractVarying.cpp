@@ -1,6 +1,6 @@
 #include "vertex/GLAbstractVarying.h"
 
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 void GLAbstractVarying::print()
 {

@@ -1,7 +1,7 @@
 #include "fragment/GLLightFunction.h"
 #include "fragment/GL_FragColor.h"
 #include <math.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 using namespace GLVector;
 using namespace std;

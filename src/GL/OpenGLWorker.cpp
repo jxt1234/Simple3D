@@ -1,7 +1,7 @@
 #include "GL/OpenGLWorker.h"
 #include <stdlib.h>
 #include "GL/GLContext.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 OpenGLWorker* OpenGLWorker::gInstance = NULL;
 
 static GLLock gLock;

@@ -1,5 +1,5 @@
 #include "vertex/GL_position.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 using namespace std;
 
 

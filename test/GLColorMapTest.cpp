@@ -1,6 +1,6 @@
 #include "test/GLTest.h"
 #include "transform/GLColorMap.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 class GLColorMapTest:public GLTest
 {

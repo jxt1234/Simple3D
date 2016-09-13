@@ -1,5 +1,5 @@
 /*Created by j00225966*/
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "utils/GLMemoryPool.h"
 #include <stdlib.h>
 #define ALIGN_UP(x, i) (((x) + i -1)/i*i)

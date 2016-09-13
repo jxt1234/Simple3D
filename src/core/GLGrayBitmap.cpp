@@ -1,5 +1,5 @@
 #include "core/GLGrayBitmap.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <string.h>
 GLGrayBitmap::GLGrayBitmap(int w, int h)
 {

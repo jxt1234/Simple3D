@@ -2,7 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include "GL/GLSquareObjectCreator.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "AllShader.h"
 
 /*TODO Avoid use opengl directly*/

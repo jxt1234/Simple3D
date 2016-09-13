@@ -6,7 +6,7 @@
 //  Copyright (c) 2015年 jiangxiaotang. All rights reserved.
 //
 #include "ALFileStream.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <stdio.h>
 ALFileStream::ALFileStream(const char* name)
 {

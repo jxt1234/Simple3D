@@ -8,7 +8,7 @@
 
 #include "utils/ALStream.h"
 #include "ALFileStream.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 ALStream*  ALStreamFactory::readFromFile(const char* file)
 {

@@ -1,5 +1,5 @@
 #include "test/GLTest.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <stdlib.h>
 
 GLTestSuit* GLTestSuit::global = NULL;

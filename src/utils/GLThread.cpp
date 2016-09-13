@@ -1,5 +1,5 @@
 #include "utils/GLThread.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <semaphore.h>
 #include <pthread.h>
 #include <assert.h>

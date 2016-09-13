@@ -1,5 +1,4 @@
 #include "GL/GLvboBuffer.h"
-#include "GL/debug.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>

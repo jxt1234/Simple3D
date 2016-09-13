@@ -1,5 +1,5 @@
 #include "math/BasicFunctionDeter.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 BasicFunctionDeter::BasicFunctionDeter(std::istream& data)
 {

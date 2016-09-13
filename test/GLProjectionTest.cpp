@@ -1,6 +1,6 @@
 #include "test/GLTest.h"
 #include "vertex/GLVectorVarying.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "core/GLBmp.h"
 #include "core/GLRasterization.h"
 #include "vertex/GL_texcord.h"

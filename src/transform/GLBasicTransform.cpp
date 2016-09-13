@@ -7,7 +7,7 @@
 #include "fragment/GL_FragPosition.h"
 #include "vertex/GL_texcord.h"
 #include "fragment/GL_FragTexcord.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "interface/IVertexFunction.h"
 
 using namespace std;

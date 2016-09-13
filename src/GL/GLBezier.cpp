@@ -1,5 +1,5 @@
 #include "GL/GLBezier.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <string>
 #include <sstream>
 #include <fstream>

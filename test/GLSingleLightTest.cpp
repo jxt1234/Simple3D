@@ -6,7 +6,7 @@
 #include "vertex/GL_position.h"
 #include "fragment/GL_FragTexcord.h"
 #include "fragment/GL_FragPosition.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "vertex/GL_texcord.h"
 #include "fragment/GL_vPosition.h"
 #include "vertex/GLVectorVarying.h"

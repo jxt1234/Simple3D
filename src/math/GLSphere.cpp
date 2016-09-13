@@ -1,6 +1,6 @@
 #include "math/GLSphere.h"
 #include <math.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #define PI 3.141592653
 
 using namespace GLVector;

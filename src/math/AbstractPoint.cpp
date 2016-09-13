@@ -16,7 +16,7 @@
 #include "math/AbstractPoint.h"
 #include <stdlib.h>
 #include <assert.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 using namespace std;
 
 AbstractPoint::~AbstractPoint()

@@ -1,5 +1,5 @@
 #include "core/GLBmp.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "utils/GP_Clock.h"
 #include "../third_party/FreeImage/Source/FreeImage.h"
 #include <math.h>

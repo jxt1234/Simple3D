@@ -15,7 +15,7 @@
 ******************************************************************/
 #include <sstream>
 #include "math/FormulaTree.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <iostream>
 //#define F_DEBUG
 class FormulaTreePointCopy:public AbstractPoint::IPointCopy

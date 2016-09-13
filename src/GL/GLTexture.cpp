@@ -1,5 +1,4 @@
 #include "GL/GLTexture.h"
-#include "GL/debug.h"
 
 GLTexture::GLTexture(int target)
 {

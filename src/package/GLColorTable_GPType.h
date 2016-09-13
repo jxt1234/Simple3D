@@ -1,4 +1,4 @@
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 class GLColorTable_GPType:public IStatusType
 {
     public:

@@ -1,6 +1,6 @@
 #include "core/GLDynamicBitmap.h"
 #include <string.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 
 GLDynamicBitmap::GLDynamicBitmap(GPPtr<GLBmp> backgroud)
 {

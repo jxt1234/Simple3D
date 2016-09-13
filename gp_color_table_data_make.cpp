@@ -1,5 +1,5 @@
 #include "core/GLBmp.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include <fstream>
 #include <sstream>
 #include <math.h>

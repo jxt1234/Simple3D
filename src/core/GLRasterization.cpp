@@ -1,6 +1,6 @@
 #include "core/GLRasterization.h"
 #include <assert.h>
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "weightTable.h"
 #include "fragment/GLAbstractRasterizatedVarying.h"
 
