@@ -10,11 +10,11 @@ void GLLightObjAsset::flatten(GPWStream* output)
     
 }
 
-
 GLLightObjAsset::GLLightObjAsset()
 {
     
 }
+
 GLLightObjAsset::~GLLightObjAsset()
 {
     

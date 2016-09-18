@@ -11,9 +11,9 @@ if (name == "GLColorMap_GPpackage")
 {
 return (void*)GLColorMap_GPpackage;
 }
-if (name == "GP_IStatusType_Create")
+if (name == "NULL_GP_IStatusType_Create")
 {
-return (void*)GP_IStatusType_Create;
+return (void*)NULL_GP_IStatusType_Create;
 }
 return NULL;
 }

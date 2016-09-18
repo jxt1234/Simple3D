@@ -15,7 +15,7 @@
 #include "math/GLMatrix4.h"
 #include "math/GLSphere.h"
 #include "core/GLRasterization.h"
-#include "utils/debug.h"
+#include "utils/GLDebug.h"
 #include "core/GLBmp.h"
 #include <fstream>
 #define PI 3.141592654

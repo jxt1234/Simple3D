@@ -32,6 +32,4 @@ protected:
     FIBITMAP* mBitmap;
 };
 
-/*GP FUNCTION*/double GLBmp_Psnr(const GLBmp* src, const GLBmp* dst);
-
 #endif

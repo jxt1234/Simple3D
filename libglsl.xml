@@ -7,6 +7,14 @@
 <inputNeedComplete>False False </inputNeedComplete>
 </GLBmp_Psnr_GPpackage>
 
+<GLBmp_Psnr_GPpackage>
+<shortName>Bmp_Psnr</shortName>
+<output>double</output>
+<status></status>
+<input>GLBmp GLBmp </input>
+<inputNeedComplete>False False </inputNeedComplete>
+</GLBmp_Psnr_GPpackage>
+
 <GLColorMap_GPpackage>
 <shortName>ColorMap</shortName>
 <output>GLBmp</output>

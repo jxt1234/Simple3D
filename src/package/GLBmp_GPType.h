@@ -9,9 +9,9 @@ class GLBmp_GPType:public IStatusType
             const size_t size = 4096;
             char* current = new char[size];
             char* total = NULL;
-            while (!input->isEnd())
+            while (!input->vIsEnd())
             {
-                size_t reads = input->read(current, size);
+                size_t reads = input->vRead(current, size);
                 char* toread = NULL;
                 if (NULL == total)
                 {

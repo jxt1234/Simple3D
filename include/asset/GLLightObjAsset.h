@@ -1,3 +1,5 @@
+#ifndef ASSET_GLLIGHTOBJASSET_H
+#define ASSET_GLLIGHTOBJASSET_H
 #include "GLIAsset.h"
 class GLLightObjAsset : public GLIAsset
 {
@@ -20,3 +22,4 @@ private:
     int mPointNumber = 0;
     Point* mPoints = NULL;
 };
+#endif

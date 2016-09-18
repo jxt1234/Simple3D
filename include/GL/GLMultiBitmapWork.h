@@ -1,13 +1,13 @@
+#ifndef GL_GLMULTIBITMAPWORK_H
+#define GL_GLMULTIBITMAPWORK_H
 #include "GLTextureWork.h"
 #include "GLBitmapWork.h"
 #include <vector>
-
 CONTEXT_CLASS class GLMultiBitmapWork:public GLWork
 {
     public:
         GLMultiBitmapWork(GPPtr<GLBmp> dst);
         virtual ~GLMultiBitmapWork();
-
         void addWork(GPPtr<GLTextureWork> work, GPPtr<GLBmp> src);
         virtual void onProcess();
         virtual bool onPrepare()
@@ -24,3 +24,4 @@ CONTEXT_CLASS class GLMultiBitmapWork:public GLWork
         GPPtr<GLBmp> mDst;
         std::vector<std::pair<GPPtr<GLTextureWork>, GPPtr<GLBmp>>> mWorks;
 };
+#endif

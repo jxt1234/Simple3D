@@ -1,5 +1,6 @@
-#include "user/GPStream.h"
-
+#ifndef ASSET_GLIASSET_H
+#define ASSET_GLIASSET_H
+#include "lowlevelAPI/GPStream.h"
 class GLIAsset
 {
 public:
@@ -9,3 +10,4 @@ public:
 protected:
     GLIAsset(){}
 };
+#endif

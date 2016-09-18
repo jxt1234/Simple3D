@@ -1,4 +1,4 @@
-INCLUDE:include ../Genetic-Program-Frame/include/
+INCLUDE:include ../Renascence/include/
 **********
 
 TARGET:libglsl.so
