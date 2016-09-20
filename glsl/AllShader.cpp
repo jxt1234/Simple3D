@@ -1,4 +1,18 @@
 #include "AllShader.h"
+const char* glsl_basic3D_vex = 
+"attribute vec4 aPos;\n"
+"attribute vec2 aTex;\n"
+"varying vec2 vTex;\n"
+"uniform mat4 M;\n"
+"uniform mat4 V;\n"
+"uniform mat4 P;\n"
+"void main()\n"
+"{\n"
+"    vec4 pos = vec4(aPos.xyz, 1.0);\n"
+"    vTex = aTex;\n"
+"    gl_Position = pos*M*V*P;\n"
+"}\n"
+;
 const char* glsl_curve_light_vex = 
 "attribute vec2 Tex;\n"
 "varying vec2 vTex;\n"
@@ -54,6 +68,16 @@ const char* glsl_light_vex =
 "    vN = vec3(vec4(aNormal,1.0)*N);\n"
 "    vTex = aTex;\n"
 "    vH = vL+vec3(lightpos/lightpos.w)-vec3(eyepos/eyepos.w);\n"
+"}\n"
+;
+const char* glsl_basic3D_fra = 
+"varying vec2 vTex;\n"
+"uniform sampler2D sam;\n"
+"void main()\n"
+"{\n"
+"    //gl_FragColor = vec4(1.0,0.7,0.3,0.4);\n"
+"    vec4 diffuceColor = texture2D(sam, vTex);\n"
+"    gl_FragColor = diffuceColor;\n"
 "}\n"
 ;
 const char* glsl_bicubic_fra = 

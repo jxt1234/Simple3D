@@ -1,0 +1,16 @@
+attribute vec4 aPos;
+attribute vec2 aTex;
+
+varying vec2 vTex;
+
+uniform mat4 M;
+uniform mat4 V;
+uniform mat4 P;
+
+void main()
+{
+    vec4 pos = vec4(aPos.xyz, 1.0);
+    vTex = aTex;
+
+    gl_Position = pos*M*V*P;
+}

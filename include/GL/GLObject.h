@@ -4,6 +4,8 @@
 #include "math/GLMatrix4.h"
 #include "head.h"
 #include <string>
+#include <ostream>
+
 
 class CONTEXT_CLASS GLObject:public RefCount
 {

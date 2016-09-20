@@ -3,6 +3,8 @@
 #include <string.h>
 #include <GLUT/GLUT.h>
 #include "GL/GLProgram.h"
+#include "GL/GLLightScene.h"
+#include "GL/GLBasic3DObject.h"
 #include "GL/GLvboBuffer.h"
 #include "GL/GLTexture.h"
 #include "GL/GLCurveObject.h"
@@ -23,63 +25,58 @@
 
 using namespace std;
 
-static GLCurveObject* initCurve()
-{
-    GLTexture* texture = new GLTexture();
-    GPPtr<GLBmp> b = new GLBmp("/Users/jiangxiaotang/Documents/Simple3D/input.jpg");
-    texture->upload(b->pixels(), b->width(), b->height());
-    GLEmptyCurveSurface s;
-    GLRectArea area;
-    area.set(0,0,1,1,0.01,0.01);
-    GL_Normal normal;
-    GL_texcord tex;
-    GL_position p;
-    GLCSVertexGenerate(&p, &normal, &tex, &s, &area, 0);
-    GLvboBuffer* texBuffer = new GLvboBuffer(&tex);
-
-//    std::ifstream inputformula("/Users/jiangxiaotang/Documents/Simple3D/function.txt");
-//    BasicFunctionDeter* deter = new BasicFunctionDeter(inputformula);
-    GLCurveObject* result = new GLCurveObject;
-    result->setTexture(texture);
-    result->setVBO(texBuffer);
-    result->setFormula(string("(1.0+v/2.0*cos(u/2.0))*cos(u)"), string("(1.0+v/2.0*cos(u/2.0))*sin(u)"), string("v/2.0*sin(u/2.0)"));
-    //result->setFormula(string("1.0"), string("10*u"), string("-10.0*v"));
-    result->setScale(2*PI,2);
-    result->setOffset(0,-0.5);
-    glEnable(GL_DEPTH_TEST);
-    return result;
-}
-
 static GLObject* gObj = NULL;
 
-GLObject* initBezier()
+GLObject* initObject()
 {
-	GLBezier* res = new GLBezier(100, 3.0);
-	res->addPoint(0.0,-1.0,1);
-	res->addPoint(-0.4,0.0,1);
-	res->addPoint(0.2,1.0,1);
-	res->onPrepare();
-	return res;
+    std::ifstream input("/Users/jiangxiaotang/fbx/test");
+    GLBasicMesh* mesh = GLBasicMesh::load(input);
+    GPPtr<GLBmp> texture = new GLBmp("/Users/jiangxiaotang/fbx/tank.fbm/AM84_011_K2_Diff.jpg");
+    
+    auto obj = new GLBasic3DObject(mesh, texture.get());
+    obj->onPrepare();
+    
+    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 400, 1);
+    GLMatrix4 transform;
+    GLMatrix4 model;
+    auto total = model*transform*projection;
+    for (int i=0; i<mesh->size(); ++i)
+    {
+        float in[4];
+        for (int j=0; j<4; ++j)
+        {
+            in[j] = mesh->get()[i].vertex[j];
+        }
+        in[3] = 1.0f;
+        float out[4];
+        total.transform(out, in);
+        
+//        printf("%.2f,%.2f,%.2f,%.2f -> %.2f,%.2f,%.2f,%.2f\n", in[0], in[1], in[2], in[3], out[0], out[1], out[2], out[3]);
+        
+    }
+    delete mesh;
+    return obj;
 }
 
 static void init()
 {
-    gObj = initCurve();
-	//gObj = initBezier();
+    gObj = initObject();
 }
 
 static void display(void)
 {
+    //glDisable(GL_DEPTH_TEST);
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //GLMatrix4 projection = GLMatrix4::projection(-10, 10, -10, 10, 10, 400, 1);
-    GLMatrix4 projection;
+    //GLMatrix4 projection;
+    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 400, 1);
     GLMatrix4 transform;
     GLMatrix4 model;
-    model.setScale(0.5, 0.5, 0.5);
-	static float a = 0;
-	transform.setRotate(-a,0.1*a,0.3*a,a);
+
+	static float a = 0.01;
+    //model.setScale(a*10, a*10, a*10);
+//	transform.setRotate(-a,0.1*a,0.3*a,a);
 	a+=0.01;
     gObj->onDraw(model, transform, projection);
     glutSwapBuffers(); 

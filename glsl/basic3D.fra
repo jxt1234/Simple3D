@@ -1,0 +1,10 @@
+varying vec2 vTex;
+uniform sampler2D sam;
+
+void main()
+{
+    //gl_FragColor = vec4(1.0,0.7,0.3,0.4);
+    vec4 diffuceColor = texture2D(sam, vTex);
+    gl_FragColor = diffuceColor;
+}
+
