@@ -20,6 +20,8 @@
 #include "utils/GLDebug.h"
 #include "core/GLBmp.h"
 #include <fstream>
+#include <sstream>
+#include "3d/CCBundle3D.h"
 #define PI 3.141592654
 
 
@@ -29,32 +31,27 @@ static GLObject* gObj = NULL;
 
 GLObject* initObject()
 {
-    std::ifstream input("/Users/jiangxiaotang/fbx/test");
-    GLBasicMesh* mesh = GLBasicMesh::load(input);
-    GPPtr<GLBmp> texture = new GLBmp("/Users/jiangxiaotang/fbx/tank.fbm/AM84_011_K2_Diff.jpg");
+    GPPtr<Bundle3D::Buffer> buffer;
+    std::ifstream inputc3d("/Users/jiangxiaotang/fbx/tank.c3b");
+    std::ostringstream output3d;
+    output3d << inputc3d.rdbuf();
+    buffer = new Bundle3D::Buffer(output3d.str().c_str(), output3d.str().size());
+    auto bundle3D = Bundle3D::createBundle();
+    bundle3D->load(buffer.get());
+    MeshDatas rmeshDatas;
+    bundle3D->loadMeshDatas(rmeshDatas);
     
-    auto obj = new GLBasic3DObject(mesh, texture.get());
+    MaterialDatas rmaterialDatas;
+    bundle3D->loadMaterials(rmaterialDatas);
+    
+    NodeDatas nodeDatas;
+    bundle3D->loadNodes(nodeDatas);
+    
+    
+    auto obj = new GLBasic3DObject(nodeDatas, rmeshDatas, rmaterialDatas);
+    Bundle3D::destroyBundle(bundle3D);
     obj->onPrepare();
     
-    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 400, 1);
-    GLMatrix4 transform;
-    GLMatrix4 model;
-    auto total = model*transform*projection;
-    for (int i=0; i<mesh->size(); ++i)
-    {
-        float in[4];
-        for (int j=0; j<4; ++j)
-        {
-            in[j] = mesh->get()[i].vertex[j];
-        }
-        in[3] = 1.0f;
-        float out[4];
-        total.transform(out, in);
-        
-//        printf("%.2f,%.2f,%.2f,%.2f -> %.2f,%.2f,%.2f,%.2f\n", in[0], in[1], in[2], in[3], out[0], out[1], out[2], out[3]);
-        
-    }
-    delete mesh;
     return obj;
 }
 
@@ -66,19 +63,25 @@ static void init()
 static void display(void)
 {
     //glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //GLMatrix4 projection;
-    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 400, 1);
-    GLMatrix4 transform;
+    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 1000, 1);
+    GLMatrix4 V;
     GLMatrix4 model;
 
 	static float a = 0.01;
-    //model.setScale(a*10, a*10, a*10);
-//	transform.setRotate(-a,0.1*a,0.3*a,a);
+	//model.setRotate(-a,0.1*a,0.3*a,a);
+    model.setRotate(0.0,1.0,0.0,a);
 	a+=0.01;
-    gObj->onDraw(model, transform, projection);
+    
+    V.setTranslate(0, 0, -500);
+    
+    gObj->onDraw(model, V, projection);
     glutSwapBuffers(); 
 }
 

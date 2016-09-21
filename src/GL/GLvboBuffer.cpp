@@ -49,7 +49,7 @@ CONTEXT_API GLvboBuffer::~GLvboBuffer()
 
 CONTEXT_API void GLvboBuffer::use(int id)
 {
-    assert(0!=mId);
+    GLASSERT(0!=mId);
     glEnableVertexAttribArray(id);
     OPENGL_CHECK_ERROR;
     glBindBuffer(GL_ARRAY_BUFFER, mId);
@@ -58,9 +58,21 @@ CONTEXT_API void GLvboBuffer::use(int id)
     OPENGL_CHECK_ERROR;
 }
 
+CONTEXT_API void GLvboBuffer::use(int id, int subUnit, int offset)
+{
+    GLASSERT(0!=mId);
+    GLASSERT(subUnit<=mUnit);
+    glEnableVertexAttribArray(id);
+    OPENGL_CHECK_ERROR;
+    glBindBuffer(GL_ARRAY_BUFFER, mId);
+    OPENGL_CHECK_ERROR;
+    glVertexAttribPointer(id, subUnit, GL_FLOAT, GL_FALSE, mUnit*sizeof(GL_FLOAT), reinterpret_cast<void*>(offset*sizeof(GL_FLOAT)));
+    OPENGL_CHECK_ERROR;
+}
+
 CONTEXT_API void GLvboBuffer::update(float* subBuffer, int off, int len)
 {
-    assert(0!=mId);
+    GLASSERT(0!=mId);
     glBindBuffer(GL_ARRAY_BUFFER, mId);
     OPENGL_CHECK_ERROR;
     glBufferSubData(GL_ARRAY_BUFFER, off*mUnit*sizeof(float), len*mUnit*sizeof(float), subBuffer);
@@ -72,3 +84,4 @@ void GLvboBuffer::draw()
     glDrawArrays(mType, 0, mSize);
     OPENGL_CHECK_ERROR;
 }
+

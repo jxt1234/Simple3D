@@ -1,6 +1,6 @@
 #ifndef UTILS_GLAUTOSTORAGE_H
 #define UTILS_GLAUTOSTORAGE_H
-#include "debug.h"
+#include "GLDebug.h"
 //
 //  GLAutoStorage.h
 //  simple3d

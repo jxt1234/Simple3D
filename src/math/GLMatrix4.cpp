@@ -96,6 +96,12 @@ GLMatrix4::GLMatrix4(float m00, float m01, float m02, float m03, float m10, floa
     m[3][3] = m33;
 }
 
+GLMatrix4::GLMatrix4(float data[16])
+{
+    ::memcpy(_m, data, 16*sizeof(float));
+}
+
+
 GLMatrix4 GLMatrix4::multi(const GLMatrix4 &m2) const
 {
     GLMatrix4 r;
