@@ -32,7 +32,7 @@ static GLObject* gObj = NULL;
 GLObject* initObject()
 {
     GPPtr<Bundle3D::Buffer> buffer;
-    std::ifstream inputc3d("/Users/jiangxiaotang/fbx/tank.c3b");
+    std::ifstream inputc3d("/Users/jiangxiaotang/fbx/NIAO/NIAO.c3b");
     std::ostringstream output3d;
     output3d << inputc3d.rdbuf();
     buffer = new Bundle3D::Buffer(output3d.str().c_str(), output3d.str().size());
@@ -70,7 +70,7 @@ static void display(void)
 	glDepthFunc(GL_LESS);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //GLMatrix4 projection;
-    GLMatrix4 projection = GLMatrix4::projection(-50, 50, -50, 50, 10, 1000, 1);
+    GLMatrix4 projection = GLMatrix4::projection(-30, 30, -30, 30, 40, 1000, 1);
     GLMatrix4 V;
     GLMatrix4 model;
 
@@ -79,7 +79,7 @@ static void display(void)
     model.setRotate(0.0,1.0,0.0,a);
 	a+=0.01;
     
-    V.setTranslate(0, 0, -500);
+    V.setTranslate(0, 0, -100);
     
     gObj->onDraw(model, V, projection);
     glutSwapBuffers(); 

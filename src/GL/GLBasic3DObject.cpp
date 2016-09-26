@@ -14,10 +14,11 @@ GLBasic3DObject::GLBasic3DObject(const NodeDatas& node, const MeshDatas& mesh, c
         {
             continue;
         }
-        FUNC_PRINT(m.textures.size());
+        //FUNC_PRINT(m.textures.size());
+        //TODO handle multi texture
         auto &t = m.textures[0];
         std::ostringstream fullPath;
-        fullPath << "/Users/jiangxiaotang/fbx/tank.fbm/"<<t.filename;
+        fullPath << "/Users/jiangxiaotang/fbx/NIAO/"<<t.filename;
         
         GPPtr<GLTexture> texture = new GLTexture;
         GPPtr<GLBmp> bmp = new GLBmp(fullPath.str().c_str());

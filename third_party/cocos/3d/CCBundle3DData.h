@@ -26,13 +26,13 @@
 #define __CC_BUNDLE_3D_DATA_H__
 
 #include "base/ccMacros.h"
+#include "math/GLMatrix4.h"
 #include "head.h"
 #include <vector>
 #include <map>
 #include <string>
-#include "math/GLMatrix4.h"
-
-typedef GLMatrix4 Mat4;
+#include "math/Vec3.h"
+#include "math/Quaternion.h"
 
 
 /**mesh vertex attribute
@@ -61,7 +61,7 @@ struct ModelData
     std::string subMeshId;
     std::string matrialId;
     std::vector<std::string> bones;
-    std::vector<Mat4>        invBindPose;
+    std::vector<GLMatrix4>        invBindPose;
     
     virtual ~ModelData()
     {
@@ -81,7 +81,7 @@ struct ModelData
 struct NodeData
 {
     std::string id;
-    Mat4        transform;
+    GLMatrix4        transform;
     std::vector<ModelData*> modelNodeDatas;
     std::vector<NodeData*>  children;
 
@@ -221,9 +221,9 @@ struct SkinData
 {
     std::vector<std::string> skinBoneNames; //skin bones affect skin
     std::vector<std::string> nodeBoneNames; //node bones don't affect skin, all bones [skinBone, nodeBone]
-    std::vector<Mat4>        inverseBindPoseMatrices; //bind pose of skin bone, only for skin bone
-    std::vector<Mat4>        skinBoneOriginMatrices; // original bone transform, for skin bone
-    std::vector<Mat4>        nodeBoneOriginMatrices; // original bone transform, for node bone
+    std::vector<GLMatrix4>        inverseBindPoseMatrices; //bind pose of skin bone, only for skin bone
+    std::vector<GLMatrix4>        skinBoneOriginMatrices; // original bone transform, for skin bone
+    std::vector<GLMatrix4>        nodeBoneOriginMatrices; // original bone transform, for node bone
     
     //bone child info, both skinbone and node bone
     std::map<int, std::vector<int> > boneChild;//key parent, value child
@@ -359,6 +359,76 @@ struct MaterialDatas
         return nullptr;
     }
 };
+
+struct Animation3DData
+{
+public:
+    struct Vec3Key
+    {
+        Vec3Key()
+        : _time(0)
+        {
+        }
+        
+        Vec3Key(float time, const Vec3& v)
+        : _time(time)
+        , _key(v)
+        {
+        }
+        
+        float _time;
+        Vec3 _key;
+    };
+    
+    struct QuatKey
+    {
+        QuatKey()
+        : _time(0)
+        , _key(Quaternion::identity())
+        {
+        }
+        
+        QuatKey(float time, const Quaternion& quat)
+        : _time(time)
+        , _key(quat)
+        {
+        }
+        
+        float _time;
+        Quaternion _key;
+    };
+
+public:
+    std::map<std::string, std::vector<Vec3Key>> _translationKeys;
+    std::map<std::string, std::vector<QuatKey>> _rotationKeys;
+    std::map<std::string, std::vector<Vec3Key>> _scaleKeys;
+    
+    float _totalTime;
+
+public:
+    Animation3DData()
+    :_totalTime(0)
+    {
+    }
+    
+    Animation3DData(const Animation3DData& other)
+    : _translationKeys(other._translationKeys)
+    , _rotationKeys(other._rotationKeys)
+    , _scaleKeys(other._scaleKeys)
+    , _totalTime(other._totalTime)
+    {
+    }
+    
+    void resetData()
+    {
+        _totalTime = 0;
+        _translationKeys.clear();
+        _rotationKeys.clear();
+        _scaleKeys.clear();
+    }
+};
+
+
 
 /**reference data
 * @js NA

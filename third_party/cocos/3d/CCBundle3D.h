@@ -109,6 +109,7 @@ public:
     virtual bool loadNodes(NodeDatas& nodedatas);
     //since 3.3, to support reskin
     virtual bool loadMaterials(MaterialDatas& materialdatas);
+    virtual bool loadAnimationData(const std::string& id, Animation3DData* animationdata);
     
   
 protected:
@@ -121,6 +122,7 @@ protected:
     bool loadMaterialsBinary_0_1(MaterialDatas& materialdatas);
     bool loadMaterialsBinary_0_2(MaterialDatas& materialdatas);
     bool loadSkinDataBinary(SkinData* skindata);
+    bool loadAnimationDataBinary(const std::string& id,Animation3DData* animationdata);
 
     /**
      * load nodes of binary
@@ -172,7 +174,6 @@ protected:
     BundleReader _binaryReader;
     unsigned int _referenceCount;
     Reference* _references;
-    bool  _isBinary;
 };
 
 // end of 3d group
