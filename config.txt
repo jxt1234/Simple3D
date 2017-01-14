@@ -1,4 +1,4 @@
-INCLUDE:include ../Renascence/include/
+INCLUDE:include ../Renascence/include/ ./third_party/cocos/
 **********
 
 TARGET:libglsl.so
